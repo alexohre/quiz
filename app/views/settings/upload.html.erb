@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-lg-3">
+		<%= render 'shared/side_nav' %>
+	</div>
+	<div class="col-lg-9">
+		<h1>Upload Questions</h1>
+		<div class="card">
+			<div class="card-body">
+				<%#  %>
+				<%= form_with url: settings_uploader_path, method: :post, local: true, multipart: true do |form| %>
+					<div class="mb-3">
+						<%= form.label :stage_id, "Stages", class: "form-label" %>
+						<%= form.collection_select :stage_id, Stage.all, :id, :name, { prompt: "Select Stage" }, { class: "form-select" } %>
+					</div>
+					<div class="mb-3">
+						<%= form.label :number_start, "Number start from", class: "form-label" %>
+						<%= form.text_field :number_start, class: "form-control", placeholder: "Enter starting number" %>
+					</div>
+					<div class="mb-3">
+						<%= form.label :file, "Upload CSV file", class: "form-label" %>
+						<div class="input-group mb-3">
+							<%= form.file_field :file, class: "form-control" %>
+						</div>
+					</div>
+					<%= form.submit "Submit", class: "btn btn-primary" %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

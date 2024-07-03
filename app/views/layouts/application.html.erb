@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CocQuiz</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<%= csrf_meta_tags %>
+		<%= csp_meta_tag %>
+		<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+		<%= javascript_importmap_tags %>
+	</head>
+	<body>
+		<%= render 'shared/notice' %>
+		<div class="container mt-5">
+			<%= yield %>
+			<div class="dropdown position-fixed bottom-0 end-0 mb-3 me-5 ">
+				<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-primary py-2" unless request.path == root_path  %>
+			</div>
+		</div>
+	</body>
+</html>

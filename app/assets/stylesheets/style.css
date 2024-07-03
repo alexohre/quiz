@@ -1,0 +1,21 @@
+.bg-answer {
+	background: rgb(101, 193, 106);
+	background: linear-gradient(
+		153deg,
+		rgba(101, 193, 106, 1) 0%,
+		rgba(242, 255, 254, 1) 25%,
+		rgba(202, 242, 204, 1) 50%,
+		rgba(242, 255, 254, 1) 75%,
+		rgba(101, 193, 106, 1) 100%
+	);
+}
+
+.bg-quest {
+	background: rgb(59, 58, 62);
+	background: linear-gradient(
+		90deg,
+		rgba(59, 58, 62, 1) 0%,
+		rgba(235, 235, 235, 1) 50%,
+		rgba(71, 73, 73, 1) 100%
+	);
+}
