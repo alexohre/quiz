@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   root 'pages#home'
   get 'quiza', to: 'pages#quiz'
   get 'scoreboard', to: 'pages#scoreboard'
+  get 'reset', to: 'pages#reset'
   get 'quizmaster', to: 'pages#quizmaster'
   get 'judges', to: 'pages#judges'
 

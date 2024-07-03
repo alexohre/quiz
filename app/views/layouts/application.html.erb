@@ -3,6 +3,7 @@
 	<head>
 		<title>CocQuiz</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<meta name="turbo-prefetch" content="false">
 		<%= csrf_meta_tags %>
 		<%= csp_meta_tag %>
 		<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -12,8 +13,11 @@
 		<%= render 'shared/notice' %>
 		<div class="container mt-5">
 			<%= yield %>
-			<div class="dropdown position-fixed bottom-0 end-0 mb-3 me-5 ">
+			<div class=" position-fixed bottom-0 end-0 mb-3 me-5 ">
 				<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-primary py-2" unless request.path == root_path  %>
+			</div>
+			<div class=" position-fixed bottom-0 start-0 mb-3 ms-5 ">
+				<%= link_to "Reset", reset_path, class: "btn btn-sm btn-outline-danger py-2"  %>
 			</div>
 		</div>
 	</body>
