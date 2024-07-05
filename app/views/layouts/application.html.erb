@@ -4,6 +4,7 @@
 		<title>Quiz</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<meta name="turbo-prefetch" content="false">
+		<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 		<%= csrf_meta_tags %>
 		<%= csp_meta_tag %>
 		<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -20,5 +21,6 @@
 				<%= link_to "Reset", reset_path, class: "btn btn-sm btn-outline-danger py-2"  %>
 			</div>
 		</div>
+		<%= render 'shared/footer' %>
 	</body>
 </html>
