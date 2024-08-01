@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   mount ActionCable.server => '/cable'
   
+  get 'delete_data', to: 'settings#drop_db'
   get 'settings/settings', to: 'settings#settings'
+  post 'settings/settings', to: 'settings#settings'
   get 'settings/upload', to: 'settings#upload'
   post 'settings/uploader', to: 'settings#uploader'
   root 'pages#home'
@@ -10,6 +12,12 @@ Rails.application.routes.draw do
   get 'reset', to: 'pages#reset'
   get 'quizmaster', to: 'pages#quizmaster'
   get 'judges', to: 'pages#judges'
+
+  resources :stages, only: [:destory] do 
+    member do 
+      patch :activate
+    end
+  end
 
   resources :quiz, only: [:index, :show]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

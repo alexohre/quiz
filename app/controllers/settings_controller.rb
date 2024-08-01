@@ -2,6 +2,27 @@ class SettingsController < ApplicationController
   require 'csv'
   
   def settings
+    if params[:number_of_stages].present?
+      number_of_stages = params[:number_of_stages].to_i
+      if number_of_stages > 0
+        Stage.create_stages(number_of_stages)
+        redirect_to settings_settings_path, notice: "#{number_of_stages} stages created successfully."
+      else
+        redirect_to settings_settings_path, alert: "Please enter a valid number of stages."
+      end
+    end
+  end
+
+  def drop_db
+    @quizzes = Quiz.all
+    if @quizzes.present?
+      @quizzes.destroy_all
+    end
+    @stages = Stage.all 
+    if @stages.present?
+      @stages.destroy_all
+    end
+    redirect_to settings_settings_path, notice: "Data successfully deleted!"
   end
 
   def upload

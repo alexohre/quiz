@@ -1,14 +1,10 @@
 <div class="d-flex justify-content-center border-bottom border-primary mb-5">
 	<ul class="nav nav-pills text-center mb-3" id="pills-tab" role="tablist">
-		<li class="nav-item px-2" role="presentation">
-			<button class="nav-link fw-bold px-5 active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Stage 1</button>
-		</li>
-		<li class="nav-item px-2" role="presentation">
-			<button class="nav-link fw-bold px-5" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Stage 2</button>
-		</li>
-		<li class="nav-item px-2" role="presentation">
-			<button class="nav-link fw-bold px-5" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Stage 3</button>
-		</li>
+		<% @stages.each do |stage| %>
+			<li class="nav-item px-2" role="presentation">
+				<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "nav-link fw-bold px-5 #{stage.active? ? 'active' : ''}" %>
+			</li>
+		<% end %>
 	</ul>
 </div>
 <%#  %>
@@ -16,15 +12,13 @@
 	<div class="card-body">
 		<div class="tab-content" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-				<% @quizzes.each do |quiz| %>
-					<a class="btn btn-<%= quiz.answered? ? 'outline-secondary disabled' : 'primary' %> btn-lg fw-bold m-2"  href="<%= quiz_path(quiz)%>" role="button"><%= quiz.question_number %></a>
+				<% if @quizzes.present? %>
+					<% @quizzes.each do |quiz| %>
+						<a class="btn btn-<%= quiz.answered? ? 'outline-secondary disabled' : 'primary' %> btn-lg fw-bold m-2"  href="<%= quiz_path(quiz)%>" role="button"><%= quiz.formatted_question_number %></a>
+					<% end %>
+				<% else %>
+					<p class="text-center my-5 h1"><i class='bx bx-error'></i> Oops, Nothing here!</p>
 				<% end %>
-			</div>
-			<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-				<a class="btn btn-primary btn-lg fw-bold m-2" href="#" role="button">2</a>
-			</div>
-			<div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
-				<a class="btn btn-primary btn-lg fw-bold m-2" href="#" role="button">3</a>
 			</div>
 		</div>
 	</div>

@@ -3,19 +3,16 @@
 		<%= render 'shared/side_nav' %>
 	</div>
 	<div class="col-lg-9">
+		<h1>Settings Page</h1>
 		<div class="card">
 			<div class="card-body">
-				<form>
+				<%= form_with url: settings_settings_path, method: :post do |f| %>
 					<div class="mb-3">
-						<label for="exampleInputEmail1" class="form-label">No of Stages</label>
-						<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-					</div>
-					<div class="mb-3">
-						<label for="exampleInputPassword1" class="form-label">Random</label>
-						<input type="password" class="form-control" id="exampleInputPassword1">
+						<label for="" class="form-label">No of Stages</label>
+						<%= f.number_field :number_of_stages, class: "form-control" %>
 					</div>
 					<button type="submit" class="btn btn-primary">Submit</button>
-				</form>
+				<% end %>
 			</div>
 		</div>
 	</div>

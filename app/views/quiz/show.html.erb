@@ -2,7 +2,7 @@
 <div class="card border-secondary mb-3 mb-5" >
 	<div class="card-header border-dark border-bottom-0 border-start bd-bm border-5 bg-quest text-center"><span class="fw-semibold text-secondary h2">Question</span> <span class="fw-bold h2"><%= @quiz.question_number %></span></div>
 	<div class="card-body text-secondary border-start border-5 border-dark">
-		<p class="h1 text-dark text-center"><%= @quiz.question %></p>
+		<p class="h1 text-dark text-center py-3"><%= @quiz.question %></p>
 	</div>
 </div>
 <%# answer section %>
@@ -13,7 +13,7 @@
 	<div class="card border-success d-none mb-3 mt-5" data-show-target="answerSection">
 		<div class="card-header border-success border-bottom-0 border-start bd-bm border-5 bg-answer text-center"><span class="fw-semibold text-success h2">Answer</span> </div>
 		<div class="card-body border-start border-5 border-success text-success">
-			<p class="text-center h2 "><%= @quiz.answer %></p>
+			<p class="text-center h2 py-2"><%= @quiz.answer %></p>
 		</div>
 	</div>
 	<div class="text-center d-none" data-show-target="backButton">

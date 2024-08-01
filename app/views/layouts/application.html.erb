@@ -11,14 +11,19 @@
 		<%= javascript_importmap_tags "application" %>
 	</head>
 	<body>
-		<%= render 'shared/notice' %>
-		<div class="container mt-5">
+		<%= render 'shared/nav' %>
+		<div class="container ">
+			<%= render 'shared/notice' %>
 			<%= yield %>
-			<div class=" position-fixed bottom-0 end-0 mb-3 me-5 ">
+			<div class="position-fixed bottom-0 end-0 mb-3 me-5 ">
 				<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-primary py-2" unless request.path == root_path  %>
+				<%= link_to settings_settings_path do %>
+					<i class='bx bx-cog h2 text-dark'></i>
+				<% end %>
 			</div>
-			<div class=" position-fixed bottom-0 start-0 mb-3 ms-5 ">
+			<div class="position-fixed bottom-0 start-0 mb-3 ms-5 ">
 				<%= link_to "Reset", reset_path, class: "btn btn-sm btn-outline-danger py-2"  %>
+				<%= link_to "Delete Data", delete_data_path, class: "btn btn-sm btn-outline-danger py-2"  %>
 			</div>
 		</div>
 		<%= render 'shared/footer' %>

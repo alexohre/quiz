@@ -1,7 +1,10 @@
 class QuizController < ApplicationController
 
   def index 
-    @quizzes = Quiz.all.order(question_number: :asc)
+    @stages = Stage.all.order(id: :asc)
+    @active_stage = @stages.find_by(active: true)
+    @quizzes = @active_stage ? @active_stage.quizzes.order(question_number: :asc) : ["No question here!"]
+    # @quizzes = Quiz.all.order(question_number: :asc)
     ActionCable.server.broadcast('quiz_channel', { html: render_to_string(partial: 'wait') })
   end
 
