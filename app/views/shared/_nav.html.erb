@@ -10,22 +10,24 @@
 				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			</div>
 			<h5 class=" ms-2"><i class='bx bx-user'></i> Role: <span class="fw-bold text-success">Presenter</span></h5>
+			<hr>
 			<div class="offcanvas-body">
 				<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
 					<li class="nav-item">
 						<a class="nav-link active" aria-current="page" href="/"><i class='bx bx-home-alt-2' ></i> Home</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#"><i class='bx bx-bar-chart'></i> Scoreboard</a>
+						<a class="nav-link" href="<%= scoreboard_path %>"><i class='bx bx-bar-chart'></i> Scoreboard</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Link</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Link</a>
+						<a class="nav-link" href="/"><i class='bx bx-timer' ></i> Timer</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="<%= settings_settings_path %>"><i class='bx bx-cog' ></i> Settings</a>
+					</li>
+					<hr>
+					<li class="nav-item">
+						<a class="nav-link text-danger" href="<%=  %>"><i class='bx bx-power-off' ></i> Sign Out</a>
 					</li>
 				</ul>
 			</div>

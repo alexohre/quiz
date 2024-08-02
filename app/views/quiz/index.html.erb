@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center border-bottom border-primary mb-5">
+<div class="d-flex justify-content-center bg-white pt-3 border-bottom border-primary mb-5">
 	<ul class="nav nav-pills text-center mb-3" id="pills-tab" role="tablist">
 		<% @stages.each do |stage| %>
 			<li class="nav-item px-2" role="presentation">
@@ -8,8 +8,8 @@
 	</ul>
 </div>
 <%#  %>
-<div class="card">
-	<div class="card-body">
+<div class="card rounded">
+	<div class="card-body border border-danger border-4 border-top-0 border-bottom-0">
 		<div class="tab-content" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
 				<% if @quizzes.present? %>

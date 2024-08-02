@@ -19,3 +19,70 @@
 		rgba(71, 73, 73, 1) 100%
 	);
 }
+.circle-bg {
+	display: inline-block;
+	background-color: #a4d5f5;
+	color: white;
+	padding: 10px;
+	border-radius: 50% !important;
+}
+/* CSS Document */
+.question-dp {
+	text-align: center;
+	font-size: 40px;
+	padding: 1.25rem;
+	margin-top: 1.25rem;
+	margin-bottom: 1.25rem;
+	border: 1px solid #eee;
+	border-left-width: 0.25rem;
+	border-radius: 0.25rem;
+}
+.question-dp-danger {
+	border-left-color: #d9534f;
+}
+.question-dp-green {
+	border-left-color: #6bc12d;
+}
+.question-dp-blue {
+	border-left-color: #2580c1;
+}
+.progress {
+	height: 3px;
+}
+#timedp {
+	background-color: #2580c1;
+	border-radius: 200px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size: 90px;
+	color: #ededed;
+}
+#answer-dp {
+	display: none;
+}
+#v-pills-tab {
+	background-color: #e9e9e9;
+}
+table {
+	margin-top: 30px;
+}
+.btn-align {
+	margin: 30px;
+	clear: both;
+}
+.alert {
+	margin-top: 30px;
+}
+.nav {
+	border-radius: 5px;
+}
+table {
+	border-radius: 5px;
+	font-size: 24px;
+}
+#v-pills-tabContent,
+#pills-tabContent {
+	padding: 1.25rem;
+	margin-top: 1.25rem;
+	margin-bottom: 1.25rem;
+}
