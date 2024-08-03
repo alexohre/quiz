@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px;">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary shadow" style="width: 280px;">
 	<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
 		<svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
 		<span class="fs-4">Sidebar</span>
@@ -6,19 +6,63 @@
 	<hr>
 	<ul class="nav nav-pills flex-column mb-auto">
 		<li class="nav-item">
-			<%= link_to "Settings", settings_settings_path, class: "nav-link link-body-emphasis ms-4 "%>
+			<a class="nav-link <%= request.path == settings_settings_path ? 'active' : 'link-body-emphasis'  %>" href="<%= settings_settings_path %>"><i class='bx bx-home-alt-2' ></i> Settings</a>
 		</li>
 		<li class="nav-item">
-			<%= link_to "Upload Questions", settings_upload_path, class: "nav-link link-body-emphasis ms-4"%>
+			<a class="nav-link <%= request.path == settings_stage_path ? 'activer' : 'link-body-emphasis'  %>" href="<%= settings_stage_path %>"><i class='bx bx-align-justify'></i> Create Stages</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link <%= request.path == settings_upload_path ? 'active' : 'link-body-emphasis'  %>" href="<%= settings_upload_path %>"><i class='bx bx-cloud-upload' ></i> Upload Questions</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link <%= request.path == settings_timer_path ? 'active' : 'link-body-emphasis'  %>" href="<%= settings_timer_path %>"><i class='bx bx-timer' ></i> Set Timer</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link <%= request.path == root_path ? 'active' : 'link-body-emphasis'  %>" href="<%= root_path %>"><i class='bx bxs-user-account'></i> Create Users</a>
 		</li>
 	</ul>
 	<hr>
 	<ul class="nav nav-pills flex-column mb-auto">
 		<li class="nav-item">
-			<%= link_to "Reset Quest.", reset_path, class: "nav-link ms-4 text-info "%>
+			<a class="nav-link text-info" id="reset-link" href="<%= reset_path %>" data-turbo-confirm="Are you sure you want to reset the data? This action cannot be undone."><i class='bx bx-reset'></i> Reset Data</a>
 		</li>
 		<li class="nav-item">
-			<%= link_to "Delete Data", delete_data_path, class: "nav-link  ms-4 text-danger"%>
+			<a class="nav-link text-danger" id="delete-link" href="<%= delete_data_path %>" data-turbo-confirm="Are you sure you want to Delete the data? This action cannot be undone."><i class='bx bx-trash'></i> Delete Data</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link  " href="/"><i class='bx bx-share'></i> Back Home</a>
 		</li>
 	</ul>
 </div>
+<script>
+	document.addEventListener("turbo:load", function() {
+	    const deleteLink = document.getElementById("delete-link");
+	    const resetLink = document.getElementById("reset-link");
+
+	    function handleConfirmation(link, actionWord) {
+	        link.addEventListener("click", function(event) {
+	            event.preventDefault(); // Prevent the default link behavior
+
+	            const userInput = prompt(`Type '${actionWord}' to confirm:`);
+
+	            if (userInput === actionWord) {
+	                const confirmed = confirm(`Are you sure you want to ${actionWord} the data? This action cannot be undone.`);
+	                if (confirmed) {
+	                    // Proceed with the action
+	                    window.location.href = link.href;
+	                }
+	            } else {
+	                alert(`You must type '${actionWord}' to confirm.`);
+	            }
+	        });
+	    }
+
+	    if (deleteLink) {
+	        handleConfirmation(deleteLink, "delete");
+	    }
+
+	    if (resetLink) {
+	        handleConfirmation(resetLink, "reset");
+	    }
+	});
+</script>

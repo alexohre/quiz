@@ -4,15 +4,31 @@
 	</div>
 	<div class="col-lg-9">
 		<h1>Settings Page</h1>
-		<div class="card">
+		<div class="card shadow">
 			<div class="card-body">
-				<%= form_with url: settings_settings_path, method: :post do |f| %>
-					<div class="mb-3">
-						<label for="" class="form-label">No of Stages</label>
-						<%= f.number_field :number_of_stages, class: "form-control" %>
-					</div>
-					<button type="submit" class="btn btn-primary">Submit</button>
+				<h4>Available Stages</h4>
+				<% if @stages.present? %>
+					<% @stages.each do |stage| %>
+						<span class="badge rounded-pill text-bg-primary p-2"><%= stage.name %></span>
+					<% end %>
+				<% else %>
+					<span class="badge rounded-pill text-bg-danger p-2">No Stages Yet!</span>
 				<% end %>
+				<p></p>
+				<h4>Uploaded Questions</h4>
+				<% if @stages.present? %>
+					<% @stages.each do |stage| %>
+						<div class="badge bg-primary fs-4 text-white m-1 p-2">
+							<%= "#{stage.name}: #{stage.quizzes.count}" %>
+						</div>
+					<% end %>
+				<% else %>
+					<span class="badge rounded-pill text-bg-danger p-2">No questions uploaded yet.</span>
+				<% end %>
+				<p></p>
+				<h4>Timer (s)</h4>
+				<span class="text-primary fw-bold fs-3"><%= @timer.nil? ? 0 : @timer %></span> <span class="fs-4">Sec</span>
+				<p></p>
 			</div>
 		</div>
 	</div>

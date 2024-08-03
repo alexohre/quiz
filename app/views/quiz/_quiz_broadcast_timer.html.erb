@@ -9,6 +9,8 @@
 		</div>
 	</div>
 <% end %>
-<div class="timer-starter text-center" data-controller="timer">
+<% @timers = Setting.last %>
+<% @timer = @timers.present? ? @timers.timer : 0 %>
+<div class="timer-starter text-center" data-controller="timer" data-timer-duration="<%= @timer %>">
 	<button class="btn btn-primary px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">Start Timer</button>
 </div>

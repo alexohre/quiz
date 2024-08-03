@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="col-lg-3">
+		<%= render 'shared/side_nav' %>
+	</div>
+	<div class="col-lg-9">
+		<h1>Timer Page</h1>
+		<div class="card shadow">
+			<div class="card-body">
+				<%= form_with url: settings_timer_path, method: :post do |f| %>
+					<div class="mb-3">
+						<label for="" class="form-label">Timer <span class="text-danger text-sm">( in seconds)</span></label>
+						<%= f.number_field :timer, value: @timer, class: "form-control" %>
+					</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

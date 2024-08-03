@@ -4,13 +4,13 @@
 	</div>
 	<div class="col-lg-9">
 		<h1>Upload Questions</h1>
-		<div class="card">
+		<div class="card shadow">
 			<div class="card-body">
 				<%#  %>
 				<%= form_with url: settings_uploader_path, method: :post, local: true, multipart: true do |form| %>
 					<div class="mb-3">
 						<%= form.label :stage_id, "Stages", class: "form-label" %>
-						<%= form.collection_select :stage_id, Stage.all, :id, :name, { prompt: "Select Stage" }, { class: "form-select" } %>
+						<%= form.collection_select :stage_id, Stage.all.order(id: :asc), :id, :name, { prompt: "Select Stage" }, { class: "form-select" } %>
 					</div>
 					<div class="mb-3">
 						<%= form.label :number_start, "Number start from", class: "form-label" %>

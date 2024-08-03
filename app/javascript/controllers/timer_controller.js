@@ -8,6 +8,9 @@ export default class extends Controller {
 	connect() {
 		console.log("connected to timer controller.js", this.element);
 
+		// Read timer value from data attribute
+		this.timerDuration = this.element.dataset.timerDuration || 0;
+
 		this.channel = consumer.subscriptions.create("TimerChannel", {
 			received: (data) => {
 				if (data.action === "start_timer") {
@@ -18,7 +21,8 @@ export default class extends Controller {
 	}
 
 	startTimer() {
-		const countdownDuration = 5; // Set the countdown duration here
+		const countdownDuration = parseInt(this.timerDuration, 10);
+		// const countdownDuration = 5; // Set the countdown duration here
 
 		fetch("/start_timer", {
 			method: "POST",

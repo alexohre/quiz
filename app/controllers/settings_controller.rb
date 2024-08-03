@@ -2,6 +2,13 @@ class SettingsController < ApplicationController
   require 'csv'
   
   def settings
+    @stages = Stage.includes(:quizzes).order(id: :asc)
+    @timers = Setting.last
+    @timer = @timers.present? ? @timers.timer : 0
+  end
+
+  def stage 
+    @stage = Stage.count
     if params[:number_of_stages].present?
       number_of_stages = params[:number_of_stages].to_i
       if number_of_stages > 0
@@ -65,6 +72,36 @@ class SettingsController < ApplicationController
     redirect_to settings_upload_path, alert: "There was an error processing the file: #{e.message}"
   end
 
+  def timer
+    @timers = Setting.last
+    @timer = @timers.present? ? @timers.timer : 0
+
+    if params[:timer].present?
+      timer_value = params[:timer].to_i
+      if timer_value > 0
+        # Update the existing setting or create a new one if it doesn't exist
+        if @timers.present?
+          @timers.update!(timer: timer_value)
+        else
+          Setting.create!(timer: timer_value)
+        end
+        redirect_to settings_timer_path, notice: "#{timer_value} seconds updated successfully."
+      else
+        redirect_to settings_timer_path, alert: "Please enter a valid number of seconds."
+      end
+    end
+  end
+
+
+  def reset
+    @quizzes = Quiz.all
+    if @quizzes.present?
+      @quizzes.update_all(answered: false)
+      redirect_to settings_settings_path, notice: "Quizzes reset successfully!"
+    else
+      redirect_to settings_settings_path, alert: "Oops, Something went wrong!"
+    end
+  end
 
   private
 
