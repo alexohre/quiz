@@ -14,6 +14,10 @@ class PagesController < ApplicationController
   def judges
   end
 
+  def timer
+    
+  end
+
   def reset
     @quizzes = Quiz.all
     if @quizzes.present?

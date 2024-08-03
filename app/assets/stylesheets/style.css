@@ -86,3 +86,161 @@ table {
 	margin-top: 1.25rem;
 	margin-bottom: 1.25rem;
 }
+
+@keyframes growAndChangeColor {
+	0% {
+		transform: scale(1);
+		background-color: #a4d5f5;
+	}
+	50% {
+		transform: scale(1.2);
+		background-color: #5b9bd5;
+	}
+	100% {
+		transform: scale(1);
+		background-color: #a4d5f5;
+	}
+}
+
+.circle-bg {
+	position: relative;
+	display: inline-block;
+	background-color: #a4d5f5;
+	color: white;
+	padding: 10px;
+	border-radius: 50%;
+	animation: growAndChangeColor 2s infinite;
+	overflow: visible; /* Allow particles to go outside the circle */
+}
+
+.confetti {
+	position: absolute;
+	width: 3px;
+	height: 15px;
+	background-color: transparent;
+	border-radius: 50%;
+	opacity: 0.8;
+}
+
+@keyframes zigzag {
+	0% {
+		transform: translate(0, 0);
+		opacity: 1;
+	}
+	25% {
+		transform: translate(calc(var(--x) / 4), calc(var(--y) / 4));
+	}
+	50% {
+		transform: translate(calc(var(--x) / 2), calc(var(--y) / 2));
+	}
+	75% {
+		transform: translate(calc(var(--x) * 3 / 4), calc(var(--y) * 3 / 4));
+	}
+	100% {
+		transform: translate(var(--x), var(--y));
+		opacity: 0;
+	}
+}
+
+.fixed-container {
+	position: fixed;
+	top: 5rem; /* Adjust this value to move the container down */
+	right: 3rem;
+	width: 100%;
+	height: calc(
+		100% - 3rem
+	); /* Adjust the height to account for the top margin */
+	pointer-events: none; /* Prevents interaction with the container itself */
+	z-index: 1000; /* Ensure it appears above other elements, including the navbar */
+}
+
+.countdown {
+	position: absolute;
+	top: 1rem;
+	right: 1.5rem;
+	width: 200px;
+	height: 200px;
+	background-color: #333;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 6rem;
+	text-align: center;
+	pointer-events: auto; /* Allows interaction with the countdown element */
+}
+
+@media (max-width: 768px) {
+	.countdown {
+		display: none;
+	}
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+	color: white;
+	display: none; /* Hidden by default */
+	justify-content: center;
+	align-items: center;
+	z-index: 1060; /* Ensure it appears above everything else */
+}
+
+.overlay-content {
+	text-align: center;
+}
+
+.overlay-content h1 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+
+.overlay-content button {
+	background-color: #007bff; /* Bootstrap primary color */
+	border: none;
+	color: white;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	border-radius: 0.25rem;
+	cursor: pointer;
+}
+
+.overlay-content button:hover {
+	background-color: #0056b3; /* Darker shade for hover effect */
+}
+
+.ov-title {
+	font-size: 8rem !important;
+}
+
+.progress-circle {
+	position: relative;
+	width: 100px;
+	height: 100px;
+}
+
+.circle-svg {
+	width: 100%;
+	height: 100%;
+	transform: rotate(-90deg);
+}
+
+.circle-background {
+	fill: none;
+	stroke: #e6e6e6;
+	stroke-width: 10;
+}
+
+.circle-progress {
+	fill: none;
+	stroke: #007bff;
+	stroke-width: 10;
+	stroke-dasharray: 283;
+	stroke-dashoffset: 283;
+	transition: stroke-dashoffset 1s linear;
+}

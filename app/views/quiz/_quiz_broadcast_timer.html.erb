@@ -1,0 +1,14 @@
+<% if quiz %>
+	<div id="quiz_<%= quiz.id %>">
+		<%# question section %>
+		<div class="card border-secondary mb-3 mb-5" >
+			<div class="card-header border-dark border-bottom-0 border-start bd-bm border-5 bg-quest text-center"><span class="fw-semibold text-secondary h2">Question</span> <span class="fw-bold h2"><%= quiz.formatted_question_number %></span></div>
+			<div class="card-body text-secondary border-start border-5 border-dark">
+				<p class="h1 text-dark text-center"><%= quiz.question %></p>
+			</div>
+		</div>
+	</div>
+<% end %>
+<div class="timer-starter text-center" data-controller="timer">
+	<button class="btn btn-primary px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">Start Timer</button>
+</div>

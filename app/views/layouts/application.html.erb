@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Quiz</title>
+		<title>COC Quiz 24</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1">
 		<meta name="turbo-prefetch" content="false">
 		<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -10,70 +10,14 @@
 		<%= favicon_link_tag "jbq2.jpg" %>
 		<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
 		<%= javascript_importmap_tags "application" %>
-		<style>
-			@keyframes growAndChangeColor {
-			    0% {
-			        transform: scale(1);
-			        background-color: #a4d5f5;
-			    }
-			    50% {
-			        transform: scale(1.2);
-			        background-color: #5b9bd5;
-			    }
-			    100% {
-			        transform: scale(1);
-			        background-color: #a4d5f5;
-			    }
-			}
-
-			.circle-bg {
-			    position: relative;
-			    display: inline-block;
-			    background-color: #a4d5f5;
-			    color: white;
-			    padding: 10px;
-			    border-radius: 50%;
-			    animation: growAndChangeColor 2s infinite;
-			    overflow: visible; /* Allow particles to go outside the circle */
-			}
-
-			.confetti {
-			    position: absolute;
-			    width: 3px;
-			    height: 15px;
-			    background-color: transparent;
-			    border-radius: 50%;
-			    opacity: 0.8;
-			}
-
-			@keyframes zigzag {
-			    0% {
-			        transform: translate(0, 0);
-			        opacity: 1;
-			    }
-			    25% {
-			        transform: translate(calc(var(--x) / 4), calc(var(--y) / 4));
-			    }
-			    50% {
-			        transform: translate(calc(var(--x) / 2), calc(var(--y) / 2));
-			    }
-			    75% {
-			        transform: translate(calc(var(--x) * 3 / 4), calc(var(--y) * 3 / 4));
-			    }
-			    100% {
-			        transform: translate(var(--x), var(--y));
-			        opacity: 0;
-			    }
-			}
-		</style>
 	</head>
 	<style>
 		.bg-image {
-			background-image: url(<%= asset_path('background.jpg') %>);
-			background-size: cover; /* Adjust the background-size as needed */
-			background-position: center; /* Center the image */
-			background-repeat: no-repeat; /* Prevent the image from repeating */
-			height: 100vh; /* Ensure it covers the full viewport height */
+		background-image: url(<%=asset_path("background.jpg")%>);
+		background-size: cover; /* Adjust the background-size as needed */
+		background-position: center; /* Center the image */
+		background-repeat: no-repeat; /* Prevent the image from repeating */
+		height: 100vh; /* Ensure it covers the full viewport height */
 		}
 	</style>
 	<body class="bg-image">
@@ -86,39 +30,5 @@
 			</div>
 		</div>
 		<%= render 'shared/footer' %>
-		<script>
-			function createConfetti(x, y, color, duration) {
-			    const confetti = document.createElement('div');
-			    confetti.classList.add('confetti');
-			    confetti.style.backgroundColor = color;
-			    confetti.style.left = '50%';
-			    confetti.style.top = '50%';
-			    confetti.style.width = '3px'; // Thin width
-			    confetti.style.height = `${Math.random() * 20 + 10}px`; // Random height
-			    confetti.style.setProperty('--x', `${(Math.random() - 0.5) * 400}px`);
-			    confetti.style.setProperty('--y', `${(Math.random() - 0.5) * 400}px`);
-			    confetti.style.animation = `zigzag ${duration}s linear`;
-			    document.getElementById('buzzer').appendChild(confetti);
-
-			    confetti.addEventListener('animationend', () => {
-			        confetti.remove();
-			    });
-			}
-
-			function generateConfetti() {
-			    const colors = ['#f5b542', '#ff6347', '#ffa07a', '#ff4500', '#ff1493', '#7fff00', '#00ff7f'];
-			    const duration = 1.5; // Duration of the confetti animation
-
-			    for (let i = 0; i < 100; i++) {
-			        const color = colors[Math.floor(Math.random() * colors.length)];
-			        createConfetti(0, 0, color, duration);
-			    }
-			}
-
-			document.getElementById('buzzer').addEventListener('animationiteration', generateConfetti);
-
-			// Generate confetti initially and then repeat on each animation iteration
-			generateConfetti();
-		</script>
 	</body>
 </html>

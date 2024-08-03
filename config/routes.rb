@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'reset', to: 'pages#reset'
   get 'quizmaster', to: 'pages#quizmaster'
   get 'judges', to: 'pages#judges'
+  get 'timer', to: 'pages#timer'
 
   resources :stages, only: [:destory] do 
     member do 
@@ -22,6 +23,8 @@ Rails.application.routes.draw do
   resources :quiz, only: [:index, :show]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  # for starting timer
+  post 'start_timer', to: 'timers#start'
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

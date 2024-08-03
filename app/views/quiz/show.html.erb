@@ -20,3 +20,14 @@
 		<%= link_to "Back to Quiz", quiz_index_path, class: "btn btn-secondary btn-lg mx-auto" %>
 	</div>
 </div>
+<div class="" data-controller="timer">
+	<div class="fixed-container " >
+		<div class="countdown" data-timer-target="countdown">00</div>
+	</div>
+	<div class="overlay" data-timer-target="overlay">
+		<div class="overlay-content">
+			<h1 class="fw-bold ov-title">Time Up!</h1>
+			<button class="btn btn-primary px-5" data-action="click->timer#hideOverlay" data-timer-target="overlayButton">Okay</button>
+		</div>
+	</div>
+</div>
