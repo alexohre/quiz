@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>COC Quiz 24 Auth</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<meta name="turbo-prefetch" content="false">
+		<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+		<%= csrf_meta_tags %>
+		<%= csp_meta_tag %>
+		<%= favicon_link_tag "jbq2.jpg" %>
+		<%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+		<%= javascript_importmap_tags "application" %>
+	</head>
+	<body class="">
+		<%= yield %>
+	</body>
+</html>

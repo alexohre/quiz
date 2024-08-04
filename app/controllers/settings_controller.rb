@@ -92,6 +92,9 @@ class SettingsController < ApplicationController
     end
   end
 
+  def users 
+    
+  end
 
   def reset
     @quizzes = Quiz.all

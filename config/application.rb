@@ -20,7 +20,9 @@ module CocQuiz
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
-    config.hosts << "2fbe-105-112-117-221.ngrok-free.app"
+    config.hosts << "4d12-105-112-117-221.ngrok-free.app"
+
+    config.time_zone = "Africa/Lagos"
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")

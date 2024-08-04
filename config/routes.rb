@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'settings/timer', to: 'settings#timer'
   post 'settings/timer', to: 'settings#timer'
   get 'settings/stage', to: 'settings#stage'
+  get 'settings/users', to: 'settings#users'
   post 'settings/uploader', to: 'settings#uploader'
   root 'pages#home'
   get 'quiza', to: 'pages#quiz'
@@ -16,12 +17,14 @@ Rails.application.routes.draw do
   get 'quizmaster', to: 'pages#quizmaster'
   get 'judges', to: 'pages#judges'
   get 'timer', to: 'pages#timer'
-
+  
   resources :stages, only: [:destory] do 
     member do 
       patch :activate
     end
   end
+  
+  # devise_for :users, path: 'auth', path_names: { sign_in: 'login', sign_out: 'logout', password: 'secret', confirmation: 'verification', unlock: 'unblock', registration: 'register', sign_up: 'cmon_let_me_in' }
 
   resources :quiz, only: [:index, :show]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

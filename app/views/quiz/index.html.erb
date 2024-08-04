@@ -1,9 +1,13 @@
 <div class="d-flex justify-content-center bg-white pt-3 border-bottom border-primary mb-5">
 	<ul class="nav nav-pills text-center mb-3" id="pills-tab" role="tablist">
-		<% @stages.each do |stage| %>
-			<li class="nav-item px-2" role="presentation">
-				<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "nav-link fw-bold px-5 #{stage.active? ? 'active' : ''}" %>
-			</li>
+		<% if @stages.present? %>
+			<% @stages.each do |stage| %>
+				<li class="nav-item px-2" role="presentation">
+					<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "nav-link fw-bold px-5 #{stage.active? ? 'active' : ''}" %>
+				</li>
+			<% end %>
+		<% else %>
+			<h3>No Stages Yet!</h3>
 		<% end %>
 	</ul>
 </div>
