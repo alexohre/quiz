@@ -1,9 +1,10 @@
 class PagesController < ApplicationController
   # before_action :authenticate_user!
+  layout "auth", only: [:login]
   def home
   end
 
-  def quiz
+  def login
   end
 
   def scoreboard

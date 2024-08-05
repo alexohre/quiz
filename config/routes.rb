@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'settings/users', to: 'settings#users'
   post 'settings/uploader', to: 'settings#uploader'
   root 'pages#home'
-  get 'quiza', to: 'pages#quiz'
+  get 'login', to: 'pages#login'
   get 'scoreboard', to: 'pages#scoreboard'
   get 'reset', to: 'settings#reset'
   get 'quizmaster', to: 'pages#quizmaster'
