@@ -20,7 +20,7 @@ module CocQuiz
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
-    config.hosts << "1f11-105-112-116-138.ngrok-free.app"
+    # config.hosts << "1f11-105-112-116-138.ngrok-free.app"
 
     config.time_zone = "Africa/Lagos"
     #
