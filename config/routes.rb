@@ -1,5 +1,25 @@
 Rails.application.routes.draw do
+  # devise_for :users
   mount ActionCable.server => '/cable'
+
+  # devise_for :users, path: 'auth', controllers: { sessions: 'users/sessions' }, skip: [:registrations]
+  devise_for :users, 
+    path: 'auth', path_names: { sign_in: 'login', sign_out: 'logout' }, 
+    controllers: { sessions: 'users/sessions' }, 
+    skip: [:registrations]
+
+    # To allow users to update their account, add the following:
+  # as :user do
+  #   get 'auth/edit' => 'devise/registrations#edit', as: 'edit_user_registration'
+  #   put 'auth' => 'devise/registrations#update', as: 'user_registration'
+  # end
+
+  post "create_user", to: "settings#create_user"
+  delete "delete_user/:id", to: "settings#delete_user", as: :delete_user
+  get 'settings/users', to: 'settings#users'
+
+  # root "home"
+  root "pages#home"
   
   get 'delete_data', to: 'settings#drop_db'
   get 'settings/settings', to: 'settings#settings'
@@ -8,9 +28,7 @@ Rails.application.routes.draw do
   get 'settings/timer', to: 'settings#timer'
   post 'settings/timer', to: 'settings#timer'
   get 'settings/stage', to: 'settings#stage'
-  get 'settings/users', to: 'settings#users'
   post 'settings/uploader', to: 'settings#uploader'
-  root 'pages#home'
   get 'login', to: 'pages#login'
   get 'scoreboard', to: 'pages#scoreboard'
   get 'reset', to: 'settings#reset'

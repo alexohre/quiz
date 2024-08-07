@@ -22,17 +22,27 @@
 								<th scope="col">Roles</th>
 								<th scope="col">Previous IP</th>
 								<th scope="col">Signed in IP</th>
+								<th scope="col">Action</th>
 							</tr>
 						</thead>
 						<tbody class="fs-6">
-							<tr class="text-center">
-								<th scope="row">1</th>
-								<td>demo@mail.com</td>
-								<td>*310*password#</td>
-								<td>Admin</td>
-								<td>192.168.0.1</td>
-								<td>192.168.0.1</td>
-							</tr>
+							<% @users.each_with_index do |user, index| %>
+								<tr class="text-center">
+									<th scope="row"><%= index + 1 %></th>
+									<td><%= user.email %></td>
+									<td><%= user.visible_password %></td>
+									<td><%= user.role %></td>
+									<td><%= user.last_sign_in_ip %></td>
+									<td><%= user.current_sign_in_ip %></td>
+									<td>
+										<% if current_user&.admin? && current_user != user %>
+											<%= link_to "Delete", delete_user_url(user), data: {turbo_method: :delete, turbo_confirm: "Are you sure!"}, class: "btn btn-outline-danger btn-sm" %>
+										<% else %>
+											<i class='bx bx-wink-smile text-success fs-3'></i>
+										<% end %>
+									</td>
+								</tr>
+							<% end %>
 						</tbody>
 					</table>
 				</div>
@@ -48,24 +58,26 @@
 				<h1 class="modal-title fs-5" id="staticBackdropLabel">Add User</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body">
-				<div class="mb-3">
-					<label for="" class="form-label">Email</label>
-					<input type="text" class="form-control" id="" placeholder="Enter Email">
+			<%= form_with(url: create_user_path, method: :post, local: true, data: {turbo: false}) do |form| %>
+				<div class="modal-body">
+					<div class="mb-3">
+						<%= form.label :email, class: "form-label" %>
+						<%= form.text_field :email, class: "form-control", placeholder: "Enter Email", required: true %>
+					</div>
+					<div class="mb-3">
+						<%= form.label :password, class: "form-label" %>
+						<%= form.password_field :password, class: "form-control", placeholder: "Enter Password", required: true %>
+					</div>
+					<div class="mb-3">
+						<%= form.label :role, class: "form-label" %>
+						<%= form.select :role, User.roles.keys.map { |role| [role.humanize, role] }, { prompt: "------Select Role------"}, class: "form-select", required: true%>
+					</div>
 				</div>
-				<div class="mb-3">
-					<label for="" class="form-label">Password</label>
-					<input type="text" class="form-control" placeholder="Enter Password">
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<%= form.submit "Create", class: "btn btn-primary" %>
 				</div>
-				<div class="mb-3">
-					<label for="" class="form-label">Role</label>
-					<input type="text" class="form-control" >
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Create</button>
-			</div>
+			<% end %>
 		</div>
 	</div>
 </div>

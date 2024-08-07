@@ -1,4 +1,5 @@
 class SettingsController < ApplicationController
+  before_action :check_admin_user
   require 'csv'
   
   def settings
@@ -93,7 +94,31 @@ class SettingsController < ApplicationController
   end
 
   def users 
-    
+    @users = User.all
+  end
+
+  def create_user
+    email = params[:email]
+    password = params[:password]
+    visible_password = params[:password]
+    role = params[:role]
+
+    user = User.create!(email: email, password: password, role: role, visible_password: visible_password)
+
+    if user.present?
+      redirect_to settings_users_path, notice: "User with #{user.email} was successfully created."
+    else
+      redirect_to settings_users_path, alert: 'Oops, something went wrong please try again!'
+    end
+  end
+
+  def delete_user
+    @user = User.find(params[:id])
+    if @user.destroy
+      redirect_to settings_users_path, notice: 'User was successfully deleted.'
+    else
+      redirect_to settings_users_path, alert: 'Oops, something went wrong, please try again!'
+    end
   end
 
   def reset
@@ -108,8 +133,18 @@ class SettingsController < ApplicationController
 
   private
 
+  def user_params
+    params.require(:user).permit(:email, :password, :role, :visible_password)
+  end
+
   def quiz_params
     params.require(:quiz).permit(:stage_id, :question_number, :question, :answer)
+  end
+
+  def check_admin_user
+    unless current_user&.admin?
+      redirect_to "/404"
+    end
   end
 
 end

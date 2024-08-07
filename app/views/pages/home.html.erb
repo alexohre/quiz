@@ -1,9 +1,26 @@
 <div class="text-center">
-	<%= link_to "Quiz", quiz_index_path, class: "btn btn-primary btn-lg"  %>
-	<%= link_to "Quiz Master", quizmaster_path, class: "btn btn-secondary btn-lg"  %>
-	<%= link_to "Judges", judges_path, class: "btn btn-success btn-lg"  %>
-	<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-danger btn-lg"  %>
-	<%= link_to "Timer", timer_path, class: "btn btn-warning btn-lg"  %>
+	<% if current_user&.admin? %>
+		<%= link_to "Quiz", quiz_index_path, class: "btn btn-primary btn-lg"  %>
+		<%= link_to "Quiz Master", quizmaster_path, class: "btn btn-secondary btn-lg"  %>
+		<%= link_to "Judges", judges_path, class: "btn btn-success btn-lg"  %>
+		<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-danger btn-lg"  %>
+		<%= link_to "Timer", timer_path, class: "btn btn-warning btn-lg"  %>
+		<%= link_to "Record Keeper", timer_path, class: "btn btn-info btn-lg"  %>
+	<% elsif current_user&.presenter? %>
+		<%= link_to "Quiz", quiz_index_path, class: "btn btn-primary btn-lg"  %>
+		<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-danger btn-lg"  %>
+	<% elsif current_user&.time_keeper? %>
+		<%= link_to "Timer", timer_path, class: "btn btn-warning btn-lg"  %>
+	<% elsif current_user&.judges? %>
+		<%= link_to "Judges", judges_path, class: "btn btn-success btn-lg"  %>
+	<% elsif current_user&.quiz_master? %>
+		<%= link_to "Quiz Master", quizmaster_path, class: "btn btn-secondary btn-lg"  %>
+	<% elsif current_user&.recorder? %>
+		<%= link_to "Record Keeper", timer_path, class: "btn btn-info btn-lg"  %>
+		<%= link_to "Scoreboard", scoreboard_path, class: "btn btn-danger btn-lg"  %>
+	<% else %>
+		Oops...
+	<% end %>
 </div>
 <div class="card my-5">
 	<div class="card-body border border-danger border-3 border-top-0 border-bottom-0">
