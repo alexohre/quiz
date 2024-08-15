@@ -35,6 +35,9 @@
 									<td><%= user.last_sign_in_ip %></td>
 									<td><%= user.current_sign_in_ip %></td>
 									<td>
+										<button type="button" class="btn btn-outline-primary btn-sm" data-user-id="<%= user.id%>" data-user-email="<%= user.email %>" data-bs-toggle="modal" data-bs-target="#staticBackdrop11">
+											<i class='bx bx-key fs-6'></i>
+										</button>
 										<% if current_user&.admin? && current_user != user %>
 											<%= link_to "Delete", delete_user_url(user), data: {turbo_method: :delete, turbo_confirm: "Are you sure!"}, class: "btn btn-outline-danger btn-sm" %>
 										<% else %>
@@ -81,3 +84,47 @@
 		</div>
 	</div>
 </div>
+<%# password modal %>
+<div class="modal fade" id="staticBackdrop11" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="staticBackdropLabel">Update Password</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div>
+				<span class="text-primary fs-3 ms-3" id="visibleUserEmail"></span>
+			</div>
+			<%= form_with(url: update_user_password_path, method: :post, local: true, data: {turbo: false}) do |form| %>
+				<div class="modal-body">
+					<%= form.hidden_field :user_id, id: "hiddenUserId" %>
+					<div class="mb-3">
+						<%= form.label :new_password, class: "form-label" %>
+						<%= form.text_field :password, class: "form-control", placeholder: "Enter Password", required: true, minlength: 6 %>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<%= form.submit "Update", class: "btn btn-primary" %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+<script>
+	document.addEventListener("turbo:load", function () {
+		var modal = document.getElementById('staticBackdrop11');
+			modal.addEventListener('show.bs.modal', function (event) {
+				// Button that triggered the modal
+					var button = event.relatedTarget;
+					// Extract info from data-* attributes
+					var userId = button.getAttribute('data-user-id');
+					var userEmail = button.getAttribute('data-user-email');
+					// Update the hidden input value
+					var hiddenUserIdInput = document.getElementById('hiddenUserId');
+					var visibleUserEmail = document.getElementById('visibleUserEmail');
+					hiddenUserIdInput.value = userId;
+					visibleUserEmail.textContent = userEmail;
+			});
+		});
+</script>

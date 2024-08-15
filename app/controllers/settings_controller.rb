@@ -112,6 +112,29 @@ class SettingsController < ApplicationController
     end
   end
 
+  def update_user_password
+    id = params[:user_id]
+    password = params[:password]
+
+    @user = User.find_by(id: id)
+
+    if @user.nil?
+      redirect_to settings_users_path, alert: 'User not found.'
+      return
+    end
+
+    if @user.update(password: password, visible_password: password)
+      if @user == current_user
+        sign_out(@user)
+        redirect_to new_user_session_path, notice: 'Password was successfully updated. Please sign in again with your new password.'
+      else
+        redirect_to settings_users_path, notice: 'Password was successfully updated.'
+      end
+    else
+      redirect_to settings_users_path, alert: 'Oops, Something went Wrong!'
+    end
+  end
+
   def delete_user
     @user = User.find(params[:id])
     if @user.destroy

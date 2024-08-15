@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   # end
 
   post "create_user", to: "settings#create_user"
+  post "update_user_password", to: "settings#update_user_password"
   delete "delete_user/:id", to: "settings#delete_user", as: :delete_user
   get 'settings/users', to: 'settings#users'
 
