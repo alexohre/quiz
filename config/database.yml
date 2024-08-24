@@ -79,6 +79,7 @@ test:
 #
 production:
   <<: *default
-  database: coc_quiz_production
-  username: coc_quiz
-  password: <%= ENV["COC_QUIZ_DATABASE_PASSWORD"] %>
+  database: quiz_production
+  username: quiz
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
+  host: <%= ENV["DB_HOST"] %>
