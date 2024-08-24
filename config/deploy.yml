@@ -36,6 +36,15 @@ env:
 # Use a different ssh user than root
 # ssh:
 #   user: app
+
+builder:
+  remote:
+    arch: amd64
+  buildx:
+    builder: cloud-alexohre-cloud-build
+    args:
+      - RUBY_VERSION=3.2.2
+  cmd: docker buildx build --builder cloud-alexohre-cloud-build .
 # Use accessory services (secrets come from .env).
 accessories:
   db:
