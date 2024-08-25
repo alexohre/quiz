@@ -8,11 +8,11 @@ image: alexohre/quiz
 servers:
   web:
     hosts:
-      - 157.245.34.192
+      - 138.68.136.128
   #
   job:
     hosts:
-      - 157.245.34.192
+      - 138.68.136.128
     # Or something like bin/job
     cmd: bundle exec sidekiq
 
@@ -29,7 +29,7 @@ registry:
 # Remember to run `kamal env push` after making changes!
 env:
   clear:
-    DB_HOST: 157.245.34.192
+    DB_HOST: 138.68.136.128
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
@@ -38,18 +38,21 @@ env:
 #   user: app
 
 builder:
-  remote:
-    arch: amd64
-  buildx:
-    builder: cloud-alexohre-cloud-build
-    args:
-      - RUBY_VERSION=3.2.2
-  cmd: docker buildx build --builder cloud-alexohre-cloud-build .
+  # name: cloud-alexohre-cloud-build
+  args:
+    RUBY_VERSION: 3.2.2
+  # Optional secrets if needed
+  # secrets:
+  #   - GITHUB_TOKEN
+  # Optional cloud specific settings
+  # remote:
+  #   arch: amd64
+  #   host: cloud://alexohre/cloud-build_linux-amd64
 # Use accessory services (secrets come from .env).
 accessories:
   db:
     image: postgres:15
-    host: 157.245.34.192
+    host: 138.68.136.128
     port: 5432
     env:
       clear:
@@ -65,7 +68,7 @@ accessories:
       #
   redis:
     image: redis:7.0
-    host: 157.245.34.192
+    host: 138.68.136.128
     port: 6379
     cmd: "redis-server"
     # volumes:
