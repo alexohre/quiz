@@ -41,12 +41,13 @@ builder:
   # name: cloud-alexohre-cloud-build
   args:
     RUBY_VERSION: 3.2.2
-  # Optional secrets if needed
-  # secrets:
-  #   - GITHUB_TOKEN
-  # Optional cloud specific settings
-  # remote:
-  #   arch: amd64
+    # Optional secrets if needed
+    # secrets:
+    #   - GITHUB_TOKEN
+    # Optional cloud specific settings
+    # remote:
+    arch: amd64
+    multiarch: false
   #   host: cloud://alexohre/cloud-build_linux-amd64
 # Use accessory services (secrets come from .env).
 accessories:
