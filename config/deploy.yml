@@ -73,7 +73,7 @@ accessories:
   redis:
     image: redis:7.0
     host: 138.68.136.128
-    port: 6379
+    port: "6379:6379"
     cmd: "redis-server"
     # volumes:
     #   - /var/lib/redis:/data
