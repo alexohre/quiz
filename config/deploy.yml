@@ -40,7 +40,10 @@ env:
 builder:
   # name: cloud-alexohre-cloud-build
   multiarch: false
-  arch: amd64
+  # local:
+  #   arch: arm64
+  remote:
+    arch: amd64
   args:
     RUBY_VERSION: 3.2.2
     # Optional secrets if needed
