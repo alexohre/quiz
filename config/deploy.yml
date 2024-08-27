@@ -4,15 +4,18 @@ service: quiz
 # Name of the container image.
 image: alexohre/quiz
 
+ssh:
+  proxy: "138.68.136.128"
+
 # Deploy to these servers.
 servers:
   web:
     hosts:
-      - 138.68.136.128
+      - 10.106.0.2
   #
   job:
     hosts:
-      - 138.68.136.128
+      - 10.106.0.2
     # Or something like bin/job
     cmd: bundle exec sidekiq
 
@@ -29,7 +32,8 @@ registry:
 # Remember to run `kamal env push` after making changes!
 env:
   clear:
-    DB_HOST: 138.68.136.128
+    REDIS_URL: "redis://10.106.0.5:6379"
+    DB_HOST: 10.106.0.4
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
@@ -56,8 +60,8 @@ builder:
 accessories:
   db:
     image: postgres:15
-    host: 138.68.136.128
-    port: 5432
+    host: 10.106.0.4
+    port: "5432:5432"
     env:
       clear:
         POSTGRES_USER: quiz
@@ -72,7 +76,7 @@ accessories:
       #
   redis:
     image: redis:7.0
-    host: 138.68.136.128
+    host: 10.106.0.5
     port: "6379:6379"
     cmd: "redis-server"
     # volumes:
