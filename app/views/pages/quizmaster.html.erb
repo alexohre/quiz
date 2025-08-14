@@ -1,10 +1,335 @@
-<%# question section %>
-<h1 class="mb-5 text-center fw-bold">Quiz Master</h1>
-<div id="quiz_content">
-	<div class="card border-secondary mb-3 mb-5" >
-		<div class="card-header border-dark border-bottom-0 border-start bd-bm border-5 bg-quest text-center"><span class="fw-semibold text-secondary h2">Question</span> <span class="fw-bold h2">??</span></div>
-		<div class="card-body text-secondary border-start border-5 border-dark">
-			<p class="h1 text-dark text-center py-3">Awaiting Question</p>
+<!-- Enhanced Quiz Master Page -->
+<div class="quizmaster-page-container">
+	<!-- Enhanced Header Section -->
+	<div class="quizmaster-header text-center mb-5">
+		<div class="quizmaster-title-badge">
+			<i class="bx bx-crown fs-1 me-3"></i>
+			<span class="quizmaster-title">Quiz Master</span>
+		</div>
+		<p class="quizmaster-subtitle">Live Quiz Control Center</p>
+	</div>
+
+	<!-- Main Content Area -->
+	<div id="quiz_content">
+		<!-- Question Display Card -->
+		<div class="quizmaster-question-display-card">
+			<div class="quizmaster-question-header-enhanced">
+				<div class="quizmaster-question-badge-enhanced">
+					<i class="bx bx-help-circle fs-2 me-2"></i>
+					<span class="quizmaster-question-label-enhanced">Question</span>
+					<span class="quizmaster-question-number-enhanced">??</span>
+				</div>
+			</div>
+			<div class="quizmaster-question-content-enhanced">
+				<div class="quizmaster-awaiting-message">
+					<div class="quizmaster-waiting-icon-container">
+						<i class="bx bx-microphone quizmaster-waiting-icon"></i>
+					</div>
+					<h3 class="quizmaster-awaiting-text">Awaiting Question</h3>
+					<p class="quizmaster-awaiting-subtitle">Ready to host the quiz when question is selected</p>
+					<div class="quizmaster-waiting-dots">
+						<span class="quizmaster-dot"></span>
+						<span class="quizmaster-dot"></span>
+						<span class="quizmaster-dot"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Quiz Master Control Panel -->
+		<div class="quizmaster-control-panel">
+			<div class="quizmaster-control-card">
+				<div class="quizmaster-control-header">
+					<i class="bx bx-cog fs-3 me-2 text-warning"></i>
+					<h4 class="quizmaster-control-title">Quiz Master Guidelines</h4>
+				</div>
+				<div class="quizmaster-control-content">
+					<div class="row">
+						<div class="col-md-6">
+							<h5 class="quizmaster-section-title">
+								<i class="bx bx-play-circle text-success me-2"></i>
+								During Questions
+							</h5>
+							<ul class="quizmaster-guidelines-list">
+								<li><i class="bx bx-check text-success me-2"></i>Read questions clearly and slowly</li>
+								<li><i class="bx bx-check text-success me-2"></i>Allow adequate thinking time</li>
+								<li><i class="bx bx-check text-success me-2"></i>Maintain audience engagement</li>
+								<li><i class="bx bx-check text-success me-2"></i>Clarify questions if needed</li>
+							</ul>
+						</div>
+						<div class="col-md-6">
+							<h5 class="quizmaster-section-title">
+								<i class="bx bx-trophy text-warning me-2"></i>
+								Best Practices
+							</h5>
+							<ul class="quizmaster-guidelines-list">
+								<li><i class="bx bx-check text-success me-2"></i>Keep energy levels high</li>
+								<li><i class="bx bx-check text-success me-2"></i>Encourage participation</li>
+								<li><i class="bx bx-check text-success me-2"></i>Manage time effectively</li>
+								<li><i class="bx bx-check text-success me-2"></i>Celebrate correct answers</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+
+<!-- Enhanced Quiz Master Page Styles -->
+<style>
+	.quizmaster-page-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
+
+	.quizmaster-title-badge {
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #ff8c00, #ff6b00);
+		color: white;
+		padding: 1.5rem 3rem;
+		border-radius: 50px;
+		box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
+		transform: translateY(-5px);
+		animation: glow-orange 3s ease-in-out infinite alternate;
+	}
+
+	.quizmaster-title {
+		font-size: 2.5rem;
+		font-weight: 800;
+		margin: 0;
+	}
+
+	.quizmaster-subtitle {
+		font-size: 1.2rem;
+		color: #6c757d;
+		margin-top: 1rem;
+		font-weight: 500;
+	}
+
+	.quizmaster-question-display-card {
+		background: linear-gradient(135deg, #fff8f0, #ffeedd);
+		border: 3px solid #ff8c00;
+		border-radius: 25px;
+		padding: 0;
+		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+		position: relative;
+		overflow: hidden;
+		min-height: 400px;
+		margin-bottom: 2rem;
+	}
+
+	.quizmaster-question-display-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 6px;
+		background: linear-gradient(90deg, #ff8c00, #ffc107, #28a745, #007bff, #6f42c1);
+	}
+
+	.quizmaster-question-header-enhanced {
+		padding: 2rem;
+		text-align: center;
+		border-bottom: 2px solid rgba(255, 140, 0, 0.1);
+	}
+
+	.quizmaster-question-badge-enhanced {
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #ff8c00, #ff6b00);
+		color: white;
+		padding: 1rem 2rem;
+		border-radius: 50px;
+		box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+	}
+
+	.quizmaster-question-label-enhanced {
+		font-size: 1.5rem;
+		font-weight: 600;
+		margin-right: 1rem;
+	}
+
+	.quizmaster-question-number-enhanced {
+		font-size: 2rem;
+		font-weight: 800;
+		background: rgba(255, 255, 255, 0.2);
+		padding: 0.25rem 0.75rem;
+		border-radius: 15px;
+	}
+
+	.quizmaster-question-content-enhanced {
+		padding: 4rem 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 300px;
+	}
+
+	.quizmaster-awaiting-message {
+		text-align: center;
+	}
+
+	.quizmaster-waiting-icon-container {
+		margin-bottom: 2rem;
+	}
+
+	.quizmaster-waiting-icon {
+		font-size: 4rem;
+		color: #ff8c00;
+		animation: bounce 2s infinite;
+	}
+
+	.quizmaster-awaiting-text {
+		font-size: 3rem;
+		font-weight: 700;
+		color: #495057;
+		margin-bottom: 1rem;
+	}
+
+	.quizmaster-awaiting-subtitle {
+		font-size: 1.3rem;
+		color: #6c757d;
+		margin-bottom: 2rem;
+	}
+
+	.quizmaster-waiting-dots {
+		display: flex;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.quizmaster-dot {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #ff8c00;
+		animation: pulse-dot 1.5s infinite;
+	}
+
+	.quizmaster-dot:nth-child(1) {
+		animation-delay: 0s;
+	}
+
+	.quizmaster-dot:nth-child(2) {
+		animation-delay: 0.3s;
+	}
+
+	.quizmaster-dot:nth-child(3) {
+		animation-delay: 0.6s;
+	}
+
+	.quizmaster-control-panel {
+		margin-top: 2rem;
+	}
+
+	.quizmaster-control-card {
+		background: white;
+		border-radius: 20px;
+		padding: 2rem;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		border: 2px solid #e9ecef;
+	}
+
+	.quizmaster-control-header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 2rem;
+	}
+
+	.quizmaster-control-title {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #495057;
+		margin: 0;
+	}
+
+	.quizmaster-section-title {
+		font-size: 1.2rem;
+		font-weight: 600;
+		color: #495057;
+		margin-bottom: 1rem;
+		display: flex;
+		align-items: center;
+	}
+
+	.quizmaster-guidelines-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.quizmaster-guidelines-list li {
+		display: flex;
+		align-items: center;
+		padding: 0.5rem 0;
+		font-size: 1rem;
+		color: #495057;
+		border-bottom: 1px solid #f8f9fa;
+	}
+
+	.quizmaster-guidelines-list li:last-child {
+		border-bottom: none;
+	}
+
+	@keyframes glow-orange {
+		from {
+			box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
+		}
+		to {
+			box-shadow: 0 15px 40px rgba(255, 140, 0, 0.5);
+		}
+	}
+
+	@keyframes bounce {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translateY(0);
+		}
+		40% {
+			transform: translateY(-15px);
+		}
+		60% {
+			transform: translateY(-7px);
+		}
+	}
+
+	@keyframes pulse-dot {
+		0%, 100% {
+			opacity: 0.3;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 1;
+			transform: scale(1.2);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.quizmaster-title {
+			font-size: 2rem;
+		}
+
+		.quizmaster-awaiting-text {
+			font-size: 2rem;
+		}
+
+		.quizmaster-question-content-enhanced {
+			padding: 2rem 1rem;
+		}
+
+		.quizmaster-title-badge {
+			padding: 1rem 2rem;
+		}
+
+		.quizmaster-control-card {
+			padding: 1.5rem;
+		}
+
+		.quizmaster-section-title {
+			font-size: 1.1rem;
+		}
+	}
+</style>

@@ -1,10 +1,299 @@
-<%# question section %>
-<h1 class="mb-5 text-center fw-bold">Judges</h1>
-<div id="quiz_content">
-	<div class="card border-secondary mb-3 mb-5" >
-		<div class="card-header border-dark border-bottom-0 border-start bd-bm border-5 bg-quest text-center"><span class="fw-semibold text-secondary h2">Question</span> <span class="fw-bold h2">??</span></div>
-		<div class="card-body text-secondary border-start border-5 border-dark">
-			<p class="h1 text-dark text-center py-3">Awaiting Question</p>
+<!-- Enhanced Judges Page -->
+<div class="judges-page-container">
+	<!-- Enhanced Header Section -->
+	<div class="judges-header text-center mb-5">
+		<div class="judges-title-badge">
+			<i class="bx bx-user-check fs-1 me-3"></i>
+			<span class="judges-title">Judges Panel</span>
+		</div>
+		<p class="judges-subtitle">Live Quiz Evaluation</p>
+	</div>
+	<!-- Main Content Area -->
+	<div id="quiz_content">
+		<!-- Question Display Card -->
+		<div class="judges-question-display-card">
+			<div class="judges-question-header-enhanced">
+				<div class="judges-question-badge-enhanced">
+					<i class="bx bx-help-circle fs-2 me-2"></i>
+					<span class="judges-question-label-enhanced">Question</span>
+					<span class="judges-question-number-enhanced">??</span>
+				</div>
+			</div>
+			<div class="judges-question-content-enhanced">
+				<div class="judges-awaiting-message">
+					<div class="judges-waiting-icon-container">
+						<i class="bx bx-hourglass judges-waiting-icon"></i>
+					</div>
+					<h3 class="judges-awaiting-text">Awaiting Question</h3>
+					<p class="judges-awaiting-subtitle">Question will appear here when selected</p>
+					<div class="judges-waiting-dots">
+						<span class="judges-dot"></span>
+						<span class="judges-dot"></span>
+						<span class="judges-dot"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Judges Panel Info -->
+		<div class="judges-info-panel">
+			<div class="judges-info-card">
+				<div class="judges-info-header">
+					<i class="bx bx-info-circle fs-3 me-2 text-primary"></i>
+					<h4 class="judges-info-title">Judges Instructions</h4>
+				</div>
+				<div class="judges-info-content">
+					<ul class="judges-instructions-list">
+						<li><i class="bx bx-check-circle text-success me-2"></i>Monitor live quiz questions and answers</li>
+						<li><i class="bx bx-check-circle text-success me-2"></i>Evaluate participant responses</li>
+						<li><i class="bx bx-check-circle text-success me-2"></i>Ensure fair play and accuracy</li>
+						<li><i class="bx bx-check-circle text-success me-2"></i>Provide final scoring decisions</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+<!-- Enhanced Judges Page Styles -->
+<style>
+	.judges-page-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
+
+	.judges-title-badge {
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #6f42c1, #5a2d91);
+		color: white;
+		padding: 1.5rem 3rem;
+		border-radius: 50px;
+		box-shadow: 0 10px 30px rgba(111, 66, 193, 0.3);
+		transform: translateY(-5px);
+		animation: glow 3s ease-in-out infinite alternate;
+	}
+
+	.judges-title {
+		font-size: 2.5rem;
+		font-weight: 800;
+		margin: 0;
+	}
+
+	.judges-subtitle {
+		font-size: 1.2rem;
+		color: #6c757d;
+		margin-top: 1rem;
+		font-weight: 500;
+	}
+
+	.judges-question-display-card {
+		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+		border: 3px solid #6f42c1;
+		border-radius: 25px;
+		padding: 0;
+		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+		position: relative;
+		overflow: hidden;
+		min-height: 400px;
+		margin-bottom: 2rem;
+	}
+
+	.judges-question-display-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 6px;
+		background: linear-gradient(90deg, #6f42c1, #007bff, #28a745, #ffc107, #dc3545);
+	}
+
+	.judges-question-header-enhanced {
+		padding: 2rem;
+		text-align: center;
+		border-bottom: 2px solid rgba(111, 66, 193, 0.1);
+	}
+
+	.judges-question-badge-enhanced {
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #6f42c1, #5a2d91);
+		color: white;
+		padding: 1rem 2rem;
+		border-radius: 50px;
+		box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+	}
+
+	.judges-question-label-enhanced {
+		font-size: 1.5rem;
+		font-weight: 600;
+		margin-right: 1rem;
+	}
+
+	.judges-question-number-enhanced {
+		font-size: 2rem;
+		font-weight: 800;
+		background: rgba(255, 255, 255, 0.2);
+		padding: 0.25rem 0.75rem;
+		border-radius: 15px;
+	}
+
+	.judges-question-content-enhanced {
+		padding: 4rem 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 300px;
+	}
+
+	.judges-awaiting-message {
+		text-align: center;
+	}
+
+	.judges-waiting-icon-container {
+		margin-bottom: 2rem;
+	}
+
+	.judges-waiting-icon {
+		font-size: 4rem;
+		color: #6f42c1;
+		animation: bounce 2s infinite;
+	}
+
+	.judges-awaiting-text {
+		font-size: 3rem;
+		font-weight: 700;
+		color: #495057;
+		margin-bottom: 1rem;
+	}
+
+	.judges-awaiting-subtitle {
+		font-size: 1.3rem;
+		color: #6c757d;
+		margin-bottom: 2rem;
+	}
+
+	.judges-waiting-dots {
+		display: flex;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.judges-dot {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #6f42c1;
+		animation: pulse-dot 1.5s infinite;
+	}
+
+	.judges-dot:nth-child(1) {
+		animation-delay: 0s;
+	}
+
+	.judges-dot:nth-child(2) {
+		animation-delay: 0.3s;
+	}
+
+	.judges-dot:nth-child(3) {
+		animation-delay: 0.6s;
+	}
+
+	.judges-info-panel {
+		margin-top: 2rem;
+	}
+
+	.judges-info-card {
+		background: white;
+		border-radius: 20px;
+		padding: 2rem;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		border: 2px solid #e9ecef;
+	}
+
+	.judges-info-header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 1.5rem;
+	}
+
+	.judges-info-title {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #495057;
+		margin: 0;
+	}
+
+	.judges-instructions-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.judges-instructions-list li {
+		display: flex;
+		align-items: center;
+		padding: 0.75rem 0;
+		font-size: 1.1rem;
+		color: #495057;
+		border-bottom: 1px solid #f8f9fa;
+	}
+
+	.judges-instructions-list li:last-child {
+		border-bottom: none;
+	}
+
+	@keyframes glow {
+		from {
+			box-shadow: 0 10px 30px rgba(111, 66, 193, 0.3);
+		}
+		to {
+			box-shadow: 0 15px 40px rgba(111, 66, 193, 0.5);
+		}
+	}
+
+	@keyframes bounce {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translateY(0);
+		}
+		40% {
+			transform: translateY(-15px);
+		}
+		60% {
+			transform: translateY(-7px);
+		}
+	}
+
+	@keyframes pulse-dot {
+		0%, 100% {
+			opacity: 0.3;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 1;
+			transform: scale(1.2);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.judges-title {
+			font-size: 2rem;
+		}
+
+		.judges-awaiting-text {
+			font-size: 2rem;
+		}
+
+		.judges-question-content-enhanced {
+			padding: 2rem 1rem;
+		}
+
+		.judges-title-badge {
+			padding: 1rem 2rem;
+		}
+
+		.judges-info-card {
+			padding: 1.5rem;
+		}
+	}
+</style>

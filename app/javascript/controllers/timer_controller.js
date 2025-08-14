@@ -46,12 +46,18 @@ export default class extends Controller {
 		if (!this.hasCountdownTarget) return;
 
 		this.timer = duration;
+		// Display initial value
+		this.countdownTarget.textContent = this.timer;
+		
 		this.interval = setInterval(() => {
-			this.countdownTarget.textContent = this.timer;
-
-			if (--this.timer < 0) {
+			this.timer--;
+			
+			if (this.timer < 0) {
 				clearInterval(this.interval);
+				this.countdownTarget.textContent = "0";
 				this.showOverlay();
+			} else {
+				this.countdownTarget.textContent = this.timer;
 			}
 		}, 1000);
 	}

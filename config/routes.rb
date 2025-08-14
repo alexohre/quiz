@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   post 'settings/uploader', to: 'settings#uploader'
   get 'login', to: 'pages#login'
   get 'scoreboard', to: 'pages#scoreboard'
-  get 'reset', to: 'settings#reset'
+  post 'reset', to: 'settings#reset'
   get 'quizmaster', to: 'pages#quizmaster'
   get 'judges', to: 'pages#judges'
   get 'timer', to: 'pages#timer'

@@ -1,10 +1,185 @@
-<%# question section %>
-<h1 class="mb-5 text-center fw-bold">Timer</h1>
-<div id="quiz_timer_content">
-	<div class="card border-secondary mb-3 mb-5" >
-		<div class="card-header border-dark border-bottom-0 border-start bd-bm border-5 bg-quest text-center"><span class="fw-semibold text-secondary h2">Question</span> <span class="fw-bold h2">??</span></div>
-		<div class="card-body text-secondary border-start border-5 border-dark">
-			<p class="h1 text-dark text-center py-3">Awaiting Question</p>
+<!-- Enhanced Timer Page for Onstage Presentation -->
+<div class="timer-page-container">
+	<!-- Header Section -->
+	<div class="timer-header text-center mb-4">
+		<div class="timer-title-badge">
+			<i class="bx bx-timer fs-1 me-3"></i>
+			<span class="timer-title">Quiz Timer</span>
+		</div>
+	</div>
+	<!-- Main Content Area -->
+	<div id="quiz_timer_content">
+		<!-- Question Display Card -->
+		<div class="question-display-card">
+			<div class="question-header-enhanced">
+				<div class="question-badge-enhanced">
+					<i class="bx bx-help-circle fs-2 me-2"></i>
+					<span class="question-label-enhanced">Question</span>
+					<span class="question-number-enhanced">??</span>
+				</div>
+			</div>
+			<div class="question-content-enhanced">
+				<div class="awaiting-message">
+					<i class="bx bx-hourglass fs-1 mb-3 waiting-icon"></i>
+					<h2 class="awaiting-text">Awaiting Question</h2>
+					<p class="awaiting-subtitle">Ready to start the quiz session</p>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+<!-- Enhanced Timer Page Styles -->
+<style>
+	.timer-page-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
+
+	.timer-title-badge {
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		color: white;
+		padding: 1.5rem 3rem;
+		border-radius: 50px;
+		box-shadow: 0 10px 30px rgba(111, 66, 193, 0.3);
+		transform: translateY(-5px);
+		animation: glow 3s ease-in-out infinite alternate;
+	}
+
+	.timer-title {
+		font-size: 2.5rem;
+		font-weight: 800;
+		margin: 0;
+	}
+
+	.timer-subtitle {
+		font-size: 1.2rem;
+		color: #6c757d;
+		margin-top: 1rem;
+		font-weight: 500;
+	}
+
+	.question-display-card {
+		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+		border: 3px solid #6f42c1;
+		border-radius: 25px;
+		padding: 0;
+		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+		position: relative;
+		overflow: hidden;
+		min-height: 400px;
+	}
+
+	.question-display-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 6px;
+		background: linear-gradient(90deg, #6f42c1, #007bff, #28a745, #ffc107, #dc3545);
+	}
+
+	.question-header-enhanced {
+		padding: 2rem;
+		text-align: center;
+		border-bottom: 2px solid rgba(111, 66, 193, 0.1);
+	}
+
+	.question-badge-enhanced {
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		color: white;
+		padding: 1rem 2rem;
+		border-radius: 50px;
+		box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+	}
+
+	.question-label-enhanced {
+		font-size: 1.5rem;
+		font-weight: 600;
+		margin-right: 1rem;
+	}
+
+	.question-number-enhanced {
+		font-size: 2rem;
+		font-weight: 800;
+		background: rgba(255, 255, 255, 0.2);
+		padding: 0.25rem 0.75rem;
+		border-radius: 15px;
+	}
+
+	.question-content-enhanced {
+		padding: 4rem 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 300px;
+	}
+
+	.awaiting-message {
+		text-align: center;
+	}
+
+	.waiting-icon {
+		color: #6c757d;
+		animation: bounce 2s infinite;
+	}
+
+	.awaiting-text {
+		font-size: 3rem;
+		font-weight: 700;
+		color: #495057;
+		margin-bottom: 1rem;
+	}
+
+	.awaiting-subtitle {
+		font-size: 1.3rem;
+		color: #6c757d;
+		margin: 0;
+	}
+
+
+
+	@keyframes glow {
+		from {
+			box-shadow: 0 10px 30px rgba(111, 66, 193, 0.3);
+		}
+		to {
+			box-shadow: 0 15px 40px rgba(111, 66, 193, 0.5);
+		}
+	}
+
+	@keyframes bounce {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translateY(0);
+		}
+		40% {
+			transform: translateY(-10px);
+		}
+		60% {
+			transform: translateY(-5px);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.timer-title {
+			font-size: 2rem;
+		}
+
+		.awaiting-text {
+			font-size: 2rem;
+		}
+
+		.question-content-enhanced {
+			padding: 2rem 1rem;
+		}
+
+		.timer-title-badge {
+			padding: 1rem 2rem;
+		}
+	}
+</style>

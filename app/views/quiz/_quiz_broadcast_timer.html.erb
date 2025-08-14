@@ -1,10 +1,15 @@
 <% if quiz %>
 	<div id="quiz_<%= quiz.id %>">
-		<%# question section %>
-		<div class="card border-secondary mb-3 mb-5" >
-			<div class="card-header border-dark border-bottom-0 border-start bd-bm border-5 bg-quest text-center"><span class="fw-semibold text-secondary h2">Question</span> <span class="fw-bold h2"><%= quiz.formatted_question_number %></span></div>
-			<div class="card-body text-secondary border-start border-5 border-dark">
-				<p class="h1 text-dark text-center"><%= quiz.question %></p>
+		<!-- Question Section - With Corner Badge -->
+		<div class="question-container mb-4">
+			<div class="question-card position-relative">
+				<div class="question-badge-corner">
+					<i class="bx bx-help-circle me-1"></i>
+					<span class="question-label-small">Question <%= quiz.formatted_question_number %></span>
+				</div>
+				<div class="question-text">
+					<%= quiz.question %>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -12,5 +17,65 @@
 <% @timers = Setting.last %>
 <% @timer = @timers.present? ? @timers.timer : 0 %>
 <div class="timer-starter text-center" data-controller="timer" data-timer-duration="<%= @timer %>">
-	<button class="btn btn-primary px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">Start Timer</button>
+	<button class="btn btn-success px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">
+		<i class="bx bx-play me-2"></i>
+		Start Timer (<%= @timer %>s)
+	</button>
 </div>
+
+<!-- Quiz Show Page Matching Styles -->
+<style>
+	.question-container {
+		margin-bottom: 2rem;
+	}
+	
+	.question-badge-corner {
+		position: absolute;
+		top: -10px;
+		right: 20px;
+		display: inline-flex;
+		align-items: center;
+		background: linear-gradient(135deg, #007bff, #0056b3);
+		color: white;
+		padding: 0.5rem 1rem;
+		border-radius: 25px;
+		box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+		z-index: 10;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	
+	.question-label-small {
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	
+	.question-card {
+		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+		border: 3px solid #007bff;
+		border-radius: 20px;
+		padding: 3rem 2rem;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		position: relative;
+		overflow: hidden;
+	}
+	
+	.question-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 5px;
+		background: linear-gradient(90deg, #007bff, #28a745, #ffc107, #dc3545);
+	}
+	
+	.question-text {
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: #212529;
+		text-align: center;
+		line-height: 1.3;
+		margin: 0;
+	}
+</style>

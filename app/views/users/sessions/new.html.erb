@@ -1,43 +1,517 @@
-<div class="container-fluid ps-md-0">
-	<div class="row g-0">
-		<div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
-		<div class="col-md-8 col-lg-6">
-			<div class="login d-flex align-items-center py-5">
-				<div class="container">
-					<div class="row">
-						<%= render 'shared/notice' %>
-						<div class="col-md-9 col-lg-6 mx-auto shadow p-5 bg-white rounded">
-							<h3 class=" mb-4">Welcome back!</h3>
-							<!-- Sign In Form -->
-							<%= form_for(resource, as: resource_name, url: session_path(resource_name), data: {turbo: false}) do |f| %>
-								<div class="form-floating mb-3">
-									<%= f.email_field :email, autocomplete: "email", id: "floatingInput", placeholder: "name@example.com", class: "form-control"  %>
-									<%# <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"> %>
-									<label for="floatingInput">Email address</label>
-								</div>
-								<div class="form-floating mb-3">
-									<%= f.password_field :password, autocomplete: "current-password", id: "floatingPassword", class: "form-control", placeholder: "Password" %>
-									<%# <input type="password" class="form-control" id="floatingPassword" placeholder="Password"> %>
-									<label for="floatingPassword">Password</label>
-								</div>
-								<% if devise_mapping.rememberable? %>
-									<div class="form-check mb-3">
-										<%= f.check_box :remember_me, class: "form-check-input", id: "rememberMeCheck" %>
-										<%= f.label :remember_me, class: "form-check-label", for: "rememberMeCheck" %>
-									</div>
-								<% end %>
-								<div class="d-grid">
-									<button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
-									<div class="text-center">
-										<a class="small" href="#">Forgot password?</a>
-									</div>
+<!-- Enhanced Devise Login Page -->
+<div class="login-page-container">
+	<div class="login-content-wrapper">
+		<!-- Left Side - Branding -->
+		<div class="login-branding-section">
+			<div class="login-branding-content">
+				<div class="login-logo-container">
+					<div class="login-logo-badge">
+						<i class="bx bx-brain login-logo-icon"></i>
+					</div>
+					<h1 class="login-brand-title">Quiz Master</h1>
+					<p class="login-brand-subtitle">Interactive Live Quiz Platform</p>
+				</div>
+				<div class="login-features">
+					<div class="login-feature-item">
+						<i class="bx bx-trophy login-feature-icon"></i>
+						<span class="login-feature-text">Live Quiz Events</span>
+					</div>
+					<div class="login-feature-item">
+						<i class="bx bx-group login-feature-icon"></i>
+						<span class="login-feature-text">Audience Participation</span>
+					</div>
+					<div class="login-feature-item">
+						<i class="bx bx-timer login-feature-icon"></i>
+						<span class="login-feature-text">Real-time Control</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Right Side - Login Form -->
+		<div class="login-form-section">
+			<div class="login-form-container">
+				<%= render 'shared/notice' %>
+				<div class="login-form-card">
+					<!-- Welcome Header -->
+					<div class="login-header">
+						<div class="login-welcome-badge">
+							<i class="bx bx-user-circle login-welcome-icon"></i>
+						</div>
+						<h2 class="login-welcome-title">Welcome Back!</h2>
+						<p class="login-welcome-subtitle">Sign in to access your quiz dashboard</p>
+					</div>
+					<!-- Enhanced Devise Sign In Form -->
+					<%= form_for(resource, as: resource_name, url: session_path(resource_name), data: {turbo: false}, html: {class: "login-form"}) do |f| %>
+						<div class="login-input-group">
+							<div class="login-input-wrapper">
+								<i class="bx bx-envelope login-input-icon"></i>
+								<%= f.email_field :email, autocomplete: "email", id: "emailInput", placeholder: "Enter your email", class: "login-input", required: true %>
+							</div>
+						</div>
+						<div class="login-input-group">
+							<div class="login-input-wrapper">
+								<i class="bx bx-lock-alt login-input-icon"></i>
+								<%= f.password_field :password, autocomplete: "current-password", id: "passwordInput", placeholder: "Enter your password", class: "login-input", required: true %>
+								<button type="button" class="login-password-toggle" onclick="togglePassword()">
+									<i class="bx bx-hide" id="passwordToggleIcon"></i>
+								</button>
+							</div>
+						</div>
+						<div class="login-options">
+							<% if devise_mapping.rememberable? %>
+								<div class="login-remember">
+									<%= f.check_box :remember_me, class: "login-checkbox", id: "rememberMe" %>
+									<%= f.label :remember_me, class: "login-checkbox-label", for: "rememberMe" do %>
+										<span class="login-checkbox-custom"></span>
+										Remember me
+									<% end %>
 								</div>
 							<% end %>
+							<a href="#" class="login-forgot-link">Forgot password?</a>
 						</div>
-					</div>
+						<button type="submit" class="login-submit-btn">
+							<i class="bx bx-log-in me-2"></i>
+							Sign In
+						</button>
+					<% end %>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<%#= render "users/shared/links" %>
+<!-- Enhanced Login Page Styles -->
+<style>
+	.login-page-container {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		padding: 1rem;
+	}
+
+	.login-content-wrapper {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		max-width: 1200px;
+		width: 100%;
+		background: white;
+		border-radius: 25px;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+		overflow: hidden;
+		min-height: 600px;
+	}
+
+	.login-branding-section {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 3rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.login-branding-section::before {
+		content: '';
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 200%;
+		height: 200%;
+		background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+		animation: float 6s ease-in-out infinite;
+	}
+
+	.login-branding-content {
+		text-align: center;
+		z-index: 2;
+		position: relative;
+	}
+
+	.login-logo-container {
+		margin-bottom: 3rem;
+	}
+
+	.login-logo-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 80px;
+		height: 80px;
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 50%;
+		margin-bottom: 1.5rem;
+		backdrop-filter: blur(10px);
+		border: 2px solid rgba(255, 255, 255, 0.3);
+	}
+
+	.login-logo-icon {
+		font-size: 2.5rem;
+		color: white;
+	}
+
+	.login-brand-title {
+		font-size: 3rem;
+		font-weight: 800;
+		margin-bottom: 0.5rem;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	}
+
+	.login-brand-subtitle {
+		font-size: 1.2rem;
+		opacity: 0.9;
+		margin-bottom: 0;
+	}
+
+	.login-features {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.login-feature-item {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 15px;
+		backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	.login-feature-icon {
+		font-size: 1.5rem;
+		color: #ffc107;
+	}
+
+	.login-feature-text {
+		font-size: 1.1rem;
+		font-weight: 500;
+	}
+
+	.login-form-section {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 3rem;
+		background: #f8f9fa;
+	}
+
+	.login-form-container {
+		width: 100%;
+		max-width: 400px;
+	}
+
+	.login-form-card {
+		background: white;
+		border-radius: 20px;
+		padding: 2.5rem;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		border: 1px solid #e9ecef;
+	}
+
+	.login-header {
+		text-align: center;
+		margin-bottom: 2.5rem;
+	}
+
+	.login-welcome-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 60px;
+		height: 60px;
+		background: linear-gradient(135deg, #007bff, #0056b3);
+		border-radius: 50%;
+		margin-bottom: 1rem;
+		box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+	}
+
+	.login-welcome-icon {
+		font-size: 1.8rem;
+		color: white;
+	}
+
+	.login-welcome-title {
+		font-size: 2rem;
+		font-weight: 700;
+		color: #212529;
+		margin-bottom: 0.5rem;
+	}
+
+	.login-welcome-subtitle {
+		color: #6c757d;
+		font-size: 1rem;
+		margin-bottom: 0;
+	}
+
+	.login-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.login-input-group {
+		position: relative;
+	}
+
+	.login-input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.login-input-icon {
+		position: absolute;
+		left: 1rem;
+		font-size: 1.2rem;
+		color: #6c757d;
+		z-index: 2;
+	}
+
+	.login-input {
+		width: 100%;
+		padding: 1rem 1rem 1rem 3rem;
+		border: 2px solid #e9ecef;
+		border-radius: 15px;
+		font-size: 1rem;
+		background: #f8f9fa;
+		transition: all 0.3s ease;
+		outline: none;
+	}
+
+	.login-input:focus {
+		border-color: #007bff;
+		background: white;
+		box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+	}
+
+	.login-input:focus + .login-input-label {
+		color: #007bff;
+		transform: translateY(-1.5rem) scale(0.85);
+	}
+
+	.login-input-label {
+		position: absolute;
+		left: 3rem;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #6c757d;
+		font-size: 1rem;
+		pointer-events: none;
+		transition: all 0.3s ease;
+		background: white;
+		padding: 0 0.5rem;
+	}
+
+	.login-password-toggle {
+		position: absolute;
+		right: 1rem;
+		background: none;
+		border: none;
+		color: #6c757d;
+		font-size: 1.2rem;
+		cursor: pointer;
+		padding: 0.5rem;
+		border-radius: 50%;
+		transition: all 0.3s ease;
+	}
+
+	.login-password-toggle:hover {
+		background: #f8f9fa;
+		color: #007bff;
+	}
+
+	.login-options {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 1rem 0;
+	}
+
+	.login-remember {
+		display: flex;
+		align-items: center;
+	}
+
+	.login-checkbox {
+		display: none;
+	}
+
+	.login-checkbox-label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		cursor: pointer;
+		font-size: 0.9rem;
+		color: #495057;
+	}
+
+	.login-checkbox-custom {
+		width: 18px;
+		height: 18px;
+		border: 2px solid #dee2e6;
+		border-radius: 4px;
+		position: relative;
+		transition: all 0.3s ease;
+	}
+
+	.login-checkbox:checked + .login-checkbox-label .login-checkbox-custom {
+		background: #007bff;
+		border-color: #007bff;
+	}
+
+	.login-checkbox:checked + .login-checkbox-label .login-checkbox-custom::after {
+		content: '✓';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		color: white;
+		font-size: 12px;
+		font-weight: bold;
+	}
+
+	.login-forgot-link {
+		color: #007bff;
+		text-decoration: none;
+		font-size: 0.9rem;
+		transition: color 0.3s ease;
+	}
+
+	.login-forgot-link:hover {
+		color: #0056b3;
+		text-decoration: underline;
+	}
+
+	.login-submit-btn {
+		width: 100%;
+		padding: 1rem;
+		background: linear-gradient(135deg, #007bff, #0056b3);
+		color: white;
+		border: none;
+		border-radius: 15px;
+		font-size: 1.1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+	}
+
+	.login-submit-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+	}
+
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0px) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-20px) rotate(180deg);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.login-content-wrapper {
+			grid-template-columns: 1fr;
+			max-width: 500px;
+		}
+
+		.login-branding-section {
+			padding: 2rem;
+			min-height: 300px;
+		}
+
+		.login-brand-title {
+			font-size: 2rem;
+		}
+
+		.login-features {
+			flex-direction: row;
+			justify-content: space-around;
+			gap: 1rem;
+		}
+
+		.login-feature-item {
+			flex-direction: column;
+			text-align: center;
+			padding: 0.75rem;
+			gap: 0.5rem;
+		}
+
+		.login-feature-text {
+			font-size: 0.9rem;
+		}
+
+		.login-form-section {
+			padding: 2rem 1rem;
+		}
+
+		.login-form-card {
+			padding: 2rem;
+		}
+
+		.login-options {
+			flex-direction: column;
+			gap: 1rem;
+			align-items: flex-start;
+		}
+	}
+</style>
+<script>
+	function togglePassword() {
+		const passwordInput = document.getElementById('passwordInput');
+		const toggleIcon = document.getElementById('passwordToggleIcon');
+
+		if (passwordInput.type === 'password') {
+			passwordInput.type = 'text';
+			toggleIcon.className = 'bx bx-show';
+		} else {
+			passwordInput.type = 'password';
+			toggleIcon.className = 'bx bx-hide';
+		}
+	}
+
+	// Enhanced input label animations (only if labels exist)
+	document.addEventListener('DOMContentLoaded', function() {
+		const inputs = document.querySelectorAll('.login-input');
+
+		inputs.forEach(input => {
+			const label = input.parentElement.querySelector('.login-input-label');
+			
+			// Only add animations if a label actually exists
+			if (label) {
+				// Check if input has value on load
+				if (input.value) {
+					label.style.transform = 'translateY(-1.5rem) scale(0.85)';
+					label.style.color = '#007bff';
+				}
+
+				input.addEventListener('input', function() {
+					if (this.value) {
+						label.style.transform = 'translateY(-1.5rem) scale(0.85)';
+						label.style.color = '#007bff';
+					} else {
+						label.style.transform = 'translateY(-50%) scale(1)';
+						label.style.color = '#6c757d';
+					}
+				});
+
+				input.addEventListener('blur', function() {
+					if (!this.value) {
+						label.style.transform = 'translateY(-50%) scale(1)';
+						label.style.color = '#6c757d';
+					}
+				});
+			}
+		});
+	});
+</script>

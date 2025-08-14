@@ -9,4 +9,4 @@
 #   end
 
 # Setting.create!(timer: 0)
-User.create!(email: "hello@test.com", password: 123456, visible_password: 123456, role: 5)
+User.create!(email: "admin@quiz.com", password: 123456, visible_password: 123456, role: 5)

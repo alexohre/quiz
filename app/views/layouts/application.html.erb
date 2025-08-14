@@ -14,15 +14,136 @@
 	<style>
 		.bg-image {
 		background-image: url(<%=asset_path("background.jpg")%>);
-		background-size: cover; /* Adjust the background-size as needed */
-		background-position: center; /* Center the image */
-		background-repeat: no-repeat; /* Prevent the image from repeating */
-		height: 100vh; /* Ensure it covers the full viewport height */
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed; /* Keeps background fixed to viewport */
+		min-height: 100vh; /* Minimum height to cover viewport */
+		}
+
+		html, body {
+			min-height: 100vh;
+			margin: 0;
+			padding: 0;
+		}
+		
+		/* Enhanced Logo Styles */
+		.logo-enhanced {
+			text-decoration: none !important;
+			transition: all 0.3s ease;
+		}
+		
+		.logo-enhanced:hover {
+			transform: scale(1.05);
+		}
+		
+		.logo-container {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+		
+		.logo-icon {
+			font-size: 2.5rem;
+			color: #007bff;
+			background: linear-gradient(135deg, #007bff, #0056b3);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+			animation: pulse 2s infinite;
+		}
+		
+		.logo-text {
+			display: flex;
+			align-items: baseline;
+			gap: 0.1rem;
+		}
+		
+		.logo-main {
+			font-size: 2rem;
+			font-weight: 800;
+			color: #212529;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+			letter-spacing: -0.05em;
+		}
+		
+		.logo-year {
+			font-size: 1.2rem;
+			font-weight: 700;
+			color: #dc3545 !important;
+			background: rgba(220, 53, 69, 0.1);
+			padding: 0.2rem 0.4rem;
+			border-radius: 8px;
+			box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+			border: 1px solid rgba(220, 53, 69, 0.3);
+		}
+		
+		/* Mobile Logo Styles */
+		.logo-container-mobile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+		
+		.logo-icon-mobile {
+			font-size: 2rem;
+			color: #007bff;
+			background: linear-gradient(135deg, #007bff, #0056b3);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+		
+		.logo-text-mobile {
+			display: flex;
+			align-items: baseline;
+			gap: 0.1rem;
+		}
+		
+		.logo-main-mobile {
+			font-size: 1.8rem;
+			font-weight: 800;
+			color: #212529;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+			letter-spacing: -0.05em;
+		}
+		
+		.logo-year-mobile {
+			font-size: 1rem;
+			font-weight: 700;
+			color: #dc3545 !important;
+			background: rgba(220, 53, 69, 0.1);
+			padding: 0.1rem 0.3rem;
+			border-radius: 6px;
+			border: 1px solid rgba(220, 53, 69, 0.3);
+		}
+		
+		@keyframes pulse {
+			0%, 100% {
+				transform: scale(1);
+			}
+			50% {
+				transform: scale(1.1);
+			}
+		}
+		
+		@media (max-width: 768px) {
+			.logo-main {
+				font-size: 1.8rem;
+			}
+			
+			.logo-year {
+				font-size: 1rem;
+			}
+			
+			.logo-icon {
+				font-size: 2rem;
+			}
 		}
 	</style>
 	<body class="bg-image">
 		<%= render 'shared/nav' %>
-		<div class="container ">
+		<div class="container pt-2 pb-5">
 			<%= render 'shared/notice' %>
 			<%= yield %>
 			<div class="position-fixed bottom-0 end-0 mb-3 me-5 ">

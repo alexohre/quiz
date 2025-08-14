@@ -1,12 +1,28 @@
 <nav class="navbar sticky-top mb-5" style="background-color: #e3f2fd;">
 	<div class="container">
-		<a class="navbar-brand" href="/"><span class="h2 fw-bold">CBQ<sup><span class="text-danger">24</span></sup></span></a>
+		<a class="navbar-brand logo-enhanced" href="/">
+			<div class="logo-container">
+				<i class="bx bx-brain logo-icon"></i>
+				<span class="logo-text">
+					<span class="logo-main">CBQ</span>
+					<sup class="logo-year">25</sup>
+				</span>
+			</div>
+		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 			<div class="offcanvas-header">
-				<h5 class="offcanvas-title" id="offcanvasNavbarLabel"><span class="h2 fw-bold">CBQ<sup><span class="text-danger">24</span></sup></span></h5>
+				<h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+					<div class="logo-container-mobile">
+						<i class="bx bx-brain logo-icon-mobile"></i>
+						<span class="logo-text-mobile">
+							<span class="logo-main-mobile">CBQ</span>
+							<sup class="logo-year-mobile">25</sup>
+						</span>
+					</div>
+				</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			</div>
 			<h5 class=" ms-2"><i class='bx bx-user'></i> Role: <span class="badge bg-success rounded-pill"><%= current_user.role.capitalize %></span></h5>

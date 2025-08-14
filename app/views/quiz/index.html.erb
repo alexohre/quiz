@@ -1,29 +1,195 @@
-<div class="d-flex justify-content-center bg-white pt-3 border-bottom border-primary mb-5">
-	<ul class="nav nav-pills text-center mb-3" id="pills-tab" role="tablist">
-		<% if @stages.present? %>
-			<% @stages.each do |stage| %>
-				<li class="nav-item px-2" role="presentation">
-					<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "nav-link fw-bold px-5 #{stage.active? ? 'active' : ''}" %>
-				</li>
-			<% end %>
-		<% else %>
-			<h3>No Stages Yet!</h3>
-		<% end %>
-	</ul>
-</div>
-<%#  %>
-<div class="card rounded">
-	<div class="card-body border border-danger border-4 border-top-0 border-bottom-0">
-		<div class="tab-content" id="pills-tabContent">
-			<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-				<% if @quizzes.present? %>
-					<% @quizzes.each do |quiz| %>
-						<a class="btn btn-<%= quiz.answered? ? 'outline-secondary disabled' : 'primary' %> btn-lg fw-bold m-2"  href="<%= quiz_path(quiz)%>" role="button"><%= quiz.formatted_question_number %></a>
-					<% end %>
-				<% else %>
-					<p class="text-center my-5 h1"><i class='bx bx-error'></i> Oops, Nothing here!</p>
-				<% end %>
+<!-- Header Section with Title and Progress -->
+<div class="mb-4">
+	<%# <div class="text-center mb-4">
+		<h1 class="display-6 fw-bold text-primary mb-2">
+			<i class="bx bx-brain fs-1 me-2"></i>
+			Quiz Dashboard
+		</h1>
+		<p class="lead text-muted">Select a stage and choose your questions</p>
+	</div> %>
+	<% if @stages.present? && @quizzes.present? %>
+		<% total_questions = @quizzes.count %>
+		<% answered_questions = @quizzes.select(&:answered?).count %>
+		<% progress_percentage = total_questions > 0 ? (answered_questions.to_f / total_questions * 100).round : 0 %>
+		<!-- Progress Overview -->
+		<div class="row g-2 mb-3">
+			<div class="col-6 col-md-3">
+				<div class="card bg-primary text-white compact-card">
+					<div class="card-body text-center py-2 px-2">
+						<i class="bx bx-list-check fs-5 mb-1"></i>
+						<h6 class="fw-bold mb-0"><%= total_questions %></h6>
+						<small class="fs-7">Total</small>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3">
+				<div class="card bg-success text-white compact-card">
+					<div class="card-body text-center py-2 px-2">
+						<i class="bx bx-check-circle fs-5 mb-1"></i>
+						<h6 class="fw-bold mb-0"><%= answered_questions %></h6>
+						<small class="fs-7">Done</small>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3">
+				<div class="card bg-warning text-white compact-card">
+					<div class="card-body text-center py-2 px-2">
+						<i class="bx bx-time fs-5 mb-1"></i>
+						<h6 class="fw-bold mb-0"><%= total_questions - answered_questions %></h6>
+						<small class="fs-7">Left</small>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-md-3">
+				<div class="card bg-info text-white compact-card">
+					<div class="card-body text-center py-2 px-2">
+						<i class="bx bx-trending-up fs-5 mb-1"></i>
+						<h6 class="fw-bold mb-0"><%= progress_percentage %>%</h6>
+						<small class="fs-7">Progress</small>
+					</div>
+				</div>
 			</div>
 		</div>
+		<!-- Progress Bar -->
+		<div class="mb-3">
+			<div class="d-flex justify-content-between align-items-center mb-1">
+				<small class="fw-bold text-muted">Overall Progress</small>
+				<span class="badge bg-primary"><%= progress_percentage %>%</span>
+			</div>
+			<div class="progress" style="height: 6px;">
+				<div class="progress-bar bg-gradient" role="progressbar" style="width: <%= progress_percentage %>%" aria-valuenow="<%= progress_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>
+		</div>
+	<% end %>
+</div>
+<!-- Stage Selection -->
+<div class="card shadow-sm mb-3">
+	<div class="card-header bg-light">
+		<h5 class="card-title mb-0">
+			<i class="bx bx-layer fs-5 me-2"></i>
+			Select Stage
+		</h5>
+	</div>
+	<div class="card-body">
+		<% if @stages.present? %>
+			<div class="d-flex flex-wrap gap-2 justify-content-center">
+				<% @stages.each do |stage| %>
+					<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "btn #{ stage.active? ? 'btn-primary' : 'btn-outline-primary' } btn-lg fw-bold px-4 py-2 stage-btn", data: { stage_id: stage.id } %>
+				<% end %>
+			</div>
+		<% else %>
+			<div class="text-center py-4">
+				<i class="bx bx-error-circle fs-1 text-warning mb-3"></i>
+				<h4 class="text-muted">No Stages Available</h4>
+				<p class="text-muted">Please contact an administrator to set up quiz stages.</p>
+			</div>
+		<% end %>
 	</div>
 </div>
+<!-- Questions Grid -->
+<div class="card shadow-sm">
+	<div class="card-header bg-light">
+		<h5 class="card-title mb-0">
+			<i class="bx bx-question-mark fs-5 me-2"></i>
+			Questions
+			<% if @stages.present? %>
+				<% active_stage = @stages.find(&:active?) %>
+				<% if active_stage %>
+					<span class="badge bg-primary ms-2"><%= active_stage.name %></span>
+				<% end %>
+			<% end %>
+		</h5>
+	</div>
+	<div class="card-body">
+		<% if @quizzes.present? %>
+			<div class="row g-2">
+				<% @quizzes.each do |quiz| %>
+					<div class="col-2 col-sm-2 col-md-1 col-lg-1 col-xl-1">
+						<% if quiz.answered? %>
+							<div class="btn btn-outline-success fw-bold w-100 position-relative quiz-btn-completed quiz-btn-compact" style="cursor: not-allowed;">
+								<span class="fs-6"><%= quiz.formatted_question_number %></span>
+								<i class="bx bx-check-circle position-absolute top-0 start-100 translate-middle text-success bg-white rounded-circle" style="font-size: 0.6rem;"></i>
+							</div>
+						<% else %>
+							<a href="<%= quiz_path(quiz) %>" class="btn btn-primary fw-bold w-100 quiz-btn-available quiz-btn-compact">
+								<span class="fs-6"><%= quiz.formatted_question_number %></span>
+							</a>
+						<% end %>
+					</div>
+				<% end %>
+			</div>
+		<% else %>
+			<div class="text-center py-5">
+				<i class="bx bx-search fs-1 text-muted mb-3"></i>
+				<h4 class="text-muted">No Questions Available</h4>
+				<p class="text-muted">Please select a stage or contact an administrator to upload questions.</p>
+			</div>
+		<% end %>
+	</div>
+</div>
+<!-- Custom Styles -->
+<style>
+	.compact-card {
+		border-radius: 10px;
+		min-height: auto;
+	}
+
+	.fs-7 {
+		font-size: 0.75rem;
+	}
+
+	.stage-btn {
+		transition: all 0.3s ease;
+		border-radius: 25px;
+	}
+
+	.stage-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+	}
+
+	.quiz-btn-compact {
+		padding: 0.15rem;
+		font-size: 0.75rem;
+		min-height: 1.75rem;
+		line-height: 1.1;
+		font-weight: 700 !important;
+	}
+
+	.quiz-btn-available {
+		transition: all 0.3s ease;
+		border-radius: 6px;
+		aspect-ratio: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.quiz-btn-available:hover {
+		transform: scale(1.05);
+		box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+	}
+
+	.quiz-btn-completed {
+		aspect-ratio: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 6px;
+		opacity: 0.7;
+	}
+
+	.progress-bar {
+		transition: width 0.6s ease;
+	}
+
+	.card {
+		border: none;
+		border-radius: 15px;
+	}
+
+	.card-header {
+		border-radius: 15px 15px 0 0 !important;
+		border-bottom: 1px solid #dee2e6;
+	}
+</style>

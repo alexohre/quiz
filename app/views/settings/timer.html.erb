@@ -3,17 +3,292 @@
 		<%= render 'shared/side_nav' %>
 	</div>
 	<div class="col-lg-9">
-		<h1>Timer Page</h1>
-		<div class="card shadow">
-			<div class="card-body">
-				<%= form_with url: settings_timer_path, method: :post do |f| %>
-					<div class="mb-3">
-						<label for="" class="form-label">Timer <span class="text-danger text-sm">( in seconds)</span></label>
-						<%= f.number_field :timer, value: @timer, class: "form-control" %>
+		<!-- Enhanced Timer Settings Header -->
+		<div class="timer-settings-header mb-4">
+			<div class="header-badge">
+				<i class="bx bx-timer fs-2 me-3"></i>
+				<div>
+					<h1 class="mb-0">Timer Settings</h1>
+					<p class="mb-0 text-muted">Configure quiz timer duration</p>
+				</div>
+			</div>
+		</div>
+		<!-- Enhanced Timer Configuration Card -->
+		<div class="timer-config-card">
+			<div class="card-header-enhanced">
+				<i class="bx bx-cog fs-4 me-2"></i>
+				<span class="fs-5 fw-bold">Timer Configuration</span>
+			</div>
+			<div class="card-body-enhanced">
+				<%= form_with url: settings_timer_path, method: :post, class: "timer-form" do |f| %>
+					<div class="timer-input-section">
+						<div class="input-group-enhanced">
+							<label for="timer_field" class="form-label-enhanced">
+								<i class="bx bx-time fs-5 me-2"></i>
+								Timer Duration
+								<span class="duration-note">in seconds</span>
+							</label>
+							<div class="input-wrapper">
+								<%= f.number_field :timer, 
+										value: @timer, 
+										class: "form-control-enhanced", 
+										id: "timer_field",
+										min: 1,
+										max: 3600,
+										placeholder: "Enter duration..." %>
+								<div class="input-suffix">
+									<span class="seconds-label">sec</span>
+								</div>
+							</div>
+							<div class="timer-preview">
+								<small class="text-muted">
+									<i class="bx bx-info-circle me-1"></i>
+									Current: <span class="current-timer"><%= @timer || 0 %></span> seconds
+									(<span class="timer-minutes"><%= (@timer || 0) / 60.0 %></span> minutes)
+								</small>
+							</div>
+						</div>
 					</div>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<div class="form-actions">
+						<button type="submit" class="btn-submit-enhanced">
+							<i class="bx bx-save fs-5 me-2"></i>
+							<span>Save Timer Settings</span>
+						</button>
+					</div>
 				<% end %>
 			</div>
 		</div>
 	</div>
 </div>
+<!-- Enhanced Timer Settings Styles -->
+<style>
+	.timer-settings-header {
+		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+		border-radius: 15px;
+		padding: 2rem;
+		border: 2px solid #dee2e6;
+	}
+
+	.header-badge {
+		display: flex;
+		align-items: center;
+		color: #495057;
+	}
+
+	.header-badge i {
+		color: #6f42c1;
+	}
+
+	.timer-config-card {
+		background: white;
+		border-radius: 20px;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		border: 2px solid #e9ecef;
+		overflow: hidden;
+	}
+
+	.card-header-enhanced {
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		color: white;
+		padding: 1.5rem 2rem;
+		display: flex;
+		align-items: center;
+		border-bottom: none;
+	}
+
+	.card-body-enhanced {
+		padding: 2.5rem;
+	}
+
+	.timer-input-section {
+		background: #f8f9fa;
+		border-radius: 15px;
+		padding: 2rem;
+		border: 2px solid #e9ecef;
+	}
+
+	.form-label-enhanced {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #495057;
+		display: flex;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.duration-note {
+		font-size: 0.9rem;
+		color: #6c757d;
+		font-weight: 400;
+		margin-left: auto;
+		background: #e9ecef;
+		padding: 0.25rem 0.5rem;
+		border-radius: 8px;
+	}
+
+	.input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.form-control-enhanced {
+		border: 2px solid #dee2e6;
+		border-radius: 12px;
+		padding: 1rem 4rem 1rem 1rem;
+		font-size: 1.2rem;
+		font-weight: 600;
+		background: white;
+		transition: all 0.3s ease;
+		width: 100%;
+	}
+
+	.form-control-enhanced:focus {
+		border-color: #6f42c1;
+		box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+		outline: none;
+	}
+
+	.input-suffix {
+		position: absolute;
+		right: 1rem;
+		pointer-events: none;
+	}
+
+	.seconds-label {
+		font-size: 1rem;
+		font-weight: 600;
+		color: #6c757d;
+		background: #f8f9fa;
+		padding: 0.25rem 0.5rem;
+		border-radius: 6px;
+	}
+
+	.timer-preview {
+		margin-top: 0.75rem;
+	}
+
+	.timer-presets {
+		border-top: 2px solid #e9ecef;
+		padding-top: 1.5rem;
+	}
+
+	.preset-label {
+		font-weight: 600;
+		color: #495057;
+		margin-bottom: 1rem;
+		display: block;
+	}
+
+	.preset-buttons {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.preset-btn {
+		background: white;
+		border: 2px solid #dee2e6;
+		border-radius: 10px;
+		padding: 0.75rem 1.25rem;
+		font-weight: 600;
+		color: #495057;
+		transition: all 0.3s ease;
+		cursor: pointer;
+	}
+
+	.preset-btn:hover {
+		border-color: #6f42c1;
+		color: #6f42c1;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+	}
+
+	.preset-btn.active {
+		background: #6f42c1;
+		border-color: #6f42c1;
+		color: white;
+	}
+
+	.form-actions {
+		margin-top: 2rem;
+		text-align: center;
+	}
+
+	.btn-submit-enhanced {
+		background: linear-gradient(135deg, #28a745, #20c997);
+		color: white;
+		border: none;
+		border-radius: 15px;
+		padding: 1rem 2.5rem;
+		font-size: 1.1rem;
+		font-weight: 600;
+		display: inline-flex;
+		align-items: center;
+		transition: all 0.3s ease;
+		box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+	}
+
+	.btn-submit-enhanced:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+	}
+
+	@media (max-width: 768px) {
+		.timer-settings-header {
+			padding: 1.5rem;
+		}
+
+		.card-body-enhanced {
+			padding: 1.5rem;
+		}
+
+		.timer-input-section {
+			padding: 1.5rem;
+		}
+
+		.preset-buttons {
+			justify-content: center;
+		}
+	}
+</style>
+<script>
+	// Timer preset functionality
+	document.addEventListener('DOMContentLoaded', function() {
+		const presetButtons = document.querySelectorAll('.preset-btn');
+		const timerField = document.getElementById('timer_field');
+		const currentTimerSpan = document.querySelector('.current-timer');
+		const timerMinutesSpan = document.querySelector('.timer-minutes');
+
+		presetButtons.forEach(button => {
+			button.addEventListener('click', function() {
+				const seconds = parseInt(this.dataset.seconds);
+				timerField.value = seconds;
+
+				// Update preview
+				currentTimerSpan.textContent = seconds;
+				timerMinutesSpan.textContent = (seconds / 60.0).toFixed(1);
+
+				// Update active state
+				presetButtons.forEach(btn => btn.classList.remove('active'));
+				this.classList.add('active');
+			});
+		});
+
+		// Update preview on manual input
+		timerField.addEventListener('input', function() {
+			const seconds = parseInt(this.value) || 0;
+			currentTimerSpan.textContent = seconds;
+			timerMinutesSpan.textContent = (seconds / 60.0).toFixed(1);
+
+			// Update preset button states
+			presetButtons.forEach(btn => {
+				if (parseInt(btn.dataset.seconds) === seconds) {
+					btn.classList.add('active');
+				} else {
+					btn.classList.remove('active');
+				}
+			});
+		});
+	});
+</script>
