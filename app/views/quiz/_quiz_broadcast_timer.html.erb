@@ -16,11 +16,29 @@
 <% end %>
 <% @timers = Setting.last %>
 <% @timer = @timers.present? ? @timers.timer : 0 %>
+<% @auto_start = @timers.present? ? @timers.auto_start : false %>
+
 <div class="timer-starter text-center" data-controller="timer" data-timer-duration="<%= @timer %>">
-	<button class="btn btn-success px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">
-		<i class="bx bx-play me-2"></i>
-		Start Timer (<%= @timer %>s)
-	</button>
+	<% if @auto_start %>
+		<!-- Auto-start enabled notification -->
+		<div class="auto-start-notification mb-3">
+			<div class="auto-start-card">
+				<div class="auto-start-icon">
+					<i class="bx bx-play-circle"></i>
+				</div>
+				<div class="auto-start-content">
+					<h5 class="auto-start-title">Auto-Start Enabled</h5>
+					<p class="auto-start-text">Timer will start automatically when a question is selected (<%= @timer %>s)</p>
+				</div>
+			</div>
+		</div>
+	<% else %>
+		<!-- Manual start button -->
+		<button class="btn btn-success px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">
+			<i class="bx bx-play me-2"></i>
+			Start Timer (<%= @timer %>s)
+		</button>
+	<% end %>
 </div>
 
 <!-- Quiz Show Page Matching Styles -->
@@ -77,5 +95,107 @@
 		text-align: center;
 		line-height: 1.3;
 		margin: 0;
+	}
+	
+	/* Auto-start notification styles */
+	.auto-start-notification {
+		max-width: 500px;
+		margin: 0 auto;
+	}
+	
+	.auto-start-card {
+		background: linear-gradient(135deg, #28a745, #20c997);
+		color: white;
+		border-radius: 20px;
+		padding: 2rem;
+		box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		position: relative;
+		overflow: hidden;
+		animation: pulse-glow 3s ease-in-out infinite alternate;
+	}
+	
+	.auto-start-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: linear-gradient(90deg, #20c997, #17a2b8, #6f42c1, #e83e8c, #fd7e14);
+		animation: shimmer 2s linear infinite;
+	}
+	
+	.auto-start-icon {
+		flex-shrink: 0;
+		width: 60px;
+		height: 60px;
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 2rem;
+		animation: rotate-pulse 2s ease-in-out infinite;
+	}
+	
+	.auto-start-content {
+		flex: 1;
+		text-align: left;
+	}
+	
+	.auto-start-title {
+		margin: 0 0 0.5rem 0;
+		font-size: 1.4rem;
+		font-weight: 700;
+		color: white;
+	}
+	
+	.auto-start-text {
+		margin: 0;
+		font-size: 1rem;
+		color: rgba(255, 255, 255, 0.9);
+		line-height: 1.4;
+	}
+	
+	@keyframes pulse-glow {
+		0% { box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3); }
+		100% { box-shadow: 0 15px 40px rgba(40, 167, 69, 0.5); }
+	}
+	
+	@keyframes shimmer {
+		0% { transform: translateX(-100%); }
+		100% { transform: translateX(100%); }
+	}
+	
+	@keyframes rotate-pulse {
+		0%, 100% { transform: scale(1) rotate(0deg); }
+		50% { transform: scale(1.1) rotate(180deg); }
+	}
+	
+	/* Mobile responsive */
+	@media (max-width: 768px) {
+		.auto-start-card {
+			padding: 1.5rem;
+			flex-direction: column;
+			text-align: center;
+			gap: 1rem;
+		}
+		
+		.auto-start-icon {
+			width: 50px;
+			height: 50px;
+			font-size: 1.5rem;
+		}
+		
+		.auto-start-title {
+			font-size: 1.2rem;
+		}
+		
+		.auto-start-text {
+			font-size: 0.9rem;
+		}
 	}
 </style>

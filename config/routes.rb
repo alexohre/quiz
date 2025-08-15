@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   # root "home"
   root "pages#home"
   
-  get 'delete_data', to: 'settings#drop_db'
+  post 'delete_data', to: 'settings#drop_db'
   get 'settings/settings', to: 'settings#settings'
   post 'settings/stage', to: 'settings#stage'
   get 'settings/upload', to: 'settings#upload'

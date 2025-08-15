@@ -177,59 +177,147 @@
 		</div>
 	</div>
 </div>
-<!-- Modal -->
+<!-- Enhanced Add User Modal -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="staticBackdropLabel">Add User</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<%= form_with(url: create_user_path, method: :post, local: true, data: {turbo: false}) do |form| %>
-				<div class="modal-body">
-					<div class="mb-3">
-						<%= form.label :email, class: "form-label" %>
-						<%= form.text_field :email, class: "form-control", placeholder: "Enter Email", required: true %>
+		<div class="modal-content enhanced-modal">
+			<!-- Enhanced Modal Header -->
+			<div class="modal-header enhanced-modal-header">
+				<div class="modal-header-content">
+					<div class="modal-icon">
+						<i class="bx bx-user-plus"></i>
 					</div>
-					<div class="mb-3">
-						<%= form.label :password, class: "form-label" %>
-						<%= form.password_field :password, class: "form-control", placeholder: "Enter Password", required: true %>
-					</div>
-					<div class="mb-3">
-						<%= form.label :role, class: "form-label" %>
-						<%= form.select :role, User.roles.keys.map { |role| [role.humanize, role] }, { prompt: "------Select Role------"}, class: "form-select", required: true%>
+					<div class="modal-title-section">
+						<h1 class="modal-title" id="staticBackdropLabel">Add New User</h1>
+						<p class="modal-subtitle">Create a new user account with role assignment</p>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<%= form.submit "Create", class: "btn btn-primary" %>
+				<button type="button" class="btn-close enhanced-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			
+			<%= form_with(url: create_user_path, method: :post, local: true, data: {turbo: false}) do |form| %>
+				<!-- Enhanced Modal Body -->
+				<div class="modal-body enhanced-modal-body">
+					<div class="form-section">
+						<div class="unified-form-card">
+							<div class="form-group-enhanced">
+								<div class="input-group-inline">
+									<div class="input-icon">
+										<i class="bx bx-envelope"></i>
+									</div>
+									<div class="input-content">
+										<%= form.label :email, class: "form-label-enhanced" %>
+										<%= form.email_field :email, class: "form-control-enhanced", placeholder: "Enter user email address", required: true %>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group-enhanced">
+								<div class="input-group-inline">
+									<div class="input-icon">
+										<i class="bx bx-lock-alt"></i>
+									</div>
+									<div class="input-content">
+										<%= form.label :password, class: "form-label-enhanced" %>
+										<%= form.password_field :password, class: "form-control-enhanced", placeholder: "Create a secure password (min. 6 characters)", required: true, minlength: 6 %>
+										<div class="password-hint">
+											<small class="text-muted">Password must be at least 6 characters long</small>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group-enhanced">
+								<div class="input-group-inline">
+									<div class="input-icon">
+										<i class="bx bx-shield-check"></i>
+									</div>
+									<div class="input-content">
+										<%= form.label :role, class: "form-label-enhanced" %>
+										<%= form.select :role, User.roles.keys.map { |role| [role.humanize, role] }, { prompt: "Select user role..."}, class: "form-select-enhanced", required: true%>
+										<div class="role-description">
+											<small class="text-muted">Choose the appropriate access level for this user</small>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Enhanced Modal Footer -->
+				<div class="modal-footer enhanced-modal-footer">
+					<button type="button" class="btn btn-outline-secondary enhanced-btn-secondary" data-bs-dismiss="modal">
+						<i class="bx bx-x me-2"></i>Cancel
+					</button>
+					<%= form.submit "Create User", class: "btn btn-primary enhanced-btn-primary" %>
 				</div>
 			<% end %>
 		</div>
 	</div>
 </div>
-<%# password modal %>
-<div class="modal fade" id="staticBackdrop11" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- Enhanced Update Password Modal -->
+<div class="modal fade" id="staticBackdrop11" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel11" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="staticBackdropLabel">Update Password</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div>
-				<span class="text-primary fs-3 ms-3" id="visibleUserEmail"></span>
-			</div>
-			<%= form_with(url: update_user_password_path, method: :post, local: true, data: {turbo: false}) do |form| %>
-				<div class="modal-body">
-					<%= form.hidden_field :user_id, id: "hiddenUserId" %>
-					<div class="mb-3">
-						<%= form.label :new_password, class: "form-label" %>
-						<%= form.text_field :password, class: "form-control", placeholder: "Enter Password", required: true, minlength: 6 %>
+		<div class="modal-content enhanced-modal">
+			<!-- Enhanced Modal Header -->
+			<div class="modal-header enhanced-modal-header">
+				<div class="modal-header-content">
+					<div class="modal-icon password-icon">
+						<i class="bx bx-key"></i>
+					</div>
+					<div class="modal-title-section">
+						<h1 class="modal-title" id="staticBackdropLabel11">Update Password</h1>
+						<p class="modal-subtitle">Reset password for selected user account</p>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<%= form.submit "Update", class: "btn btn-primary" %>
+				<button type="button" class="btn-close enhanced-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			
+			<!-- User Info Section -->
+			<div class="user-info-section">
+				<div class="user-badge">
+					<div class="user-avatar">
+						<i class="bx bx-user"></i>
+					</div>
+					<div class="user-details">
+						<span class="user-email" id="visibleUserEmail"></span>
+						<small class="text-muted">User Account</small>
+					</div>
+				</div>
+			</div>
+			
+			<%= form_with(url: update_user_password_path, method: :post, local: true, data: {turbo: false}) do |form| %>
+				<!-- Enhanced Modal Body -->
+				<div class="modal-body enhanced-modal-body">
+					<%= form.hidden_field :user_id, id: "hiddenUserId" %>
+					
+					<div class="form-section">
+						<div class="form-group-enhanced">
+							<div class="input-group-wrapper">
+								<div class="input-icon">
+									<i class="bx bx-lock-alt"></i>
+								</div>
+								<div class="input-content">
+									<%= form.label :new_password, "New Password", class: "form-label-enhanced" %>
+									<%= form.password_field :password, class: "form-control-enhanced", placeholder: "Enter new secure password", required: true, minlength: 6 %>
+									<div class="password-requirements">
+										<small class="text-muted">
+											<i class="bx bx-check-circle me-1"></i>Minimum 6 characters required
+										</small>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Enhanced Modal Footer -->
+				<div class="modal-footer enhanced-modal-footer">
+					<button type="button" class="btn btn-outline-secondary enhanced-btn-secondary" data-bs-dismiss="modal">
+						<i class="bx bx-x me-2"></i>Cancel
+					</button>
+					<%= form.submit "Update Password", class: "btn btn-warning enhanced-btn-warning" %>
 				</div>
 			<% end %>
 		</div>
@@ -539,6 +627,366 @@
 
 		.user-row:hover {
 			transform: none;
+		}
+	}
+
+	/* Enhanced Modal Styles */
+	.enhanced-modal {
+		border: none;
+		border-radius: 20px;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+		overflow: hidden;
+		animation: modalSlideIn 0.3s ease-out;
+	}
+
+	@keyframes modalSlideIn {
+		from {
+			transform: translateY(-50px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	.enhanced-modal-header {
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		border: none;
+		padding: 1.5rem;
+		color: white;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.enhanced-modal-header::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100px;
+		height: 100px;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 50%;
+		transform: translate(30px, -30px);
+	}
+
+	.modal-header-content {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		z-index: 2;
+		position: relative;
+	}
+
+	.modal-icon {
+		width: 60px;
+		height: 60px;
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.8rem;
+		color: white;
+		backdrop-filter: blur(10px);
+	}
+
+	.password-icon {
+		background: linear-gradient(135deg, #ffc107, #ff8c00);
+	}
+
+	.modal-title-section h1 {
+		margin: 0;
+		font-size: 1.75rem;
+		font-weight: 600;
+		color: white;
+	}
+
+	.modal-subtitle {
+		margin: 0.5rem 0 0 0;
+		color: rgba(255, 255, 255, 0.8);
+		font-size: 0.95rem;
+	}
+
+	.enhanced-close {
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 10px;
+		width: 40px;
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		backdrop-filter: blur(10px);
+	}
+
+	.enhanced-close:hover {
+		background: rgba(255, 255, 255, 0.3);
+		transform: rotate(90deg);
+	}
+
+	.user-info-section {
+		padding: 1rem 1.5rem;
+		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+		border-bottom: 1px solid #dee2e6;
+	}
+
+	.user-badge {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.user-avatar {
+		width: 50px;
+		height: 50px;
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		font-size: 1.5rem;
+	}
+
+	.user-details {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.user-email {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #495057;
+	}
+
+	.enhanced-modal-body {
+		padding: 1.5rem;
+		background: #ffffff;
+	}
+
+	.form-section {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.form-group-enhanced {
+		margin-bottom: 0;
+	}
+
+	.unified-form-card {
+		background: #f8f9fa;
+		border-radius: 15px;
+		border: 2px solid #e9ecef;
+		padding: 1.5rem;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+	}
+
+	.unified-form-card:hover {
+		border-color: #6f42c1;
+		box-shadow: 0 4px 16px rgba(111, 66, 193, 0.1);
+	}
+
+	.input-group-wrapper {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: 1rem;
+		background: #f8f9fa;
+		border-radius: 15px;
+		border: 2px solid #e9ecef;
+		transition: all 0.3s ease;
+	}
+
+	.input-group-inline {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: 0;
+		background: transparent;
+		border: none;
+		margin-bottom: 1.5rem;
+	}
+
+	.input-group-wrapper:focus-within {
+		border-color: #6f42c1;
+		background: #ffffff;
+		box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+	}
+
+	.input-icon {
+		width: 40px;
+		height: 40px;
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		border-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		font-size: 1.2rem;
+		flex-shrink: 0;
+		margin-top: 0.5rem;
+	}
+
+	.input-content {
+		flex: 1;
+	}
+
+	.form-label-enhanced {
+		font-weight: 600;
+		color: #495057;
+		margin-bottom: 0.75rem;
+		font-size: 0.95rem;
+		display: block;
+	}
+
+	.form-control-enhanced,
+	.form-select-enhanced {
+		border: 2px solid #e9ecef;
+		border-radius: 10px;
+		padding: 0.75rem 1rem;
+		font-size: 1rem;
+		transition: all 0.3s ease;
+		background: white;
+		width: 100%;
+	}
+
+	.form-control-enhanced:focus,
+	.form-select-enhanced:focus {
+		border-color: #6f42c1;
+		box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+		outline: none;
+	}
+
+	.password-hint,
+	.role-description,
+	.password-requirements {
+		margin-top: 0.5rem;
+	}
+
+	.security-notice {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		padding: 1rem 1.5rem;
+		background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+		border-radius: 12px;
+		border-left: 4px solid #2196f3;
+		margin-bottom: 1rem;
+	}
+
+	.notice-icon {
+		color: #2196f3;
+		font-size: 1.2rem;
+		margin-top: 0.1rem;
+	}
+
+	.notice-content {
+		color: #1565c0;
+		font-size: 0.9rem;
+		line-height: 1.4;
+	}
+
+	.enhanced-modal-footer {
+		padding: 1.5rem 2rem;
+		background: #f8f9fa;
+		border: none;
+		display: flex;
+		justify-content: flex-end;
+		gap: 1rem;
+	}
+
+	.enhanced-btn-primary,
+	.enhanced-btn-warning,
+	.enhanced-btn-secondary {
+		padding: 0.75rem 2rem;
+		border-radius: 10px;
+		font-weight: 600;
+		transition: all 0.3s ease;
+		border: none;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.enhanced-btn-primary {
+		background: linear-gradient(135deg, #6f42c1, #5a32a3);
+		color: white;
+		box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+	}
+
+	.enhanced-btn-primary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+		color: white;
+	}
+
+	.enhanced-btn-warning {
+		background: linear-gradient(135deg, #ffc107, #ff8c00);
+		color: white;
+		box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+	}
+
+	.enhanced-btn-warning:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+		color: white;
+	}
+
+	.enhanced-btn-secondary {
+		background: white;
+		color: #6c757d;
+		border: 2px solid #e9ecef;
+	}
+
+	.enhanced-btn-secondary:hover {
+		background: #f8f9fa;
+		border-color: #dee2e6;
+		color: #495057;
+		transform: translateY(-1px);
+	}
+
+	/* Modal Responsive Design */
+	@media (max-width: 768px) {
+		.enhanced-modal-header {
+			padding: 1.5rem;
+		}
+
+		.modal-header-content {
+			gap: 1rem;
+		}
+
+		.modal-icon {
+			width: 50px;
+			height: 50px;
+			font-size: 1.5rem;
+		}
+
+		.modal-title-section h1 {
+			font-size: 1.5rem;
+		}
+
+		.enhanced-modal-body {
+			padding: 1.5rem;
+		}
+
+		.input-group-wrapper {
+			padding: 1rem;
+		}
+
+		.enhanced-modal-footer {
+			padding: 1rem 1.5rem;
+			flex-direction: column;
+		}
+
+		.enhanced-btn-primary,
+		.enhanced-btn-warning,
+		.enhanced-btn-secondary {
+			width: 100%;
+			justify-content: center;
 		}
 	}
 </style>

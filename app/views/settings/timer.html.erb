@@ -20,7 +20,7 @@
 				<span class="fs-5 fw-bold">Timer Configuration</span>
 			</div>
 			<div class="card-body-enhanced">
-				<%= form_with url: settings_timer_path, method: :post, class: "timer-form" do |f| %>
+				<%= form_with model: @timers, url: settings_timer_path, method: :post, class: "timer-form" do |f| %>
 					<div class="timer-input-section">
 						<div class="input-group-enhanced">
 							<label for="timer_field" class="form-label-enhanced">
@@ -49,6 +49,58 @@
 							</div>
 						</div>
 					</div>
+					
+					<!-- Auto Start Section -->
+					<div class="auto-start-section">
+						<div class="auto-start-header">
+							<div class="header-content">
+								<div class="header-icon-title">
+									<i class="bx bx-play-circle fs-4 me-2"></i>
+									<span class="fs-6 fw-bold">Auto Start Settings</span>
+								</div>
+								<div class="status-badge">
+									<span class="badge <%= @auto_start ? 'badge-enabled' : 'badge-disabled' %>">
+										<i class="bx <%= @auto_start ? 'bx-check-circle' : 'bx-x-circle' %> me-1"></i>
+										<%= @auto_start ? 'Enabled' : 'Disabled' %>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="auto-start-control">
+							<div class="switch-container">
+								<div class="form-check form-switch auto-start-switch">
+									<%= f.check_box :auto_start, 
+											{ class: "form-check-input auto-start-input", 
+											  id: "auto_start_field" } %>
+									<label class="form-check-label auto-start-label" for="auto_start_field">
+										<div class="label-content">
+											<span class="switch-text">Automatic Timer Start</span>
+											<small class="switch-description">Start timer automatically when a question is opened</small>
+										</div>
+									</label>
+								</div>
+							</div>
+							<div class="auto-start-info">
+								<div class="info-card">
+									<div class="info-header">
+										<i class="bx bx-info-circle me-2"></i>
+										<span class="info-title">How it works</span>
+									</div>
+									<div class="info-content">
+										<div class="info-item enabled-info">
+											<i class="bx bx-check-circle text-success me-2"></i>
+											<span><strong>When enabled:</strong> Timer starts automatically when you select a question</span>
+										</div>
+										<div class="info-item disabled-info">
+											<i class="bx bx-x-circle text-muted me-2"></i>
+											<span><strong>When disabled:</strong> Manual timer start required from timer screen</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
 					<div class="form-actions">
 						<button type="submit" class="btn-submit-enhanced">
 							<i class="bx bx-save fs-5 me-2"></i>
@@ -249,6 +301,259 @@
 
 		.preset-buttons {
 			justify-content: center;
+		}
+	}
+
+	/* Auto Start Section Styles */
+	.auto-start-section {
+		margin-top: 2rem;
+		padding: 0;
+		background: linear-gradient(135deg, #f8f9fa, #ffffff);
+		border-radius: 15px;
+		border: 2px solid #e9ecef;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+		overflow: hidden;
+	}
+
+	.auto-start-header {
+		padding: 1.5rem;
+		background: linear-gradient(135deg, #6f42c1, #8e44ad);
+		color: white;
+		margin-bottom: 0;
+		border-bottom: none;
+	}
+
+	.header-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.header-icon-title {
+		display: flex;
+		align-items: center;
+	}
+
+	.header-icon-title i {
+		color: rgba(255, 255, 255, 0.9);
+		filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+	}
+
+	.status-badge .badge {
+		padding: 0.5rem 1rem;
+		font-size: 0.85rem;
+		font-weight: 600;
+		border-radius: 20px;
+		border: 2px solid rgba(255, 255, 255, 0.2);
+		backdrop-filter: blur(10px);
+	}
+
+	.badge-enabled {
+		background: rgba(40, 167, 69, 0.9) !important;
+		color: white !important;
+		box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+	}
+
+	.badge-disabled {
+		background: rgba(108, 117, 125, 0.9) !important;
+		color: white !important;
+		box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+	}
+
+	.auto-start-control {
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.switch-container {
+		padding: 1.5rem;
+		background: rgba(255, 255, 255, 0.95);
+		border-radius: 15px;
+		border: 1px solid #e9ecef;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.auto-start-switch {
+		padding: 0.75rem 1.25rem;
+		background: none;
+		border: none;
+		border-radius: 0;
+		margin: 0;
+		min-height: auto;
+	}
+
+	.auto-start-input {
+		width: 3.25rem !important;
+		height: 1.75rem !important;
+		background-color: #dee2e6 !important;
+		border: 2px solid #dee2e6 !important;
+		transition: all 0.3s ease;
+		box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+		border-radius: 2rem !important;
+		cursor: pointer;
+		margin-left: 0 !important;
+		margin-right: 0.75rem !important;
+	}
+
+	.auto-start-input:checked {
+		background-color: #6f42c1 !important;
+		border-color: #6f42c1 !important;
+		box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+	}
+
+	.auto-start-input:focus {
+		box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25) !important;
+		border-color: #6f42c1 !important;
+		outline: none;
+	}
+
+	.auto-start-input:hover {
+		box-shadow: 0 0 0 0.15rem rgba(111, 66, 193, 0.1), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+
+	.auto-start-label {
+		cursor: pointer;
+		margin-bottom: 0 !important;
+		padding-left: 0 !important;
+	}
+
+	.label-content {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.switch-text {
+		font-weight: 600;
+		color: #495057;
+		font-size: 1.1rem;
+		margin-bottom: 0.25rem;
+		line-height: 1.2;
+	}
+
+	.switch-description {
+		color: #6c757d;
+		font-size: 0.9rem;
+		line-height: 1.3;
+		margin: 0;
+	}
+
+	.auto-start-info {
+		padding: 0;
+		background: none;
+		border-radius: 0;
+		border: none;
+	}
+
+	.info-card {
+		padding: 1.25rem;
+		background: linear-gradient(135deg, rgba(111, 66, 193, 0.05), rgba(142, 68, 173, 0.05));
+		border-radius: 12px;
+		border: 1px solid rgba(111, 66, 193, 0.1);
+		box-shadow: 0 2px 6px rgba(111, 66, 193, 0.05);
+	}
+
+	.info-header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 1rem;
+		color: #6f42c1;
+		font-weight: 600;
+	}
+
+	.info-title {
+		font-size: 0.95rem;
+		font-weight: 600;
+	}
+
+	.info-content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.info-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.5rem;
+		padding: 0.5rem 0;
+	}
+
+	.info-item span {
+		color: #495057;
+		font-size: 0.9rem;
+		line-height: 1.4;
+	}
+
+	/* Mobile Responsive */
+	@media (max-width: 768px) {
+		.auto-start-section {
+			margin-top: 1.5rem;
+			border-radius: 12px;
+		}
+
+		.auto-start-header {
+			padding: 1.25rem;
+		}
+
+		.header-content {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.75rem;
+		}
+
+		.status-badge {
+			align-self: flex-start;
+		}
+
+		.auto-start-control {
+			padding: 1.25rem;
+			gap: 1.25rem;
+		}
+
+		.switch-container {
+			padding: 1rem;
+		}
+
+		.auto-start-switch {
+			padding: 0.5rem 1rem;
+		}
+
+		.auto-start-input {
+			width: 3rem !important;
+			height: 1.5rem !important;
+			margin-right: 0.5rem !important;
+		}
+
+		.switch-text {
+			font-size: 1rem;
+		}
+
+		.switch-description {
+			font-size: 0.85rem;
+		}
+
+		.info-card {
+			padding: 1rem;
+		}
+
+		.info-content {
+			gap: 0.5rem;
+		}
+
+		.info-item span {
+			font-size: 0.85rem;
+		}
+
+		.auto-start-input {
+			width: 3rem;
+			height: 1.5rem;
 		}
 	}
 </style>

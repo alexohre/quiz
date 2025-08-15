@@ -1,67 +1,5 @@
 <!-- Header Section with Title and Progress -->
-<div class="mb-4">
-	<%# <div class="text-center mb-4">
-		<h1 class="display-6 fw-bold text-primary mb-2">
-			<i class="bx bx-brain fs-1 me-2"></i>
-			Quiz Dashboard
-		</h1>
-		<p class="lead text-muted">Select a stage and choose your questions</p>
-	</div> %>
-	<% if @stages.present? && @quizzes.present? %>
-		<% total_questions = @quizzes.count %>
-		<% answered_questions = @quizzes.select(&:answered?).count %>
-		<% progress_percentage = total_questions > 0 ? (answered_questions.to_f / total_questions * 100).round : 0 %>
-		<!-- Progress Overview -->
-		<div class="row g-2 mb-3">
-			<div class="col-6 col-md-3">
-				<div class="card bg-primary text-white compact-card">
-					<div class="card-body text-center py-2 px-2">
-						<i class="bx bx-list-check fs-5 mb-1"></i>
-						<h6 class="fw-bold mb-0"><%= total_questions %></h6>
-						<small class="fs-7">Total</small>
-					</div>
-				</div>
-			</div>
-			<div class="col-6 col-md-3">
-				<div class="card bg-success text-white compact-card">
-					<div class="card-body text-center py-2 px-2">
-						<i class="bx bx-check-circle fs-5 mb-1"></i>
-						<h6 class="fw-bold mb-0"><%= answered_questions %></h6>
-						<small class="fs-7">Done</small>
-					</div>
-				</div>
-			</div>
-			<div class="col-6 col-md-3">
-				<div class="card bg-warning text-white compact-card">
-					<div class="card-body text-center py-2 px-2">
-						<i class="bx bx-time fs-5 mb-1"></i>
-						<h6 class="fw-bold mb-0"><%= total_questions - answered_questions %></h6>
-						<small class="fs-7">Left</small>
-					</div>
-				</div>
-			</div>
-			<div class="col-6 col-md-3">
-				<div class="card bg-info text-white compact-card">
-					<div class="card-body text-center py-2 px-2">
-						<i class="bx bx-trending-up fs-5 mb-1"></i>
-						<h6 class="fw-bold mb-0"><%= progress_percentage %>%</h6>
-						<small class="fs-7">Progress</small>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Progress Bar -->
-		<div class="mb-3">
-			<div class="d-flex justify-content-between align-items-center mb-1">
-				<small class="fw-bold text-muted">Overall Progress</small>
-				<span class="badge bg-primary"><%= progress_percentage %>%</span>
-			</div>
-			<div class="progress" style="height: 6px;">
-				<div class="progress-bar bg-gradient" role="progressbar" style="width: <%= progress_percentage %>%" aria-valuenow="<%= progress_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
-			</div>
-		</div>
-	<% end %>
-</div>
+
 <!-- Stage Selection -->
 <div class="card shadow-sm mb-3">
 	<div class="card-header bg-light">
@@ -97,6 +35,15 @@
 				<% if active_stage %>
 					<span class="badge bg-primary ms-2"><%= active_stage.name %></span>
 				<% end %>
+			<% end %>
+			<% if @quizzes.present? %>
+				<% total_questions = @quizzes.count %>
+				<% answered_questions = @quizzes.select(&:answered?).count %>
+				<% progress_percentage = total_questions > 0 ? (answered_questions.to_f / total_questions * 100).round : 0 %>
+				<span class="badge bg-secondary ms-2">Total: <%= total_questions %></span>
+				<span class="badge bg-success ms-2">Done: <%= answered_questions %></span>
+				<span class="badge bg-warning ms-2">Left: <%= total_questions - answered_questions %></span>
+				<span class="badge bg-info ms-2">Progress: <%= progress_percentage %>%</span>
 			<% end %>
 		</h5>
 	</div>

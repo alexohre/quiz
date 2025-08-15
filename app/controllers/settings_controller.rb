@@ -74,22 +74,37 @@ class SettingsController < ApplicationController
   end
 
   def timer
-    @timers = Setting.last
-    @timer = @timers.present? ? @timers.timer : 0
+    @timers = Setting.last || Setting.new(timer: 60, auto_start: false)
+    @timer = @timers.timer || 0
+    @auto_start = @timers.auto_start || false
 
-    if params[:timer].present?
-      timer_value = params[:timer].to_i
-      if timer_value > 0
-        # Update the existing setting or create a new one if it doesn't exist
-        if @timers.present?
-          @timers.update!(timer: timer_value)
-        else
-          Setting.create!(timer: timer_value)
-        end
-        redirect_to settings_timer_path, notice: "#{timer_value} seconds updated successfully."
+    if params[:setting].present? || params[:timer].present? || params[:auto_start].present?
+      # Handle both model-based and direct parameter submissions
+      if params[:setting].present?
+        timer_value = params[:setting][:timer].to_i
+        auto_start_value = params[:setting][:auto_start] == '1'
       else
-        redirect_to settings_timer_path, alert: "Please enter a valid number of seconds."
+        timer_value = params[:timer].present? ? params[:timer].to_i : (@timers.timer || 0)
+        auto_start_value = params[:auto_start] == '1'
       end
+      
+      if timer_value <= 0
+        redirect_to settings_timer_path, alert: "Please enter a valid number of seconds."
+        return
+      end
+      
+      # Update the existing setting or create a new one if it doesn't exist
+      if @timers.persisted?
+        @timers.update!(timer: timer_value, auto_start: auto_start_value)
+      else
+        Setting.create!(timer: timer_value, auto_start: auto_start_value)
+      end
+      
+      success_message = []
+      success_message << "#{timer_value} seconds"
+      success_message << "Auto-start #{auto_start_value ? 'enabled' : 'disabled'}"
+      
+      redirect_to settings_timer_path, notice: "Timer settings updated: #{success_message.join(', ')}."
     end
   end
 

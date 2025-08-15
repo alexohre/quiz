@@ -42,7 +42,8 @@
 	</div>
 </div>
 <!-- Timer Section -->
-<div class="" data-controller="timer">
+<% settings = Setting.last %>
+<div class="" data-controller="timer" data-timer-duration="<%= settings&.timer || 60 %>">
 	<div class="fixed-container">
 		<div class="countdown" data-timer-target="countdown">00</div>
 	</div>
@@ -223,4 +224,30 @@
 			font-size: 1.5rem;
 		}
 	}
+	
+	/* Enhanced countdown styling with animations */
+	.countdown {
+		z-index: 10;
+		transition: all 0.3s ease;
+	}
+	
+	.countdown.warning {
+		color: #ffc107 !important;
+		text-shadow: 0 0 10px rgba(255, 193, 7, 0.8);
+		border-color: rgba(255, 193, 7, 0.3) !important;
+	}
+	
+	.countdown.danger {
+		color: #dc3545 !important;
+		text-shadow: 0 0 10px rgba(220, 53, 69, 0.8);
+		border-color: rgba(220, 53, 69, 0.3) !important;
+		animation: shake 0.5s ease-in-out infinite;
+	}
+	
+	@keyframes shake {
+		0%, 100% { transform: translateX(0); }
+		25% { transform: translateX(-2px); }
+		75% { transform: translateX(2px); }
+	}
+
 </style>
