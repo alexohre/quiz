@@ -1,12 +1,27 @@
 <!-- Enhanced Quiz Master Page -->
 <div class="quizmaster-page-container">
-	<!-- Enhanced Header Section -->
-	<div class="quizmaster-header text-center mb-5">
-		<div class="quizmaster-title-badge">
-			<i class="bx bx-crown fs-1 me-3"></i>
-			<span class="quizmaster-title">Quiz Master</span>
+	<!-- Sleek Compact Quiz Master Header & Live Top-Right Timer -->
+	<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 p-3 bg-white shadow-sm rounded-4 border">
+		<div class="d-flex align-items-center gap-3">
+			<div class="bg-warning bg-opacity-10 text-warning-emphasis p-2.5 rounded-3 d-flex align-items-center justify-content-center">
+				<i class="bi bi-crown-fill fs-3 text-warning"></i>
+			</div>
+			<div>
+				<div class="d-flex align-items-center gap-2">
+					<h4 class="fw-extrabold mb-0 text-dark" style="letter-spacing: -0.01em;">Quiz Master</h4>
+					<span class="badge bg-warning text-dark rounded-pill fw-bold text-uppercase px-2.5 py-1 small">Host Panel</span>
+				</div>
+				<small class="text-muted">Live Quiz Control & Questions Center</small>
+			</div>
 		</div>
-		<p class="quizmaster-subtitle">Live Quiz Control Center</p>
+
+		<!-- TOP RIGHT LIVE TIMER (Raw Seconds, No Faded Time Up) -->
+		<div class="d-flex align-items-center gap-2 bg-dark text-white px-3.5 py-2 rounded-pill shadow-sm" data-controller="timer" data-timer-duration="<%= Setting.last&.timer || 30 %>">
+			<i class="bi bi-stopwatch-fill fs-5 text-warning"></i>
+			<span class="text-white-50 small fw-bold me-1 text-uppercase" style="font-size: 0.75rem;">Timer:</span>
+			<span class="fw-extrabold fs-4 font-monospace text-warning me-1" data-timer-target="countdown"><%= Setting.last&.timer || 30 %></span>
+			<small class="text-white-50">s</small>
+		</div>
 	</div>
 
 	<!-- Main Content Area -->
@@ -15,7 +30,7 @@
 		<div class="quizmaster-question-display-card">
 			<div class="quizmaster-question-header-enhanced">
 				<div class="quizmaster-question-badge-enhanced">
-					<i class="bx bx-help-circle fs-2 me-2"></i>
+					<i class="bi bi-question-circle-fill me-2 fs-4"></i>
 					<span class="quizmaster-question-label-enhanced">Question</span>
 					<span class="quizmaster-question-number-enhanced">??</span>
 				</div>
@@ -23,7 +38,7 @@
 			<div class="quizmaster-question-content-enhanced">
 				<div class="quizmaster-awaiting-message">
 					<div class="quizmaster-waiting-icon-container">
-						<i class="bx bx-microphone quizmaster-waiting-icon"></i>
+						<i class="bi bi-mic-fill quizmaster-waiting-icon"></i>
 					</div>
 					<h3 class="quizmaster-awaiting-text">Awaiting Question</h3>
 					<p class="quizmaster-awaiting-subtitle">Ready to host the quiz when question is selected</p>
@@ -40,33 +55,33 @@
 		<div class="quizmaster-control-panel">
 			<div class="quizmaster-control-card">
 				<div class="quizmaster-control-header">
-					<i class="bx bx-cog fs-3 me-2 text-warning"></i>
+					<i class="bi bi-gear-fill fs-3 me-2 text-warning"></i>
 					<h4 class="quizmaster-control-title">Quiz Master Guidelines</h4>
 				</div>
 				<div class="quizmaster-control-content">
 					<div class="row">
 						<div class="col-md-6">
 							<h5 class="quizmaster-section-title">
-								<i class="bx bx-play-circle text-success me-2"></i>
+								<i class="bi bi-play-circle-fill text-success me-2"></i>
 								During Questions
 							</h5>
 							<ul class="quizmaster-guidelines-list">
-								<li><i class="bx bx-check text-success me-2"></i>Read questions clearly and slowly</li>
-								<li><i class="bx bx-check text-success me-2"></i>Allow adequate thinking time</li>
-								<li><i class="bx bx-check text-success me-2"></i>Maintain audience engagement</li>
-								<li><i class="bx bx-check text-success me-2"></i>Clarify questions if needed</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Read questions clearly and slowly</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Allow adequate thinking time</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Maintain audience engagement</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Clarify questions if needed</li>
 							</ul>
 						</div>
 						<div class="col-md-6">
 							<h5 class="quizmaster-section-title">
-								<i class="bx bx-trophy text-warning me-2"></i>
+								<i class="bi bi-trophy-fill text-warning me-2"></i>
 								Best Practices
 							</h5>
 							<ul class="quizmaster-guidelines-list">
-								<li><i class="bx bx-check text-success me-2"></i>Keep energy levels high</li>
-								<li><i class="bx bx-check text-success me-2"></i>Encourage participation</li>
-								<li><i class="bx bx-check text-success me-2"></i>Manage time effectively</li>
-								<li><i class="bx bx-check text-success me-2"></i>Celebrate correct answers</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Keep energy levels high</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Encourage participation</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Manage time effectively</li>
+								<li><i class="bi bi-check-circle-fill text-success me-2"></i>Celebrate correct answers</li>
 							</ul>
 						</div>
 					</div>
@@ -81,32 +96,7 @@
 	.quizmaster-page-container {
 		max-width: 1200px;
 		margin: 0 auto;
-		padding: 1rem;
-	}
-
-	.quizmaster-title-badge {
-		display: inline-flex;
-		align-items: center;
-		background: linear-gradient(135deg, #ff8c00, #ff6b00);
-		color: white;
-		padding: 1.5rem 3rem;
-		border-radius: 50px;
-		box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
-		transform: translateY(-5px);
-		animation: glow-orange 3s ease-in-out infinite alternate;
-	}
-
-	.quizmaster-title {
-		font-size: 2.5rem;
-		font-weight: 800;
-		margin: 0;
-	}
-
-	.quizmaster-subtitle {
-		font-size: 1.2rem;
-		color: #6c757d;
-		margin-top: 1rem;
-		font-weight: 500;
+		padding: 0.5rem;
 	}
 
 	.quizmaster-question-display-card {
@@ -117,7 +107,7 @@
 		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 		position: relative;
 		overflow: hidden;
-		min-height: 400px;
+		min-height: 350px;
 		margin-bottom: 2rem;
 	}
 
@@ -132,7 +122,7 @@
 	}
 
 	.quizmaster-question-header-enhanced {
-		padding: 2rem;
+		padding: 1.5rem;
 		text-align: center;
 		border-bottom: 2px solid rgba(255, 140, 0, 0.1);
 	}
@@ -142,31 +132,31 @@
 		align-items: center;
 		background: linear-gradient(135deg, #ff8c00, #ff6b00);
 		color: white;
-		padding: 1rem 2rem;
+		padding: 0.6rem 1.8rem;
 		border-radius: 50px;
 		box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
 	}
 
 	.quizmaster-question-label-enhanced {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: 600;
-		margin-right: 1rem;
+		margin-right: 0.75rem;
 	}
 
 	.quizmaster-question-number-enhanced {
-		font-size: 2rem;
+		font-size: 1.5rem;
 		font-weight: 800;
 		background: rgba(255, 255, 255, 0.2);
-		padding: 0.25rem 0.75rem;
-		border-radius: 15px;
+		padding: 0.2rem 0.6rem;
+		border-radius: 12px;
 	}
 
 	.quizmaster-question-content-enhanced {
-		padding: 4rem 2rem;
+		padding: 3rem 2rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 300px;
+		min-height: 250px;
 	}
 
 	.quizmaster-awaiting-message {
@@ -174,26 +164,26 @@
 	}
 
 	.quizmaster-waiting-icon-container {
-		margin-bottom: 2rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.quizmaster-waiting-icon {
-		font-size: 4rem;
+		font-size: 3.5rem;
 		color: #ff8c00;
 		animation: bounce 2s infinite;
 	}
 
 	.quizmaster-awaiting-text {
-		font-size: 3rem;
+		font-size: 2.2rem;
 		font-weight: 700;
 		color: #495057;
-		margin-bottom: 1rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.quizmaster-awaiting-subtitle {
-		font-size: 1.3rem;
+		font-size: 1.1rem;
 		color: #6c757d;
-		margin-bottom: 2rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.quizmaster-waiting-dots {
@@ -203,8 +193,8 @@
 	}
 
 	.quizmaster-dot {
-		width: 12px;
-		height: 12px;
+		width: 10px;
+		height: 10px;
 		border-radius: 50%;
 		background: #ff8c00;
 		animation: pulse-dot 1.5s infinite;
@@ -223,35 +213,35 @@
 	}
 
 	.quizmaster-control-panel {
-		margin-top: 2rem;
+		margin-top: 1.5rem;
 	}
 
 	.quizmaster-control-card {
 		background: white;
 		border-radius: 20px;
-		padding: 2rem;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+		padding: 1.5rem;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 		border: 2px solid #e9ecef;
 	}
 
 	.quizmaster-control-header {
 		display: flex;
 		align-items: center;
-		margin-bottom: 2rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.quizmaster-control-title {
-		font-size: 1.5rem;
+		font-size: 1.3rem;
 		font-weight: 600;
 		color: #495057;
 		margin: 0;
 	}
 
 	.quizmaster-section-title {
-		font-size: 1.2rem;
+		font-size: 1.1rem;
 		font-weight: 600;
 		color: #495057;
-		margin-bottom: 1rem;
+		margin-bottom: 0.75rem;
 		display: flex;
 		align-items: center;
 	}
@@ -265,8 +255,8 @@
 	.quizmaster-guidelines-list li {
 		display: flex;
 		align-items: center;
-		padding: 0.5rem 0;
-		font-size: 1rem;
+		padding: 0.4rem 0;
+		font-size: 0.95rem;
 		color: #495057;
 		border-bottom: 1px solid #f8f9fa;
 	}
@@ -275,24 +265,15 @@
 		border-bottom: none;
 	}
 
-	@keyframes glow-orange {
-		from {
-			box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
-		}
-		to {
-			box-shadow: 0 15px 40px rgba(255, 140, 0, 0.5);
-		}
-	}
-
 	@keyframes bounce {
 		0%, 20%, 50%, 80%, 100% {
 			transform: translateY(0);
 		}
 		40% {
-			transform: translateY(-15px);
+			transform: translateY(-12px);
 		}
 		60% {
-			transform: translateY(-7px);
+			transform: translateY(-6px);
 		}
 	}
 
@@ -308,28 +289,16 @@
 	}
 
 	@media (max-width: 768px) {
-		.quizmaster-title {
-			font-size: 2rem;
-		}
-
 		.quizmaster-awaiting-text {
-			font-size: 2rem;
+			font-size: 1.8rem;
 		}
 
 		.quizmaster-question-content-enhanced {
 			padding: 2rem 1rem;
 		}
 
-		.quizmaster-title-badge {
-			padding: 1rem 2rem;
-		}
-
 		.quizmaster-control-card {
-			padding: 1.5rem;
-		}
-
-		.quizmaster-section-title {
-			font-size: 1.1rem;
+			padding: 1.25rem;
 		}
 	}
 </style>

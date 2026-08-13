@@ -10,7 +10,6 @@ export default class extends Controller {
 
 		// Read timer value from data attribute
 		this.timerDuration = this.element.dataset.timerDuration || 0;
-		console.log("Timer duration from data attribute:", this.timerDuration);
 
 		this.channel = consumer.subscriptions.create("TimerChannel", {
 			connected: () => {
@@ -20,12 +19,8 @@ export default class extends Controller {
 				console.log("Timer controller disconnected from TimerChannel");
 			},
 			received: (data) => {
-				console.log("Timer channel received data:", data);
 				if (data.action === "start_timer") {
-					console.log("Starting timer with duration:", data.duration);
 					this.startCountdown(data.duration);
-				} else {
-					console.log("Unknown action received:", data.action);
 				}
 			},
 		});
@@ -42,9 +37,7 @@ export default class extends Controller {
 
 	startTimer() {
 		const countdownDuration = parseInt(this.timerDuration, 10);
-		console.log("Manual timer start requested with duration:", countdownDuration);
 
-		// Disable the start button immediately when clicked
 		if (this.hasStartButtonTarget) {
 			this.startButtonTarget.disabled = true;
 			this.startButtonTarget.classList.remove("btn-primary", "btn-success");
@@ -61,19 +54,13 @@ export default class extends Controller {
 			},
 			body: JSON.stringify({ duration: countdownDuration }),
 		});
-
-		console.log("Manual start button clicked and disabled!");
 	}
 
 	startCountdown(duration) {
 		if (!this.hasCountdownTarget) {
-			console.log("No countdown target found, cannot start timer");
 			return;
 		}
-
-		console.log("Starting countdown with duration:", duration);
 		
-		// Clear any existing interval
 		if (this.interval) {
 			clearInterval(this.interval);
 		}
@@ -81,10 +68,7 @@ export default class extends Controller {
 		this.timer = duration;
 		this.totalDuration = duration;
 		
-		// Reset countdown styling
-		this.countdownTarget.classList.remove('warning', 'danger');
-		
-		// Display initial value
+		this.countdownTarget.classList.remove('warning', 'danger', 'text-danger', 'text-warning');
 		this.countdownTarget.textContent = this.timer;
 		this.updateCountdownStyling();
 		
@@ -93,9 +77,13 @@ export default class extends Controller {
 			
 			if (this.timer < 0) {
 				clearInterval(this.interval);
-				this.countdownTarget.textContent = "0";
+				if (this.hasOverlayTarget) {
+					this.countdownTarget.textContent = "0";
+					this.showOverlay();
+				} else {
+					this.countdownTarget.textContent = "TIME UP!";
+				}
 				this.updateCountdownStyling();
-				this.showOverlay();
 			} else {
 				this.countdownTarget.textContent = this.timer;
 				this.updateCountdownStyling();
@@ -104,11 +92,15 @@ export default class extends Controller {
 	}
 
 	showOverlay() {
-		this.overlayTarget.style.display = "flex";
+		if (this.hasOverlayTarget) {
+			this.overlayTarget.style.display = "flex";
+		}
 	}
 
 	hideOverlay() {
-		this.overlayTarget.style.display = "none";
+		if (this.hasOverlayTarget) {
+			this.overlayTarget.style.display = "none";
+		}
 	}
 
 	updateCountdownStyling() {
@@ -116,20 +108,17 @@ export default class extends Controller {
 			return;
 		}
 
-		// Calculate remaining time percentage
 		const progress = Math.max(0, this.timer) / this.totalDuration;
 		const timePercentage = progress * 100;
 		
-		// Remove existing classes
-		this.countdownTarget.classList.remove('warning', 'danger');
+		this.countdownTarget.classList.remove('warning', 'danger', 'text-danger', 'text-warning');
 		
-		if (timePercentage <= 10) {
-			// Last 10% - Red/Danger with shake animation
-			this.countdownTarget.classList.add('danger');
-		} else if (timePercentage <= 25) {
-			// Last 25% - Yellow/Warning
-			this.countdownTarget.classList.add('warning');
+		if (this.timer < 0 || this.timer === 0 || this.countdownTarget.textContent === "TIME UP!") {
+			this.countdownTarget.classList.add('danger', 'text-danger');
+		} else if (timePercentage <= 15 || this.timer <= 5) {
+			this.countdownTarget.classList.add('danger', 'text-danger');
+		} else if (timePercentage <= 35) {
+			this.countdownTarget.classList.add('warning', 'text-warning');
 		}
-		// Above 25% stays default (white)
 	}
 }
