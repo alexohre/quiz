@@ -1,69 +1,351 @@
-<div class="card mb-5 bg-quest">
-	<div class="card-header h2 text-center fw-bold">
-		ScoreBoard
+<div class="container py-3">
+	<!-- Compact Scoreboard Hero Header -->
+	<div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); color: white;">
+		<div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+			<div class="d-flex align-items-center gap-3">
+				<div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 44px; height: 44px;">
+					<i class="bi bi-trophy-fill fs-4"></i>
+				</div>
+				<div>
+					<h3 class="fw-bold mb-0 text-white" style="letter-spacing: -0.01em;">Stage Scoreboards</h3>
+					<small class="text-white-50">Real-time stage score tables for participating congregations</small>
+				</div>
+			</div>
+
+			<div class="d-flex align-items-center gap-3 flex-wrap">
+				<!-- SINGLE CLEAN TOGGLE: Show Overall Board & Winners -->
+				<div class="bg-white bg-opacity-20 px-3 py-1.5 rounded-pill d-flex align-items-center border border-white border-opacity-25 shadow-sm">
+					<div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
+						<input class="form-check-input fs-5 cursor-pointer my-0" type="checkbox" id="overallToggle" <%= 'checked' if @show_overall %> onchange="toggleOverallBoard(this.checked)">
+						<label class="form-check-label text-white fw-semibold small cursor-pointer" for="overallToggle" style="line-height: 1;">
+							Show Overall Board & Winners
+						</label>
+					</div>
+				</div>
+
+				<% if current_user&.admin? || current_user&.recorder? %>
+					<a href="<%= recorder_path %>" class="btn btn-warning rounded-pill px-3 py-1.5 fw-bold shadow-sm" style="font-size: 0.9rem;">
+						<i class="bi bi-pencil-square me-1"></i> Record Scores
+					</a>
+				<% end %>
+			</div>
+		</div>
 	</div>
+
+	<% if @churches.present? %>
+		<!-- Top 3 Winners Podium Cards (Only visible when Overall Toggle is ON) -->
+		<div id="winnerPodiumSection" class="<%= 'd-none' unless @show_overall %>">
+			<% if @churches.any? { |c| c.total_score > 0 } %>
+				<div class="row g-3 mb-5 justify-content-center align-items-end">
+					<!-- 2nd Place -->
+					<% if @churches.size > 1 && @churches[1].total_score > 0 %>
+						<% second = @churches[1] %>
+						<div class="col-md-4 order-2 order-md-1">
+							<div class="card border-0 shadow-sm rounded-4 text-center p-4 bg-white border-top border-secondary border-4">
+								<div class="fs-1 mb-1">🥈</div>
+								<span class="badge bg-secondary text-white rounded-pill px-3 py-1 mb-2">2nd Place</span>
+								<h4 class="fw-bold text-dark mb-1"><%= second.name %></h4>
+								<% if second.location.present? %>
+									<small class="text-muted d-block mb-3"><%= second.location %></small>
+								<% end %>
+								<div class="display-6 fw-bold text-secondary mb-0"><%= second.total_score %> <small class="fs-6 text-muted">pts</small></div>
+							</div>
+						</div>
+					<% end %>
+
+					<!-- 1st Place Champion -->
+					<% if @churches.first.total_score > 0 %>
+						<% first = @churches.first %>
+						<div class="col-md-4 order-1 order-md-2">
+							<div class="card border-0 shadow-lg rounded-4 text-center p-4 bg-white border-top border-warning border-5 position-relative overflow-hidden">
+								<div class="position-absolute top-0 end-0 bg-warning text-dark px-3 py-1 fw-bold rounded-bl small">CHAMPION</div>
+								<div class="fs-1 mb-1 display-4">🥇</div>
+								<span class="badge bg-warning text-dark rounded-pill px-3 py-1 mb-2 fw-bold fs-6">1st Place</span>
+								<h3 class="fw-extrabold text-dark mb-1"><%= first.name %></h3>
+								<% if first.location.present? %>
+									<small class="text-muted d-block mb-3"><%= first.location %></small>
+								<% end %>
+								<div class="display-5 fw-extrabold text-warning-emphasis mb-0"><%= first.total_score %> <small class="fs-5 text-muted">pts</small></div>
+							</div>
+						</div>
+					<% end %>
+
+					<!-- 3rd Place -->
+					<% if @churches.size > 2 && @churches[2].total_score > 0 %>
+						<% third = @churches[2] %>
+						<div class="col-md-4 order-3 order-md-3">
+							<div class="card border-0 shadow-sm rounded-4 text-center p-4 bg-white border-top border-danger border-4">
+								<div class="fs-1 mb-1">🥉</div>
+								<span class="badge bg-danger text-white rounded-pill px-3 py-1 mb-2">3rd Place</span>
+								<h4 class="fw-bold text-dark mb-1"><%= third.name %></h4>
+								<% if third.location.present? %>
+									<small class="text-muted d-block mb-3"><%= third.location %></small>
+								<% end %>
+								<div class="display-6 fw-bold text-danger mb-0"><%= third.total_score %> <small class="fs-6 text-muted">pts</small></div>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+
+		<!-- Grand Overall Standings Table (HIDDEN BY DEFAULT - Only visible when Overall Toggle is ON) -->
+		<div id="overallStandingsSection" class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5 <%= 'd-none' unless @show_overall %>">
+			<div class="card-header bg-dark text-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+				<div class="d-flex align-items-center">
+					<i class="bi bi-trophy-fill me-2 fs-5 text-warning"></i>
+					<h5 class="mb-0 fw-bold">Overall Master Standings (All Stages Combined)</h5>
+				</div>
+				<span class="badge bg-light text-dark px-3 py-2 rounded-pill fw-bold"><%= @churches.count %> Congregations</span>
+			</div>
+			<div class="card-body p-0">
+				<div class="table-responsive">
+					<table class="table table-hover align-middle mb-0" style="font-size: 1rem;">
+						<thead class="bg-light text-muted small text-uppercase">
+							<tr>
+								<th class="ps-4 py-3" style="width: 80px;">Rank</th>
+								<th class="py-3">Congregation / Province</th>
+								<th class="py-3">Representatives</th>
+								<% @stages.each do |st| %>
+									<th class="text-center py-3"><%= st.name %></th>
+								<% end %>
+								<th class="text-end pe-4 py-3">Grand Total</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% @churches.each_with_index do |church, index| %>
+								<tr id="church_row_<%= church.id %>">
+									<td class="ps-4 py-3 fw-bold fs-5 text-dark">
+										#<%= index + 1 %>
+									</td>
+									<td class="py-3">
+										<div class="fw-bold text-dark fs-6"><%= church.name %></div>
+										<% if church.location.present? %>
+											<small class="text-muted"><i class="bi bi-geo-alt-fill me-1 text-danger"></i><%= church.location %></small>
+										<% end %>
+									</td>
+									<td class="py-3">
+										<% if church.representatives.present? %>
+											<div class="d-flex flex-wrap gap-1">
+												<% church.representatives.each do |rep| %>
+													<span class="badge bg-light text-dark border px-2 py-1 small">
+														<%= rep.name %>
+													</span>
+												<% end %>
+											</div>
+										<% else %>
+											<small class="text-muted">—</small>
+										<% end %>
+									</td>
+									<% @stages.each do |st| %>
+										<% st_score = church.score_for_stage(st) %>
+										<td class="text-center py-3">
+											<span class="badge bg-<%= st_score > 0 ? 'primary' : 'light text-muted border' %> fs-6 px-3 py-1">
+												<%= st_score %> pts
+											</span>
+										</td>
+									<% end %>
+									<td class="text-end pe-4 py-3">
+										<span class="badge bg-success fs-5 px-3 py-2 rounded-pill shadow-sm grand-total-badge" id="grand_total_<%= church.id %>">
+											<%= church.total_score %> pts
+										</span>
+									</td>
+								</tr>
+							<% end %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- STAGE TOGGLE / PERSISTENT NAV PILLS -->
+		<% if @stages.present? %>
+			<div class="mb-4 d-flex align-items-center gap-2 overflow-auto pb-2 p-3 bg-white shadow-sm rounded-4 border">
+				<span class="text-muted fw-bold me-2 small text-uppercase" style="min-width: 100px;">
+					<i class="bi bi-layers-fill me-1 text-primary"></i>Stage View:
+				</span>
+				<button type="button" class="btn btn-light border text-dark rounded-pill px-4 fw-semibold stage-nav-btn" id="stage_nav_btn_all" onclick="filterStageTable('all')">
+					All Stages
+				</button>
+				<% @stages.each do |st| %>
+					<button type="button" class="btn btn-light border text-dark rounded-pill px-4 fw-semibold stage-nav-btn" id="stage_nav_btn_<%= st.id %>" onclick="filterStageTable('<%= st.id %>')">
+						<%= st.name %>
+					</button>
+				<% end %>
+			</div>
+		<% end %>
+
+		<!-- DEDICATED STAGE TABLES -->
+		<div class="row g-4" id="stageTablesContainer">
+			<% @stages.each do |stage| %>
+				<% max_round = [Score.where(stage: stage).maximum(:round_number) || 1, 5].max %>
+				<% round_list = (1..max_round).to_a %>
+				<% stage_churches = @churches.sort_by { |c| -c.score_for_stage(stage) } %>
+
+				<div class="col-12 mb-3 stage-table-card" data-stage-id="<%= stage.id %>">
+					<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+						<div class="card-header bg-primary text-white border-0 py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+							<div class="d-flex align-items-center">
+								<i class="bi bi-card-heading me-2 fs-4"></i>
+								<div>
+									<h4 class="mb-0 fw-bold"><%= stage.name %> Scoreboard</h4>
+									<small class="text-white-50"><%= round_list.size %> Question Rounds (<%= round_list.map { |r| "Round #{r}" }.join(', ') %>)</small>
+								</div>
+							</div>
+							<% if current_user&.admin? || current_user&.recorder? %>
+								<a href="<%= recorder_path(stage_id: stage.id) %>" class="btn btn-light btn-sm rounded-pill px-3 fw-semibold">
+									<i class="bi bi-pencil-square me-1"></i> Record <%= stage.name %>
+								</a>
+							<% end %>
+						</div>
+
+						<div class="card-body p-0">
+							<div class="table-responsive">
+								<table class="table table-hover align-middle mb-0" style="font-size: 0.95rem;">
+									<thead class="bg-light text-muted small text-uppercase">
+										<tr>
+											<th class="ps-4 py-3" style="width: 70px;">Rank</th>
+											<th class="py-3">Congregation / Province</th>
+											<% round_list.each do |r_num| %>
+												<th class="text-center py-3">Round <%= r_num %></th>
+											<% end %>
+											<th class="text-end pe-4 py-3"><%= stage.name %> Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% stage_churches.each_with_index do |church, idx| %>
+											<% stage_total_pts = church.score_for_stage(stage) %>
+											<tr>
+												<td class="ps-4 py-3 fw-bold text-muted">#<%= idx + 1 %></td>
+												<td class="py-3">
+													<div class="fw-bold text-dark"><%= church.name %></div>
+													<% if church.location.present? %>
+														<small class="text-muted"><i class="bi bi-geo-alt-fill me-1 text-danger"></i><%= church.location %></small>
+													<% end %>
+												</td>
+
+												<% round_list.each do |r_num| %>
+													<% r_pts = church.score_for_stage_and_round(stage, r_num) %>
+													<% r_bonus = church.bonus_points_for_stage_and_round(stage, r_num) %>
+													<td class="text-center py-3" id="stage_round_score_<%= church.id %>_<%= stage.id %>_<%= r_num %>">
+														<% if r_pts > 0 %>
+															<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 fw-bold fs-6">
+																<%= r_pts %>
+																<% if r_bonus > 0 %>
+																	<small class="text-warning-emphasis ms-1">(+<%= r_bonus %>)</small>
+																<% end %>
+															</span>
+														<% else %>
+															<span class="text-muted small">—</span>
+														<% end %>
+													</td>
+												<% end %>
+
+												<td class="text-end pe-4 py-3">
+													<span class="badge bg-<%= stage_total_pts > 0 ? 'primary' : 'light text-muted border' %> fs-6 px-3 py-2 rounded-pill fw-bold">
+														<%= stage_total_pts %> pts
+													</span>
+												</td>
+											</tr>
+										<% end %>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% end %>
+		</div>
+
+	<% else %>
+		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+			<div class="empty-state-icon mb-3 text-muted opacity-50">
+				<i class="bi bi-trophy" style="font-size: 4rem;"></i>
+			</div>
+			<h4 class="fw-bold text-dark mb-1">Scoreboard Empty</h4>
+			<p class="text-muted small mb-4">No congregations registered or scores recorded yet.</p>
+			<% if current_user&.admin? || current_user&.recorder? %>
+				<div>
+					<a href="<%= settings_churches_path %>" class="btn btn-primary rounded-pill px-4 me-2">Register Congregations</a>
+					<a href="<%= recorder_path %>" class="btn btn-outline-primary rounded-pill px-4">Record Scores</a>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
 </div>
-<%#  %>
-<div class="card mb-5">
-	<div class="card-header h2 text-center fw-bold">
-		Stage 1
-	</div>
-	<div class="card-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">First</th>
-					<th scope="col">Last</th>
-					<th scope="col">Handle</th>
-				</tr>
-			</thead>
-			<tbody class="table-group-divider">
-				<tr>
-					<th scope="row">1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-				</tr>
-				<tr>
-					<th scope="row">2</th>
-					<td>Jacob</td>
-					<td>Thornton</td>
-					<td>@fat</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-<%#  %>
-<div class="card">
-	<div class="card-header h2 text-center fw-bold">
-		Stage 2
-	</div>
-	<div class="card-body">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">First</th>
-					<th scope="col">Last</th>
-					<th scope="col">Handle</th>
-				</tr>
-			</thead>
-			<tbody class="table-group-divider">
-				<tr>
-					<th scope="row">1</th>
-					<td>Mark</td>
-					<td>Otto</td>
-					<td>@mdo</td>
-				</tr>
-				<tr>
-					<th scope="row">2</th>
-					<td>Jacob</td>
-					<td>Thornton</td>
-					<td>@fat</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
+
+<script>
+	function toggleOverallBoard(show) {
+		const overall = document.getElementById("overallStandingsSection");
+		const podium = document.getElementById("winnerPodiumSection");
+		if (overall) {
+			if (show) {
+				overall.classList.remove("d-none");
+			} else {
+				overall.classList.add("d-none");
+			}
+		}
+		if (podium) {
+			if (show) {
+				podium.classList.remove("d-none");
+			} else {
+				podium.classList.add("d-none");
+			}
+		}
+		const url = new URL(window.location);
+		url.searchParams.set("show_overall", show ? "1" : "0");
+		window.history.replaceState({}, "", url);
+		localStorage.setItem("scoreboard_show_overall", show ? "1" : "0");
+	}
+
+	function filterStageTable(stageId) {
+		const stageTables = document.querySelectorAll(".stage-table-card");
+		const navBtns = document.querySelectorAll(".stage-nav-btn");
+
+		navBtns.forEach(btn => {
+			btn.classList.remove("btn-primary", "shadow-sm");
+			btn.classList.add("btn-light", "border", "text-dark");
+		});
+
+		const activeBtn = document.getElementById("stage_nav_btn_" + stageId);
+		if (activeBtn) {
+			activeBtn.classList.remove("btn-light", "border", "text-dark");
+			activeBtn.classList.add("btn-primary", "shadow-sm");
+		}
+
+		stageTables.forEach(card => {
+			if (stageId === 'all' || card.dataset.stageId === String(stageId)) {
+				card.classList.remove("d-none");
+			} else {
+				card.classList.add("d-none");
+			}
+		});
+
+		localStorage.setItem("scoreboard_active_stage", String(stageId));
+		const url = new URL(window.location);
+		url.searchParams.set("stage_id", String(stageId));
+		window.history.replaceState({}, "", url);
+	}
+
+	function restoreSavedScoreboardState() {
+		const urlParams = new URLSearchParams(window.location.search);
+		
+		// 1. Restore Active Stage Tab
+		const savedStage = urlParams.get("stage_id") || localStorage.getItem("scoreboard_active_stage") || "<%= @current_stage&.id || 'all' %>";
+		filterStageTable(savedStage);
+
+		// 2. Restore Overall Board Toggle State
+		const savedOverall = urlParams.get("show_overall") || localStorage.getItem("scoreboard_show_overall");
+		const toggle = document.getElementById("overallToggle");
+		if (savedOverall === "1") {
+			if (toggle) toggle.checked = true;
+			toggleOverallBoard(true);
+		} else if (savedOverall === "0") {
+			if (toggle) toggle.checked = false;
+			toggleOverallBoard(false);
+		}
+	}
+
+	document.addEventListener("DOMContentLoaded", restoreSavedScoreboardState);
+	document.addEventListener("turbo:load", restoreSavedScoreboardState);
+</script>

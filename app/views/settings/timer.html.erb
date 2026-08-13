@@ -10,24 +10,25 @@
 					<i class="bi bi-stopwatch-fill fs-1"></i>
 				</div>
 				<div>
-					<h2 class="fw-bold mb-1 text-dark">Timer Settings</h2>
-					<p class="text-muted mb-0">Configure question duration and countdown auto-start behavior</p>
+					<h2 class="fw-bold mb-1 text-dark">Timer & Scoring Settings</h2>
+					<p class="text-muted mb-0">Configure default question countdown timer, points per question, and auto-start behavior</p>
 				</div>
 			</div>
 		</div>
 
-		<!-- Timer Configuration Card -->
+		<!-- Configuration Card -->
 		<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
 			<div class="card-header bg-warning text-dark border-0 py-3 px-4">
 				<div class="d-flex align-items-center">
 					<i class="bi bi-sliders me-2 fs-5"></i>
-					<h5 class="mb-0 fw-semibold">Timer Configuration</h5>
+					<h5 class="mb-0 fw-semibold">Timer & Scoring Rules</h5>
 				</div>
 			</div>
 			<div class="card-body p-4">
 				<%= form_with model: @timers, url: settings_timer_path, method: :post, class: "timer-form" do |f| %>
 					<div class="row g-4">
-						<div class="col-md-6">
+						<!-- Timer Duration -->
+						<div class="col-md-4">
 							<div class="mb-3">
 								<label for="timer_field" class="form-label fw-semibold text-dark">
 									<i class="bi bi-alarm-fill fs-5 me-1 text-warning"></i>
@@ -47,12 +48,39 @@
 									<span class="input-group-text bg-light">sec</span>
 								</div>
 								<div class="form-text text-muted mt-2">
-									Current setting: <strong><%= @timer || 0 %></strong> seconds (~<%= ((@timer || 0) / 60.0).round(1) %> mins)
+									Current: <strong><%= @timer || 60 %></strong> seconds
 								</div>
 							</div>
 						</div>
 
-						<div class="col-md-6">
+						<!-- Points Per Question -->
+						<div class="col-md-4">
+							<div class="mb-3">
+								<label for="points_field" class="form-label fw-semibold text-dark">
+									<i class="bi bi-star-fill fs-5 me-1 text-success"></i>
+									Points Per Question
+								</label>
+								<div class="input-group input-group-lg">
+									<span class="input-group-text bg-light border-end-0">
+										<i class="bi bi-award text-muted"></i>
+									</span>
+									<%= f.number_field :points_per_question, 
+											value: @points_per_question, 
+											class: "form-control border-start-0 fs-5", 
+											id: "points_field",
+											min: 1,
+											max: 500,
+											placeholder: "10" %>
+									<span class="input-group-text bg-light">pts</span>
+								</div>
+								<div class="form-text text-muted mt-2">
+									Default score increment per correct question: <strong><%= @points_per_question || 10 %></strong> pts
+								</div>
+							</div>
+						</div>
+
+						<!-- Auto Start -->
+						<div class="col-md-4">
 							<div class="mb-3">
 								<label class="form-label fw-semibold text-dark">
 									<i class="bi bi-play-circle-fill fs-5 me-1 text-primary"></i>
@@ -65,7 +93,7 @@
 												class: "form-check-input fs-4 me-3", 
 												id: "auto_start_switch" %>
 										<label class="form-check-label pt-1 fw-semibold text-dark" for="auto_start_switch">
-											Automatically start timer when question loads
+											Auto-start timer on question load
 										</label>
 									</div>
 								</div>
@@ -75,7 +103,7 @@
 
 					<div class="mt-4 pt-3 border-top">
 						<button type="submit" class="btn btn-warning btn-lg px-5 rounded-3 fw-semibold">
-							<i class="bi bi-check-lg me-1"></i> Save Timer Settings
+							<i class="bi bi-check-lg me-1"></i> Save Settings
 						</button>
 					</div>
 				<% end %>

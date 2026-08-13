@@ -74,37 +74,36 @@ class SettingsController < ApplicationController
   end
 
   def timer
-    @timers = Setting.last || Setting.new(timer: 60, auto_start: false)
-    @timer = @timers.timer || 0
+    @timers = Setting.last || Setting.new(timer: 60, auto_start: false, points_per_question: 10)
+    @timer = @timers.timer || 60
     @auto_start = @timers.auto_start || false
+    @points_per_question = @timers.points_per_question || 10
 
-    if params[:setting].present? || params[:timer].present? || params[:auto_start].present?
-      # Handle both model-based and direct parameter submissions
+    if params[:setting].present? || params[:timer].present? || params[:auto_start].present? || params[:points_per_question].present?
       if params[:setting].present?
         timer_value = params[:setting][:timer].to_i
         auto_start_value = params[:setting][:auto_start] == '1'
+        points_per_q = params[:setting][:points_per_question].to_i
       else
-        timer_value = params[:timer].present? ? params[:timer].to_i : (@timers.timer || 0)
+        timer_value = params[:timer].present? ? params[:timer].to_i : (@timers.timer || 60)
         auto_start_value = params[:auto_start] == '1'
+        points_per_q = params[:points_per_question].present? ? params[:points_per_question].to_i : (@timers.points_per_question || 10)
       end
+      
+      points_per_q = 10 if points_per_q <= 0
       
       if timer_value <= 0
         redirect_to settings_timer_path, alert: "Please enter a valid number of seconds."
         return
       end
       
-      # Update the existing setting or create a new one if it doesn't exist
       if @timers.persisted?
-        @timers.update!(timer: timer_value, auto_start: auto_start_value)
+        @timers.update!(timer: timer_value, auto_start: auto_start_value, points_per_question: points_per_q)
       else
-        Setting.create!(timer: timer_value, auto_start: auto_start_value)
+        Setting.create!(timer: timer_value, auto_start: auto_start_value, points_per_question: points_per_q)
       end
       
-      success_message = []
-      success_message << "#{timer_value} seconds"
-      success_message << "Auto-start #{auto_start_value ? 'enabled' : 'disabled'}"
-      
-      redirect_to settings_timer_path, notice: "Timer settings updated: #{success_message.join(', ')}."
+      redirect_to settings_timer_path, notice: "Quiz settings updated: #{timer_value}s timer, #{points_per_q} pts/question."
     end
   end
 

@@ -39,6 +39,9 @@ Rails.application.routes.draw do
   post 'settings/uploader', to: 'settings#uploader'
   get 'login', to: 'pages#login'
   get 'scoreboard', to: 'pages#scoreboard'
+  get 'recorder', to: 'pages#recorder', as: :recorder
+  post 'update_score', to: 'pages#update_score', as: :update_score
+  post 'reset_scores', to: 'pages#reset_scores', as: :reset_scores
   post 'reset', to: 'settings#reset'
   get 'quizmaster', to: 'pages#quizmaster'
   get 'judges', to: 'pages#judges'

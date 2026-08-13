@@ -80,20 +80,20 @@
 			</h6>
 			<ul class="nav-list">
 				<li class="nav-item">
-					<a class="nav-link reset-link" id="reset-link" href="<%= reset_path %>">
+					<button type="button" class="nav-link reset-link w-100 text-start border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#resetAnswersModal">
 						<div class="nav-link-content">
 							<i class='bi bi-arrow-counterclockwise me-2'></i>
 							<span>Reset Answers</span>
 						</div>
-					</a>
+					</button>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link delete-link" id="delete-link" href="<%= delete_data_path %>">
+					<button type="button" class="nav-link delete-link w-100 text-start border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#deleteAllDataModal">
 						<div class="nav-link-content">
 							<i class='bi bi-trash-fill me-2'></i>
 							<span>Delete All Data</span>
 						</div>
-					</a>
+					</button>
 				</li>
 			</ul>
 		</div>
@@ -110,40 +110,76 @@
 	</div>
 </div>
 
+<!-- Modal: Delete All Data Confirmation -->
+<div class="modal fade" id="deleteAllDataModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content rounded-4 border-0 shadow">
+			<div class="modal-header border-0 pb-0">
+				<h5 class="modal-title fw-bold text-danger">
+					<i class="bi bi-exclamation-triangle-fill me-2"></i>Delete All Data
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<%= form_with url: delete_data_path, method: :post do |f| %>
+				<div class="modal-body p-4">
+					<div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-danger rounded-3 mb-3">
+						<i class="bi bi-shield-slash-fill me-2 fs-5"></i>
+						<strong>Warning:</strong> This will permanently delete all questions, scores, stages, congregations, and representatives! This action cannot be undone.
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-semibold text-dark">Type <code class="text-danger fw-bold">delete</code> below to confirm:</label>
+						<input type="text" class="form-control form-control-lg rounded-3 fs-6" id="deleteConfirmInput" placeholder="type 'delete' here..." onkeyup="checkConfirmInput('deleteConfirmInput', 'deleteBtnSubmit', 'delete')">
+					</div>
+				</div>
+				<div class="modal-footer border-0 pt-0">
+					<button type="button" class="btn btn-light rounded-3 px-3" data-bs-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-danger rounded-3 px-4 fw-bold" id="deleteBtnSubmit" disabled>
+						<i class="bi bi-trash-fill me-1"></i> Delete All Data
+					</button>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<!-- Modal: Reset Answers Confirmation -->
+<div class="modal fade" id="resetAnswersModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content rounded-4 border-0 shadow">
+			<div class="modal-header border-0 pb-0">
+				<h5 class="modal-title fw-bold text-warning-emphasis">
+					<i class="bi bi-arrow-counterclockwise me-2 text-warning"></i>Reset Answers
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<%= form_with url: reset_path, method: :post do |f| %>
+				<div class="modal-body p-4">
+					<div class="alert alert-warning bg-warning bg-opacity-10 border-warning border-opacity-25 text-dark rounded-3 mb-3">
+						<i class="bi bi-info-circle-fill me-2 fs-5 text-warning"></i>
+						This will clear recorded question answers and progress state for the quiz.
+					</div>
+					<div class="mb-3">
+						<label class="form-label fw-semibold text-dark">Type <code class="text-warning-emphasis fw-bold">reset</code> below to confirm:</label>
+						<input type="text" class="form-control form-control-lg rounded-3 fs-6" id="resetConfirmInput" placeholder="type 'reset' here..." onkeyup="checkConfirmInput('resetConfirmInput', 'resetBtnSubmit', 'reset')">
+					</div>
+				</div>
+				<div class="modal-footer border-0 pt-0">
+					<button type="button" class="btn btn-light rounded-3 px-3" data-bs-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-warning text-dark rounded-3 px-4 fw-bold" id="resetBtnSubmit" disabled>
+						<i class="bi bi-arrow-counterclockwise me-1"></i> Reset Answers
+					</button>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+
 <script>
-	document.addEventListener("turbo:load", function() {
-	    const deleteLink = document.getElementById("delete-link");
-	    const resetLink = document.getElementById("reset-link");
-
-	    function handleConfirmation(link, actionWord) {
-	        if (!link) return;
-	        link.addEventListener("click", function(event) {
-	            event.preventDefault();
-	            const userInput = prompt(`Type '${actionWord}' to confirm:`);
-	            if (userInput === actionWord) {
-	                const confirmed = confirm(`Are you sure you want to ${actionWord} the data? This action cannot be undone.`);
-	                if (confirmed) {
-	                    const form = document.createElement('form');
-	                    form.method = 'POST';
-	                    form.action = link.href;
-
-	                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-	                    const csrfInput = document.createElement('input');
-	                    csrfInput.type = 'hidden';
-	                    csrfInput.name = 'authenticity_token';
-	                    csrfInput.value = csrfToken;
-	                    form.appendChild(csrfInput);
-
-	                    document.body.appendChild(form);
-	                    form.submit();
-	                }
-	            } else if (userInput !== null) {
-	                alert(`You must type '${actionWord}' exactly to confirm.`);
-	            }
-	        });
-	    }
-
-	    handleConfirmation(deleteLink, "delete");
-	    handleConfirmation(resetLink, "reset");
-	});
+	function checkConfirmInput(inputId, btnId, targetWord) {
+		const input = document.getElementById(inputId);
+		const btn = document.getElementById(btnId);
+		if (input && btn) {
+			btn.disabled = (input.value.trim().toLowerCase() !== targetWord.toLowerCase());
+		}
+	}
 </script>

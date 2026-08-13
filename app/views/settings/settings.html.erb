@@ -128,7 +128,7 @@
 							<div class="timer-circle mx-auto d-flex align-items-center justify-content-center bg-warning bg-opacity-10 rounded-circle border border-warning border-3 shadow-sm" style="width: 110px; height: 110px;">
 								<div>
 									<div class="timer-value text-warning-emphasis fw-bold fs-1" style="line-height: 1;">
-										<%= @timer.nil? ? 0 : @timer %>
+										<%= @timer.nil? ? 60 : @timer %>
 									</div>
 									<small class="text-muted fw-semibold">seconds</small>
 								</div>
@@ -143,43 +143,6 @@
 				</div>
 			</div>
 
-			<!-- System Status Card -->
-			<div class="col-md-6">
-				<div class="card border-0 shadow-sm rounded-4 overflow-hidden settings-card h-100">
-					<div class="card-header bg-info text-white border-0 py-3 px-4">
-						<div class="d-flex align-items-center">
-							<i class="bi bi-activity me-2 fs-5"></i>
-							<h5 class="mb-0 fw-semibold">System Health Status</h5>
-						</div>
-					</div>
-					<div class="card-body p-4">
-						<div class="status-items">
-							<div class="status-item d-flex align-items-center justify-content-between mb-3 p-3 bg-light rounded-3 border">
-								<div class="d-flex align-items-center">
-									<i class="bi bi-hdd-rack-fill text-success me-3 fs-5"></i>
-									<span class="fw-semibold text-dark">Quiz Engine</span>
-								</div>
-								<span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">Online</span>
-							</div>
-							<div class="status-item d-flex align-items-center justify-content-between mb-3 p-3 bg-light rounded-3 border">
-								<div class="d-flex align-items-center">
-									<i class="bi bi-database-fill text-<%= @stages.present? ? 'success' : 'warning' %> me-3 fs-5"></i>
-									<span class="fw-semibold text-dark">Database Content</span>
-								</div>
-								<span class="badge bg-<%= @stages.present? ? 'success' : 'warning' %>-subtle text-<%= @stages.present? ? 'success' : 'warning' %> border border-<%= @stages.present? ? 'success' : 'warning' %>-subtle px-3 py-1 rounded-pill">
-									<%= @stages.present? ? 'Ready' : 'Pending' %>
-								</span>
-							</div>
-							<div class="status-item d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border">
-								<div class="d-flex align-items-center">
-									<i class="bi bi-wifi text-primary me-3 fs-5"></i>
-									<span class="fw-semibold text-dark">Server Network</span>
-								</div>
-								<code class="badge bg-light text-dark border px-3 py-1 rounded-pill"><%= local_network_address %></code>
-							</div>
-						</div>
-					</div>
-				</div>
 			<!-- Congregations & Representatives Card -->
 			<div class="col-md-6">
 				<div class="card border-0 shadow-sm rounded-4 overflow-hidden settings-card h-100">
@@ -208,6 +171,51 @@
 						<p class="text-muted small mb-3">Manage congregation names, provinces, and official representatives</p>
 						<div>
 							<a href="<%= settings_churches_path %>" class="btn btn-sm btn-outline-primary rounded-pill px-4">Manage Congregations</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- System Health Status Card (Full Width Row) -->
+			<div class="col-12">
+				<div class="card border-0 shadow-sm rounded-4 overflow-hidden settings-card">
+					<div class="card-header bg-info text-white border-0 py-3 px-4">
+						<div class="d-flex align-items-center">
+							<i class="bi bi-activity me-2 fs-5"></i>
+							<h5 class="mb-0 fw-semibold">System Health Status</h5>
+						</div>
+					</div>
+					<div class="card-body p-4">
+						<div class="row g-3">
+							<div class="col-md-4">
+								<div class="status-item d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border h-100">
+									<div class="d-flex align-items-center">
+										<i class="bi bi-hdd-rack-fill text-success me-3 fs-4"></i>
+										<span class="fw-semibold text-dark">Quiz Engine</span>
+									</div>
+									<span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">Online</span>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="status-item d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border h-100">
+									<div class="d-flex align-items-center">
+										<i class="bi bi-database-fill text-<%= @stages.present? ? 'success' : 'warning' %> me-3 fs-4"></i>
+										<span class="fw-semibold text-dark">Database Content</span>
+									</div>
+									<span class="badge bg-<%= @stages.present? ? 'success' : 'warning' %>-subtle text-<%= @stages.present? ? 'success' : 'warning' %> border border-<%= @stages.present? ? 'success' : 'warning' %>-subtle px-3 py-1 rounded-pill">
+										<%= @stages.present? ? 'Ready' : 'Pending' %>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="status-item d-flex align-items-center justify-content-between p-3 bg-light rounded-3 border h-100">
+									<div class="d-flex align-items-center">
+										<i class="bi bi-wifi text-primary me-3 fs-4"></i>
+										<span class="fw-semibold text-dark">Server Network</span>
+									</div>
+									<code class="badge bg-light text-dark border px-3 py-1 rounded-pill"><%= local_network_address %></code>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

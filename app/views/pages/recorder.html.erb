@@ -1,0 +1,202 @@
+<div class="container py-3">
+	<!-- Recorder Header -->
+	<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+		<div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+			<div class="d-flex align-items-center gap-3">
+				<div class="avatar-circle bg-danger bg-opacity-10 text-danger rounded-3 d-flex align-items-center justify-content-center p-3">
+					<i class="bi bi-pencil-square fs-1"></i>
+				</div>
+				<div>
+					<h2 class="fw-bold mb-1 text-dark">Score Record Keeper</h2>
+					<p class="text-muted mb-0">
+						Record base points & judge bonus points per Stage & Question Round. 
+						<span class="badge bg-light text-dark border ms-1"><i class="bi bi-star-fill text-warning me-1"></i>Settings Rule: <%= @points_per_question %> pts/question</span>
+					</p>
+				</div>
+			</div>
+			<div class="d-flex align-items-center gap-2">
+				<a href="<%= scoreboard_path %>" class="btn btn-outline-primary rounded-pill px-4">
+					<i class="bi bi-bar-chart-line-fill me-1"></i> View Scoreboard
+				</a>
+				<%= button_to reset_scores_path, method: :post, data: { turbo_confirm: "Are you sure you want to reset all recorded scores across all stages and rounds?" }, class: "btn btn-outline-danger rounded-pill px-3" do %>
+					<i class="bi bi-arrow-counterclockwise me-1"></i> Reset All Scores
+				<% end %>
+			</div>
+		</div>
+	</div>
+
+	<!-- 1. STAGE SELECTOR PILLS -->
+	<% if @stages.present? %>
+		<div class="mb-3 d-flex align-items-center gap-2 overflow-auto pb-2">
+			<span class="text-muted fw-bold me-2 small text-uppercase" style="min-width: 90px;"><i class="bi bi-layers-fill me-1"></i>Stage:</span>
+			<% @stages.each do |st| %>
+				<a href="<%= recorder_path(stage_id: st.id, round_number: @current_round) %>" class="btn <%= @current_stage == st ? 'btn-primary shadow-sm' : 'btn-light border text-dark' %> rounded-pill px-4 fw-semibold">
+					<%= st.name %>
+					<% if st.active? %>
+						<span class="badge bg-success-subtle text-success border border-success-subtle ms-1 rounded-pill small">Active</span>
+					<% end %>
+				</a>
+			<% end %>
+		</div>
+	<% end %>
+
+	<!-- 2. QUESTION ROUND SELECTOR PILLS -->
+	<% if @current_stage.present? %>
+		<div class="mb-4 d-flex align-items-center gap-2 overflow-auto pb-2 p-3 bg-light rounded-4 border">
+			<span class="text-muted fw-bold me-2 small text-uppercase" style="min-width: 110px;"><i class="bi bi-ui-checks me-1"></i>Question Round:</span>
+			<% (1..@max_round_count).each do |r_num| %>
+				<a href="<%= recorder_path(stage_id: @current_stage.id, round_number: r_num) %>" class="btn <%= @current_round == r_num ? 'btn-warning text-dark fw-bold shadow-sm' : 'btn-white border text-dark' %> rounded-pill px-3">
+					Round <%= r_num %>
+				</a>
+			<% end %>
+			<!-- Auto Increment Next Round Button -->
+			<a href="<%= recorder_path(stage_id: @current_stage.id, round_number: @max_round_count + 1) %>" class="btn btn-outline-secondary rounded-pill px-3 border-dashed">
+				<i class="bi bi-plus-lg me-1"></i> Add Round <%= @max_round_count + 1 %>
+			</a>
+		</div>
+	<% end %>
+
+	<!-- Score Entry Grid for Selected Stage & Round -->
+	<% if @churches.present? && @current_stage.present? %>
+		<div class="d-flex align-items-center justify-content-between mb-3 px-1">
+			<h4 class="fw-bold text-dark mb-0">
+				Recording Scores for <span class="text-primary"><%= @current_stage.name %></span> &mdash; <span class="text-warning-emphasis">Round <%= @current_round %></span>
+			</h4>
+			<span class="badge bg-dark text-white px-3 py-2 rounded-pill"><%= @churches.count %> Congregations</span>
+		</div>
+
+		<div class="row g-4">
+			<% @churches.each do |church| %>
+				<% r_base = church.base_points_for_stage_and_round(@current_stage, @current_round) %>
+				<% r_bonus = church.bonus_points_for_stage_and_round(@current_stage, @current_round) %>
+				<% r_total = r_base + r_bonus %>
+				<div class="col-md-6 col-lg-4">
+					<div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white settings-card">
+						<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+							<div>
+								<h5 class="mb-0 fw-bold text-dark"><%= church.name %></h5>
+								<% if church.location.present? %>
+									<small class="text-muted"><i class="bi bi-geo-alt-fill me-1 text-danger"></i><%= church.location %></small>
+								<% end %>
+							</div>
+							<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold">
+								Grand Total: <%= church.total_score %> pts
+							</span>
+						</div>
+						<div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+							<!-- Representatives Badges -->
+							<div class="mb-3">
+								<% if church.representatives.present? %>
+									<div class="d-flex flex-wrap justify-content-center gap-1">
+										<% church.representatives.each do |rep| %>
+											<span class="badge bg-light text-dark border px-2 py-1 small">
+												<i class="bi bi-person-fill text-muted me-1"></i><%= rep.name %>
+											</span>
+										<% end %>
+									</div>
+								<% else %>
+									<small class="text-muted">No reps assigned</small>
+								<% end %>
+							</div>
+
+							<!-- Stage & Round Score Entry Form -->
+							<%= form_with url: update_score_path, method: :post, html: { id: "scoreForm_#{church.id}" } do |f| %>
+								<%= f.hidden_field :church_id, value: church.id %>
+								<%= f.hidden_field :stage_id, value: @current_stage.id %>
+								<%= f.hidden_field :round_number, value: @current_round %>
+
+								<div class="row g-2 mb-3">
+									<!-- Base Points (READONLY - Controlled by Settings & Buttons) -->
+									<div class="col-6">
+										<label class="form-label text-muted small fw-semibold text-uppercase">Base Points</label>
+										<div class="position-relative">
+											<%= f.number_field :points, 
+												value: r_base, 
+												class: "form-control text-center fw-bold text-primary fs-3 rounded-3 border-2 bg-light cursor-not-allowed", 
+												id: "input_points_#{church.id}",
+												readonly: true,
+												tabindex: "-1",
+												min: 0 %>
+											<span class="position-absolute top-0 end-0 me-2 mt-1 badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;" title="Fixed from Settings">
+												Fixed
+											</span>
+										</div>
+										<div class="d-flex justify-content-center gap-1 mt-2">
+											<button type="button" class="btn btn-sm btn-outline-secondary px-2" onclick="addPoints(<%= church.id %>, -<%= @points_per_question %>)">-<%= @points_per_question %></button>
+											<button type="button" class="btn btn-sm btn-outline-success px-2 fw-bold" onclick="addPoints(<%= church.id %>, <%= @points_per_question %>)">+<%= @points_per_question %></button>
+										</div>
+									</div>
+
+									<!-- Judges Optional Bonus Points (Editable) -->
+									<div class="col-6">
+										<label class="form-label text-warning-emphasis small fw-semibold text-uppercase"><i class="bi bi-star-fill text-warning me-1"></i>Judges Bonus</label>
+										<%= f.number_field :bonus_points, 
+											value: r_bonus, 
+											class: "form-control text-center fw-bold text-warning-emphasis fs-3 rounded-3 border-2 border-warning", 
+											id: "input_bonus_#{church.id}",
+											min: 0 %>
+										<div class="d-flex justify-content-center gap-1 mt-2">
+											<button type="button" class="btn btn-sm btn-outline-warning px-2 fw-bold" onclick="addBonus(<%= church.id %>, 5)">+5</button>
+											<button type="button" class="btn btn-sm btn-outline-warning px-2 fw-bold" onclick="addBonus(<%= church.id %>, 10)">+10</button>
+										</div>
+									</div>
+								</div>
+
+								<div class="p-2 mb-3 bg-light rounded-3 text-muted small d-flex justify-content-between px-3 border">
+									<span><%= @current_stage.name %> &bull; Round <%= @current_round %>:</span>
+									<strong class="text-dark fs-6"><%= r_total %> pts</strong>
+								</div>
+
+								<button type="submit" class="btn btn-primary w-100 rounded-3 fw-semibold">
+									<i class="bi bi-check-lg me-1"></i> Save Round <%= @current_round %> Score
+								</button>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	<% elsif @churches.empty? %>
+		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+			<div class="empty-state-icon mb-3 text-muted opacity-50">
+				<i class="bi bi-building" style="font-size: 3.5rem;"></i>
+			</div>
+			<h5 class="fw-bold text-dark mb-1">No Congregations Registered</h5>
+			<p class="text-muted small mb-4">Please register congregations in Settings first before recording scores.</p>
+			<div>
+				<a href="<%= settings_churches_path %>" class="btn btn-primary rounded-pill px-4">Go to Congregation Settings</a>
+			</div>
+		</div>
+	<% else %>
+		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+			<div class="empty-state-icon mb-3 text-muted opacity-50">
+				<i class="bi bi-layers" style="font-size: 3.5rem;"></i>
+			</div>
+			<h5 class="fw-bold text-dark mb-1">No Stages Configured</h5>
+			<p class="text-muted small mb-4">Please configure stages in Settings first.</p>
+			<div>
+				<a href="<%= settings_stage_path %>" class="btn btn-primary rounded-pill px-4">Go to Stage Settings</a>
+			</div>
+		</div>
+	<% end %>
+</div>
+
+<script>
+	function addPoints(churchId, delta) {
+		const input = document.getElementById("input_points_" + churchId);
+		if (input) {
+			let val = parseInt(input.value) || 0;
+			val = Math.max(0, val + delta);
+			input.value = val;
+		}
+	}
+
+	function addBonus(churchId, delta) {
+		const input = document.getElementById("input_bonus_" + churchId);
+		if (input) {
+			let val = parseInt(input.value) || 0;
+			val = Math.max(0, val + delta);
+			input.value = val;
+		}
+	}
+</script>
