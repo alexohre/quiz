@@ -1,42 +1,58 @@
-<nav class="navbar sticky-top mb-5" style="background-color: #e3f2fd;">
+<nav class="navbar fixed-top bg-white shadow-sm py-2" id="main-nav">
 	<div class="container">
-		<a class="navbar-brand logo-enhanced" href="/">
-			<%= image_tag "cbq-logo.png", alt: "CBQ Logo", style: "height: 70px; width: auto;" %>
-		</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-			<div class="offcanvas-header">
-				<h5 class="offcanvas-title" id="offcanvasNavbarLabel">
-					<%= image_tag "cbq-logo.png", alt: "CBQ Logo", style: "height: 40px; width: auto; object-fit: contain;" %>
-				</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		<div class="d-flex align-items-center justify-content-between w-100">
+			<%# Logo %>
+			<a class="navbar-brand nav-logo m-0 p-0" href="/">
+				<%= image_tag "cbq-logo.png", alt: "CBQ Logo", style: "height: 55px; max-height: 55px; width: auto;" %>
+			</a>
+
+			<div class="d-flex align-items-center gap-3">
+				<%# Server IP badge on desktop nav %>
+				<div class="d-none d-md-flex align-items-center gap-2 px-3 py-1 bg-light rounded-pill border">
+					<i class='bx bx-wifi text-success fs-5'></i>
+					<span class="text-muted small">Server:</span>
+					<code class="fw-bold text-dark small"><%= local_network_address %></code>
+				</div>
+
+				<%# Hamburger Toggle Button %>
+				<button class="navbar-toggler border shadow-sm p-2 bg-light rounded-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 			</div>
-			<h5 class=" ms-2"><i class='bx bx-user'></i> Role: <span class="badge bg-success rounded-pill"><%= current_user.role.capitalize %></span></h5>
-			<hr>
-			<div class="offcanvas-body">
-				<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+		</div>
+	</div>
+
+	<%# Mobile offcanvas %>
+	<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+		<div class="offcanvas-header border-bottom">
+			<%= image_tag "cbq-logo.png", alt: "CBQ Logo", style: "height: 48px; width: auto;" %>
+			<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+		</div>
+		<div class="px-3 py-2 bg-light border-bottom d-flex align-items-center justify-content-between">
+			<span class="small"><i class='bx bx-user'></i> Role: <span class="badge bg-success rounded-pill"><%= current_user.role.capitalize %></span></span>
+			<span class="badge bg-white text-dark border"><i class='bx bx-wifi text-success me-1'></i><%= local_network_address %></span>
+		</div>
+		<div class="offcanvas-body">
+			<ul class="navbar-nav flex-grow-1">
+				<li class="nav-item">
+					<a class="nav-link <%= 'active' if request.path == root_path %>" href="/"><i class='bx bx-home-alt-2'></i> Home</a>
+				</li>
+				<% if current_user&.admin? %>
 					<li class="nav-item">
-						<a class="nav-link <%= 'active' if request.path == root_path %>" href="/"><i class='bx bx-home-alt-2' ></i> Home</a>
+						<a class="nav-link <%= 'active' if request.path == scoreboard_path %>" href="<%= scoreboard_path %>"><i class='bx bx-bar-chart'></i> Scoreboard</a>
 					</li>
-					<% if current_user&.admin? %>
-						<li class="nav-item">
-							<a class="nav-link <%= 'active' if request.path == scoreboard_path %>" href="<%= scoreboard_path %>"><i class='bx bx-bar-chart'></i> Scoreboard</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link <%= 'active' if request.path == timer_path %>" href="<%= timer_path %>"><i class='bx bx-timer' ></i> Timer</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link <%= 'active' if request.path == settings_settings_path %>" href="<%= settings_settings_path %>"><i class='bx bx-cog' ></i> Settings</a>
-						</li>
-					<% end %>
-					<hr>
 					<li class="nav-item">
-						<a class="nav-link text-danger" data-turbo-method="delete" data-turbo-confirm='Are you sure!' href="<%= destroy_user_session_path %>"><i class='bx bx-power-off' ></i> Sign Out</a>
+						<a class="nav-link <%= 'active' if request.path == timer_path %>" href="<%= timer_path %>"><i class='bx bx-timer'></i> Timer</a>
 					</li>
-				</ul>
-			</div>
+					<li class="nav-item">
+						<a class="nav-link <%= 'active' if request.path == settings_settings_path %>" href="<%= settings_settings_path %>"><i class='bx bx-cog'></i> Settings</a>
+					</li>
+				<% end %>
+				<hr>
+				<li class="nav-item">
+					<a class="nav-link text-danger" data-turbo-method="delete" data-turbo-confirm="Are you sure?" href="<%= destroy_user_session_path %>"><i class='bx bx-power-off'></i> Sign Out</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 </nav>
