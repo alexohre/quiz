@@ -1,13 +1,7 @@
 <nav class="navbar sticky-top mb-5" style="background-color: #e3f2fd;">
 	<div class="container">
 		<a class="navbar-brand logo-enhanced" href="/">
-			<div class="logo-container">
-				<i class="bx bx-brain logo-icon"></i>
-				<span class="logo-text">
-					<span class="logo-main">CBQ</span>
-					<sup class="logo-year">25</sup>
-				</span>
-			</div>
+			<%= image_tag "cbq-logo.png", alt: "CBQ Logo", style: "height: 70px; width: auto;" %>
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -15,13 +9,7 @@
 		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
 			<div class="offcanvas-header">
 				<h5 class="offcanvas-title" id="offcanvasNavbarLabel">
-					<div class="logo-container-mobile">
-						<i class="bx bx-brain logo-icon-mobile"></i>
-						<span class="logo-text-mobile">
-							<span class="logo-main-mobile">CBQ</span>
-							<sup class="logo-year-mobile">25</sup>
-						</span>
-					</div>
+					<%= image_tag "cbq-logo.png", alt: "CBQ Logo", style: "height: 40px; width: auto; object-fit: contain;" %>
 				</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			</div>
