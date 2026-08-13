@@ -144,6 +144,11 @@ class PagesController < ApplicationController
   end
 
   def reset_scores
+    unless current_user&.admin?
+      redirect_to recorder_path, alert: "Access Denied: Only administrators can reset all scores."
+      return
+    end
+
     Score.destroy_all
     Quiz.update_all(queued_for_recording: false)
     Setting.last&.update(active_quiz_id: nil)

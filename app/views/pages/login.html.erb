@@ -1,39 +1,271 @@
-<div class="container-fluid ps-md-0">
-	<div class="row g-0">
-		<div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
-		<div class="col-md-8 col-lg-6">
-			<div class="login d-flex align-items-center py-5">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-9 col-lg-6 mx-auto shadow p-5 bg-white rounded">
-							<h3 class=" mb-4">Welcome back!</h3>
-							<!-- Sign In Form -->
-							<form>
-								<div class="form-floating mb-3">
-									<input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-									<label for="floatingInput">Email address</label>
-								</div>
-								<div class="form-floating mb-3">
-									<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-									<label for="floatingPassword">Password</label>
-								</div>
-								<div class="form-check mb-3">
-									<input class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
-									<label class="form-check-label" for="rememberPasswordCheck">
-										Remember password
-									</label>
-								</div>
-								<div class="d-grid">
-									<button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
-									<div class="text-center">
-										<a class="small" href="#">Forgot password?</a>
-									</div>
-								</div>
-							</form>
-						</div>
+<!-- Mobile-Responsive Login Page -->
+<div class="login-page-container">
+	<div class="login-content-wrapper">
+		<!-- Left Side - Branding (Hidden on mobile for clean focus) -->
+		<div class="login-branding-section d-none d-md-flex">
+			<div class="login-branding-content text-center">
+				<div class="login-logo-container mb-4 text-center">
+					<%= image_tag "cbq-logo.png", alt: "Children Bible Quiz Logo", class: "img-fluid mb-2", style: "max-height: 85px; width: auto;" %>
+					<p class="login-brand-subtitle small text-white-50">Interactive Live Competition Platform</p>
+				</div>
+				<div class="login-features">
+					<div class="login-feature-item">
+						<i class="bi bi-bar-chart-fill text-warning fs-5"></i>
+						<span class="login-feature-text">Live Scoreboard & Timer</span>
 					</div>
+					<div class="login-feature-item">
+						<i class="bi bi-building-fill text-info fs-5"></i>
+						<span class="login-feature-text">Congregations & Provinces</span>
+					</div>
+					<div class="login-feature-item">
+						<i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+						<span class="login-feature-text">Real-time ActionCable Sync</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Right Side - Compact Login Form -->
+		<div class="login-form-section">
+			<div class="login-form-container">
+				<%= render 'shared/notice' %>
+				<div class="login-form-card">
+					<!-- Welcome Header -->
+					<div class="login-header text-center mb-3">
+						<div class="login-welcome-badge mb-2">
+							<i class="bi bi-person-fill text-white fs-4"></i>
+						</div>
+						<h4 class="login-welcome-title fw-bold mb-1">Welcome Back</h4>
+						<p class="login-welcome-subtitle text-muted small mb-0">Sign in to access your quiz dashboard</p>
+					</div>
+
+					<!-- Form with Small Inputs -->
+					<%= form_for(:user, url: session_path(:user), data: {turbo: false}, html: {class: "login-form"}) do |f| %>
+						<div class="mb-3">
+							<label class="form-label text-muted small fw-semibold text-uppercase mb-1" style="font-size: 0.725rem;">Email Address</label>
+							<div class="login-input-wrapper">
+								<i class="bi bi-envelope-fill login-input-icon text-muted"></i>
+								<%= f.email_field :email, autocomplete: "email", id: "emailInput", placeholder: "email@domain.com", class: "login-input-sm", required: true %>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label text-muted small fw-semibold text-uppercase mb-1" style="font-size: 0.725rem;">Password</label>
+							<div class="login-input-wrapper">
+								<i class="bi bi-lock-fill login-input-icon text-muted"></i>
+								<%= f.password_field :password, autocomplete: "current-password", id: "passwordInput", placeholder: "••••••••", class: "login-input-sm", required: true %>
+								<button type="button" class="login-password-toggle-sm" onclick="togglePassword()" title="Toggle password visibility">
+									<i class="bi bi-eye-slash-fill" id="passwordToggleIcon"></i>
+								</button>
+							</div>
+						</div>
+
+						<div class="d-flex align-items-center justify-content-between mb-3">
+							<div class="form-check mb-0">
+								<%= f.check_box :remember_me, class: "form-check-input cursor-pointer", id: "rememberMe" %>
+								<label class="form-check-label small text-muted cursor-pointer" for="rememberMe">
+									Remember me
+								</label>
+							</div>
+						</div>
+
+						<button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm" style="font-size: 0.9rem;">
+							<i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+						</button>
+					<% end %>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<!-- Enhanced Mobile Responsive & Small Input Styles -->
+<style>
+	.login-page-container {
+		min-height: calc(100vh - 120px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+	}
+
+	.login-content-wrapper {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		max-width: 900px;
+		width: 100%;
+		background: white;
+		border-radius: 20px;
+		box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+		overflow: hidden;
+		border: 1px solid rgba(0, 0, 0, 0.05);
+	}
+
+	.login-branding-section {
+		background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2.5rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.login-logo-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 64px;
+		height: 64px;
+		background: rgba(255, 255, 255, 0.15);
+		border-radius: 50%;
+		border: 2px solid rgba(255, 255, 255, 0.25);
+	}
+
+	.login-logo-icon {
+		font-size: 1.8rem;
+		color: #ffc107;
+	}
+
+	.login-brand-title {
+		font-size: 2.2rem;
+		letter-spacing: -0.02em;
+	}
+
+	.login-features {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		margin-top: 1.5rem;
+	}
+
+	.login-feature-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1rem;
+		background: rgba(255, 255, 255, 0.08);
+		border-radius: 12px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.login-feature-text {
+		font-size: 0.95rem;
+		font-weight: 500;
+	}
+
+	.login-form-section {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		background: #f8fafc;
+	}
+
+	.login-form-container {
+		width: 100%;
+		max-width: 360px;
+	}
+
+	.login-form-card {
+		background: white;
+		border-radius: 16px;
+		padding: 2rem 1.75rem;
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+		border: 1px solid #e2e8f0;
+	}
+
+	.login-welcome-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		background: linear-gradient(135deg, #4338ca, #312e81);
+		border-radius: 50%;
+		box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
+	}
+
+	.login-input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.login-input-icon {
+		position: absolute;
+		left: 0.85rem;
+		font-size: 1rem;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	/* Small input field styling */
+	.login-input-sm {
+		width: 100%;
+		padding: 0.5rem 2.25rem 0.5rem 2.4rem;
+		border: 1.5px solid #cbd5e1;
+		border-radius: 10px;
+		font-size: 0.875rem;
+		background: #f8fafc;
+		transition: all 0.2s ease;
+		outline: none;
+		height: 38px;
+	}
+
+	.login-input-sm:focus {
+		border-color: #4338ca;
+		background: white;
+		box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12);
+	}
+
+	.login-password-toggle-sm {
+		position: absolute;
+		right: 0.5rem;
+		background: none;
+		border: none;
+		color: #64748b;
+		font-size: 1rem;
+		cursor: pointer;
+		padding: 0.25rem 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 6px;
+	}
+
+	.login-password-toggle-sm:hover {
+		color: #4338ca;
+	}
+
+	@media (max-width: 767.98px) {
+		.login-content-wrapper {
+			grid-template-columns: 1fr;
+			max-width: 400px;
+		}
+
+		.login-form-section {
+			padding: 1.25rem 1rem;
+		}
+
+		.login-form-card {
+			padding: 1.5rem 1.25rem;
+		}
+	}
+</style>
+
+<script>
+	function togglePassword() {
+		const passwordInput = document.getElementById('passwordInput');
+		const toggleIcon = document.getElementById('passwordToggleIcon');
+
+		if (passwordInput.type === 'password') {
+			passwordInput.type = 'text';
+			toggleIcon.className = 'bi bi-eye-fill';
+		} else {
+			passwordInput.type = 'password';
+			toggleIcon.className = 'bi bi-eye-slash-fill';
+		}
+	}
+</script>
