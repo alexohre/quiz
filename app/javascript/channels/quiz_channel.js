@@ -60,6 +60,10 @@ consumer.subscriptions.create("QuizChannel", {
 			}
 		}
 
+		if (data.type === "ticker_feed" && data.message) {
+			updateNewsTickerFeed(data.message);
+		}
+
 		if (data.type === "scores_reset") {
 			if (window.location.pathname.includes("/scoreboard") || window.location.pathname.includes("/recorder")) {
 				window.location.reload();
@@ -67,6 +71,37 @@ consumer.subscriptions.create("QuizChannel", {
 		}
 	},
 });
+
+let liveFeedTimeout = null;
+
+function updateNewsTickerFeed(message) {
+	const feedContainer = document.getElementById("quizLiveFeedContainer");
+	const feedMarquee = document.getElementById("quizLiveFeedMarquee");
+
+	if (feedContainer && feedMarquee) {
+		feedMarquee.innerHTML = `<i class="bi bi-lightning-fill text-warning me-1.5"></i> ${message}`;
+
+		// Reset CSS animation
+		feedMarquee.classList.remove("ticker-scroll-active");
+		void feedMarquee.offsetWidth;
+
+		// Unhide container & activate left marquee scroll
+		feedContainer.classList.remove("d-none");
+		feedMarquee.classList.add("ticker-scroll-active");
+
+		if (liveFeedTimeout) {
+			clearTimeout(liveFeedTimeout);
+		}
+
+		// Hide container once single left scroll finishes (8.5 seconds)
+		liveFeedTimeout = setTimeout(() => {
+			if (feedContainer) {
+				feedContainer.classList.add("d-none");
+				feedMarquee.classList.remove("ticker-scroll-active");
+			}
+		}, 8500);
+	}
+}
 
 function updateActiveQuestionDOM(data) {
 	const badge = document.getElementById("activeQuestionBadge");

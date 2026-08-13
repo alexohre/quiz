@@ -66,6 +66,23 @@ class PagesController < ApplicationController
         updated_by: current_user&.email || "Recorder"
       })
 
+      # Broadcast live ticker news feed
+      quiz_obj = quiz_id.present? ? Quiz.find_by(id: quiz_id) : nil
+      q_label = quiz_obj ? "quest ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "quest ##{quiz_id}" : "question")
+
+      ticker_msg = if bonus_points > 0 && points == 0
+        "#{bonus_points} pts manually recorded for #{score.church.name}, #{q_label}"
+      elsif bonus_points > 0 && points > 0
+        "#{points} pts & #{bonus_points} pts manual bonus recorded for #{score.church.name}, #{q_label}"
+      else
+        "#{points} pts recorded for #{score.church.name}, #{q_label}"
+      end
+
+      ActionCable.server.broadcast("quiz_channel", {
+        type: "ticker_feed",
+        message: ticker_msg
+      })
+
       # Auto advance to next question in queue
       next_queued = Quiz.where(queued_for_recording: true).first
 
@@ -127,6 +144,15 @@ class PagesController < ApplicationController
     else
       Quiz.where(queued_for_recording: true, stage_id: stage_id).first&.update(queued_for_recording: false)
     end
+
+    quiz_obj = quiz_id.present? ? Quiz.find_by(id: quiz_id) : nil
+    q_label = quiz_obj ? "quest ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "quest ##{quiz_id}" : "question")
+    ticker_msg = "#{q_label} record skipped"
+
+    ActionCable.server.broadcast("quiz_channel", {
+      type: "ticker_feed",
+      message: ticker_msg
+    })
 
     next_queued = Quiz.where(queued_for_recording: true).first
 

@@ -21,6 +21,8 @@ export default class extends Controller {
 			received: (data) => {
 				if (data.action === "start_timer") {
 					this.startCountdown(data.duration);
+				} else if (data.action === "reset_timer") {
+					this.resetTimer(data.duration);
 				}
 			},
 		});
@@ -32,6 +34,32 @@ export default class extends Controller {
 		}
 		if (this.interval) {
 			clearInterval(this.interval);
+		}
+	}
+
+	resetTimer(duration) {
+		if (this.interval) {
+			clearInterval(this.interval);
+			this.interval = null;
+		}
+
+		const resetDuration = duration || parseInt(this.timerDuration, 10) || 30;
+		this.timer = resetDuration;
+		this.totalDuration = resetDuration;
+
+		if (this.hasCountdownTarget) {
+			this.countdownTarget.classList.remove('warning', 'danger', 'text-danger', 'text-warning');
+			this.countdownTarget.textContent = this.timer;
+		}
+
+		if (this.hasOverlayTarget) {
+			this.hideOverlay();
+		}
+
+		if (this.hasStartButtonTarget) {
+			this.startButtonTarget.disabled = false;
+			this.startButtonTarget.classList.remove("btn-secondary");
+			this.startButtonTarget.classList.add("btn-success");
 		}
 	}
 

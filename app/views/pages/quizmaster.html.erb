@@ -300,4 +300,25 @@
 			padding: 1.25rem;
 		}
 	}
+
+	.marquee-container {
+		display: flex;
+		align-items: center;
+	}
+
+	.ticker-marquee-track {
+		white-space: nowrap;
+		display: inline-flex;
+		align-items: center;
+		animation: marqueeScroll 28s linear infinite;
+	}
+
+	.ticker-marquee-track:hover {
+		animation-play-state: paused;
+	}
+
+	@keyframes marqueeScroll {
+		0% { transform: translateX(100%); }
+		100% { transform: translateX(-100%); }
+	}
 </style>

@@ -5,6 +5,9 @@ class QuizController < ApplicationController
     @active_stage = @stages.find_by(active: true)
     @quizzes = @active_stage.present? ? @active_stage.quizzes.order(question_number: :asc) : []
     
+    settings = Setting.last
+    ActionCable.server.broadcast("timer_channel", { action: "reset_timer", duration: settings&.timer || 30 })
+
     ActionCable.server.broadcast('quiz_channel', { 
       type: 'presenter_wait',
       html: render_to_string(partial: 'wait') 
@@ -20,6 +23,9 @@ class QuizController < ApplicationController
     settings = Setting.last || Setting.create!
     settings.update(active_quiz_id: @quiz.id)
     
+    # Immediately reset any ongoing timer mid-countdown across all screens
+    ActionCable.server.broadcast("timer_channel", { action: "reset_timer", duration: settings.timer || 30 })
+
     # Check if auto-start is enabled
     if settings&.auto_start && settings&.timer && settings.timer > 0
       Rails.logger.info "Auto-starting timer with duration: #{settings.timer}"
