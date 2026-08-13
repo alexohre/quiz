@@ -16,11 +16,10 @@
 		</div>
 
 		<!-- TOP RIGHT LIVE TIMER (Raw Seconds, No Faded Time Up) -->
-		<div class="d-flex align-items-center gap-2 bg-dark text-white px-3.5 py-2 rounded-pill shadow-sm" data-controller="timer" data-timer-duration="<%= Setting.last&.timer || 30 %>">
+		<div class="d-flex align-items-center gap-2 bg-dark text-white px-4 py-2 rounded-pill shadow-sm" data-controller="timer" data-timer-duration="<%= Setting.last&.timer || 30 %>">
 			<i class="bi bi-stopwatch-fill fs-5 text-warning"></i>
 			<span class="text-white-50 small fw-bold me-1 text-uppercase" style="font-size: 0.75rem;">Timer:</span>
 			<span class="fw-extrabold fs-4 font-monospace text-warning me-1" data-timer-target="countdown"><%= Setting.last&.timer || 30 %></span>
-			<small class="text-white-50">s</small>
 		</div>
 	</div>
 
