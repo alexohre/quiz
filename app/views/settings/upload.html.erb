@@ -1,25 +1,28 @@
-<div class="row">
+<div class="row g-4 align-items-start">
 	<div class="col-lg-3">
 		<%= render 'shared/side_nav' %>
 	</div>
 	<div class="col-lg-9">
-		<!-- Enhanced Upload Questions Header -->
+		<!-- Upload Questions Header -->
 		<div class="upload-settings-header mb-4">
-			<div class="header-badge">
-				<i class="bx bx-cloud-upload fs-2 me-3"></i>
+			<div class="d-flex align-items-center gap-3">
+				<div class="header-icon-box bg-success bg-opacity-10 text-success rounded-3 p-3">
+					<i class="bi bi-cloud-arrow-up-fill fs-1"></i>
+				</div>
 				<div>
-					<h1 class="mb-0">Upload Questions</h1>
-					<p class="mb-0 text-muted">Import quiz questions from CSV files to populate your stages</p>
+					<h2 class="fw-bold mb-1 text-dark">Upload Questions</h2>
+					<p class="text-muted mb-0">Import quiz questions from CSV files to populate stages</p>
 				</div>
 			</div>
 		</div>
+
 		<div class="row g-4">
 			<!-- Upload Form Card -->
-			<div class="col-lg-8">
-				<div class="card border-0 shadow-sm upload-card">
-					<div class="card-header bg-gradient-success text-white border-0">
+			<div class="col-lg-7">
+				<div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+					<div class="card-header bg-success text-white border-0 py-3 px-4">
 						<div class="d-flex align-items-center">
-							<i class="bx bx-upload me-2 fs-4"></i>
+							<i class="bi bi-upload me-2 fs-5"></i>
 							<h5 class="mb-0 fw-semibold">Question Upload</h5>
 						</div>
 					</div>
@@ -28,448 +31,82 @@
 							<!-- Stage Selection -->
 							<div class="mb-4">
 								<label for="stage_id" class="form-label fw-semibold text-dark">
-									<i class="bx bx-layer me-2 text-primary"></i>
+									<i class="bi bi-layers-fill me-1 text-primary"></i>
 									Target Stage
 								</label>
 								<%= form.collection_select :stage_id, Stage.all.order(id: :asc), :id, :name, 
-									{ prompt: "Select a stage for your questions" }, 
-									{ class: "form-select upload-select", id: "stage_id", required: true } %>
-								<div class="form-text text-muted">
-									<i class="bx bx-info-circle me-1"></i>
-									Questions will be added to the selected stage
-								</div>
+									{ prompt: "Select a target stage" }, 
+									{ class: "form-select form-select-lg rounded-3 fs-6", id: "stage_id", required: true } %>
 							</div>
+
 							<!-- Number Start -->
 							<div class="mb-4">
 								<label for="number_start" class="form-label fw-semibold text-dark">
-									<i class="bx bx-hash me-2 text-info"></i>
-									Starting Number
+									<i class="bi bi-hash me-1 text-info"></i>
+									Starting Question Number
 								</label>
-								<div class="input-group">
+								<div class="input-group input-group-lg">
 									<span class="input-group-text bg-light border-end-0">
-										<i class="bx bx-hash text-muted"></i>
+										<i class="bi bi-hash text-muted"></i>
 									</span>
 									<%= form.number_field :number_start, 
-										class: "form-control border-start-0 upload-input", 
+										class: "form-control border-start-0 fs-6", 
 										id: "number_start",
-										placeholder: "Enter starting question number",
+										placeholder: "1",
 										min: 1,
 										required: true %>
 								</div>
-								<div class="form-text text-muted">
-									<i class="bx bx-info-circle me-1"></i>
-									Question numbering will start from this value
-								</div>
 							</div>
-							<!-- File Upload Area -->
+
+							<!-- File Selection -->
 							<div class="mb-4">
-								<label class="form-label fw-semibold text-dark mb-3">
-									<i class="bx bx-file-blank me-2 text-warning"></i>
-									CSV File Upload
+								<label for="file" class="form-label fw-semibold text-dark">
+									<i class="bi bi-file-earmark-spreadsheet-fill me-1 text-success"></i>
+									CSV File
 								</label>
-								<!-- Drag and Drop Area -->
-								<div class="upload-dropzone" id="uploadDropzone">
-									<div class="upload-dropzone-content text-center">
-										<div class="upload-icon mb-3">
-											<i class="bx bx-cloud-upload fs-1 text-success"></i>
-										</div>
-										<h6 class="fw-semibold text-dark mb-2">Drag & Drop your CSV file here</h6>
-										<p class="text-muted mb-3">or click to browse and select a file</p>
-										<button type="button" class="btn btn-outline-success btn-sm" id="browseFileBtn">
-											<i class="bx bx-folder-open me-2"></i>
-											Browse Files
-										</button>
-									</div>
-									<%= form.file_field :file, 
-										class: "d-none", 
-										id: "fileInput",
-										accept: ".csv",
-										required: true %>
-								</div>
-								<!-- File Info Display -->
-								<div class="file-info mt-3 d-none" id="fileInfo">
-									<div class="d-flex align-items-center p-3 bg-light rounded">
-										<i class="bx bx-file-blank fs-4 text-success me-3"></i>
-										<div class="flex-grow-1">
-											<div class="fw-semibold text-dark" id="fileName"></div>
-											<small class="text-muted" id="fileSize"></small>
-										</div>
-										<button type="button" class="btn btn-sm btn-outline-danger" id="removeFileBtn">
-											<i class="bx bx-x"></i>
-										</button>
-									</div>
-								</div>
+								<%= form.file_field :file, 
+									class: "form-control form-control-lg rounded-3 fs-6", 
+									id: "file",
+									accept: ".csv",
+									required: true %>
 								<div class="form-text text-muted mt-2">
-									<i class="bx bx-info-circle me-1"></i>
-									Supported format: CSV files only. Maximum file size: 10MB
+									<i class="bi bi-info-circle me-1"></i>
+									Must be a valid .csv format file
 								</div>
 							</div>
-							<!-- Submit Button -->
-							<div class="d-grid">
-								<button type="submit" class="btn btn-success btn-lg upload-submit-btn" id="submitBtn" disabled>
-									<span class="btn-text">
-										<i class="bx bx-upload me-2"></i>
-										Upload Questions
-									</span>
-									<span class="btn-loading d-none">
-										<span class="spinner-border spinner-border-sm me-2" role="status"></span>
-										Uploading...
-									</span>
-								</button>
-							</div>
+
+							<button type="submit" class="btn btn-success btn-lg w-100 rounded-3 fw-semibold">
+								<i class="bi bi-cloud-arrow-up-fill me-1"></i> Import CSV Questions
+							</button>
 						<% end %>
 					</div>
 				</div>
 			</div>
-			<!-- Upload Guidelines Card -->
-			<div class="col-lg-4">
-				<div class="card border-0 shadow-sm upload-card h-100">
-					<div class="card-header bg-gradient-info text-white border-0">
+
+			<!-- Format Guide Card -->
+			<div class="col-lg-5">
+				<div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 bg-light">
+					<div class="card-header bg-dark text-white border-0 py-3 px-4">
 						<div class="d-flex align-items-center">
-							<i class="bx bx-help-circle me-2 fs-4"></i>
-							<h5 class="mb-0 fw-semibold">Upload Guidelines</h5>
+							<i class="bi bi-book-fill me-2 fs-5"></i>
+							<h5 class="mb-0 fw-semibold">CSV Format Guide</h5>
 						</div>
 					</div>
 					<div class="card-body p-4">
-						<div class="guidelines-section mb-4">
-							<h6 class="fw-semibold text-dark mb-3">
-								<i class="bx bx-file-blank me-2 text-primary"></i>
-								CSV Format Requirements
-							</h6>
-							<ul class="list-unstyled guidelines-list">
-								<li class="mb-2">
-									<i class="bx bx-check-circle text-success me-2"></i>
-									<small>Use comma-separated values (.csv)</small>
-								</li>
-								<li class="mb-2">
-									<i class="bx bx-check-circle text-success me-2"></i>
-									<small>Include headers in first row</small>
-								</li>
-								<li class="mb-2">
-									<i class="bx bx-check-circle text-success me-2"></i>
-									<small>UTF-8 encoding recommended</small>
-								</li>
-								<li class="mb-2">
-									<i class="bx bx-check-circle text-success me-2"></i>
-									<small>Maximum file size: 10MB</small>
-								</li>
-							</ul>
+						<p class="text-muted small">Your CSV file must include headers matching this layout:</p>
+						<div class="p-3 bg-white rounded-3 border mb-3">
+							<code class="text-dark small d-block mb-1 fw-bold">Question,Answer</code>
+							<code class="text-muted small d-block">"Who built the ark?","Noah"</code>
+							<code class="text-muted small d-block">"Where was Jesus born?","Bethlehem"</code>
 						</div>
-						<div class="guidelines-section mb-4">
-							<h6 class="fw-semibold text-dark mb-3">
-								<i class="bx bx-list-ul me-2 text-warning"></i>
-								Required Columns
-							</h6>
-							<div class="column-example p-3 bg-light rounded">
-								<code class="small text-dark">
-									question, answer, question_a, answer_a, question_b, answer_b
-								</code>
-							</div>
-						</div>
-						<div class="guidelines-section">
-							<h6 class="fw-semibold text-dark mb-3">
-								<i class="bx bx-bulb me-2 text-info"></i>
-								Best Practices
-							</h6>
-							<ul class="list-unstyled guidelines-list">
-								<li class="mb-2">
-									<i class="bx bx-right-arrow-alt text-info me-2"></i>
-									<small>Test with a small file first</small>
-								</li>
-								<li class="mb-2">
-									<i class="bx bx-right-arrow-alt text-info me-2"></i>
-									<small>Backup existing questions</small>
-								</li>
-								<li class="mb-2">
-									<i class="bx bx-right-arrow-alt text-info me-2"></i>
-									<small>Review data before uploading</small>
-								</li>
-							</ul>
-						</div>
+						<ul class="list-unstyled text-muted small mb-0">
+							<li class="mb-2"><i class="bi bi-check-circle-fill text-success me-1"></i> <strong>Header row</strong> is required</li>
+							<li class="mb-2"><i class="bi bi-check-circle-fill text-success me-1"></i> Ensure UTF-8 text encoding</li>
+							<li><i class="bi bi-check-circle-fill text-success me-1"></i> Questions auto-sequence from start number</li>
+						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<!-- Enhanced Upload Page Styles -->
-<style>
-	.upload-settings-header {
-		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-		border-radius: 15px;
-		padding: 2rem;
-		border: 2px solid #dee2e6;
-	}
-
-	.header-badge {
-		display: flex;
-		align-items: center;
-	}
-
-	.header-badge i {
-		color: #6f42c1;
-	}
-
-	.bg-gradient-success {
-		background: linear-gradient(135deg, #28a745, #1e7e34) !important;
-	}
-
-	.bg-gradient-info {
-		background: linear-gradient(135deg, #17a2b8, #138496) !important;
-	}
-
-	.upload-card {
-		transition: all 0.3s ease;
-		border-radius: 15px !important;
-		overflow: hidden;
-	}
-
-	.upload-card:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-	}
-
-	.upload-card .card-header {
-		border-radius: 15px 15px 0 0 !important;
-	}
-
-	.upload-select, .upload-input {
-		transition: all 0.3s ease;
-		border-radius: 10px !important;
-	}
-
-	.upload-select:focus, .upload-input:focus {
-		border-color: #28a745;
-		box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-	}
-
-	.upload-input {
-		border-radius: 0 10px 10px 0 !important;
-	}
-
-	.input-group-text {
-		border-radius: 10px 0 0 10px !important;
-	}
-
-	.upload-dropzone {
-		border: 2px dashed #28a745;
-		border-radius: 15px;
-		padding: 3rem 2rem;
-		transition: all 0.3s ease;
-		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-		cursor: pointer;
-		position: relative;
-	}
-
-	.upload-dropzone:hover {
-		border-color: #1e7e34;
-		background: linear-gradient(135deg, #e8f5e8, #d4edda);
-		transform: scale(1.02);
-	}
-
-	.upload-dropzone.dragover {
-		border-color: #1e7e34;
-		background: linear-gradient(135deg, #d4edda, #c3e6cb);
-		box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
-	}
-
-	.upload-dropzone-content {
-		pointer-events: none;
-	}
-
-	.upload-icon {
-		transition: all 0.3s ease;
-	}
-
-	.upload-dropzone:hover .upload-icon {
-		transform: scale(1.1);
-	}
-
-	.upload-submit-btn {
-		transition: all 0.3s ease;
-		border-radius: 10px !important;
-		box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-	}
-
-	.upload-submit-btn:hover:not(:disabled) {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-	}
-
-	.upload-submit-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.file-info {
-		animation: slideIn 0.3s ease;
-	}
-
-	@keyframes slideIn {
-		from {
-			opacity: 0;
-			transform: translateY(-10px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	.guidelines-list li {
-		transition: all 0.2s ease;
-	}
-
-	.guidelines-list li:hover {
-		padding-left: 10px;
-	}
-
-	.column-example {
-		border-left: 4px solid #ffc107;
-	}
-
-	@media (max-width: 768px) {
-		.upload-card:hover {
-			transform: none;
-		}
-
-		.upload-dropzone {
-			padding: 2rem 1rem;
-		}
-
-		.upload-dropzone:hover {
-			transform: none;
-		}
-	}
-</style>
-<script>
-	// Enhanced upload functionality
-	document.addEventListener('turbo:load', function() {
-		const dropzone = document.getElementById('uploadDropzone');
-		const fileInput = document.getElementById('fileInput');
-		const browseBtn = document.getElementById('browseFileBtn');
-		const fileInfo = document.getElementById('fileInfo');
-		const fileName = document.getElementById('fileName');
-		const fileSize = document.getElementById('fileSize');
-		const removeBtn = document.getElementById('removeFileBtn');
-		const submitBtn = document.getElementById('submitBtn');
-		const form = document.getElementById('questionUploadForm');
-		const stageSelect = document.getElementById('stage_id');
-		const numberStart = document.getElementById('number_start');
-
-		// File size limit (10MB)
-		const MAX_FILE_SIZE = 10 * 1024 * 1024;
-
-		// Browse button click
-		browseBtn.addEventListener('click', function() {
-			fileInput.click();
-		});
-
-		// Dropzone click
-		dropzone.addEventListener('click', function() {
-			fileInput.click();
-		});
-
-		// Drag and drop events
-		dropzone.addEventListener('dragover', function(e) {
-			e.preventDefault();
-			dropzone.classList.add('dragover');
-		});
-
-		dropzone.addEventListener('dragleave', function(e) {
-			e.preventDefault();
-			dropzone.classList.remove('dragover');
-		});
-
-		dropzone.addEventListener('drop', function(e) {
-			e.preventDefault();
-			dropzone.classList.remove('dragover');
-
-			const files = e.dataTransfer.files;
-			if (files.length > 0) {
-				handleFileSelection(files[0]);
-			}
-		});
-
-		// File input change
-		fileInput.addEventListener('change', function(e) {
-			if (e.target.files.length > 0) {
-				handleFileSelection(e.target.files[0]);
-			}
-		});
-
-		// Remove file button
-		removeBtn.addEventListener('click', function() {
-			clearFileSelection();
-		});
-
-		// Form validation
-		function validateForm() {
-			const hasStage = stageSelect.value !== '';
-			const hasNumber = numberStart.value !== '';
-			const hasFile = fileInput.files.length > 0;
-
-			submitBtn.disabled = !(hasStage && hasNumber && hasFile);
-		}
-
-		// Handle file selection
-		function handleFileSelection(file) {
-			// Validate file type
-			if (!file.name.toLowerCase().endsWith('.csv')) {
-				alert('Please select a CSV file.');
-				return;
-			}
-
-			// Validate file size
-			if (file.size > MAX_FILE_SIZE) {
-				alert('File size exceeds 10MB limit. Please select a smaller file.');
-				return;
-			}
-
-			// Update file info display
-			fileName.textContent = file.name;
-			fileSize.textContent = formatFileSize(file.size);
-			fileInfo.classList.remove('d-none');
-
-			// Update file input
-			const dt = new DataTransfer();
-			dt.items.add(file);
-			fileInput.files = dt.files;
-
-			validateForm();
-		}
-
-		// Clear file selection
-		function clearFileSelection() {
-			fileInput.value = '';
-			fileInfo.classList.add('d-none');
-			validateForm();
-		}
-
-		// Format file size
-		function formatFileSize(bytes) {
-			if (bytes === 0) return '0 Bytes';
-			const k = 1024;
-			const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-			const i = Math.floor(Math.log(bytes) / Math.log(k));
-			return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-		}
-
-		// Form submission with loading state
-		form.addEventListener('submit', function() {
-			const btnText = submitBtn.querySelector('.btn-text');
-			const btnLoading = submitBtn.querySelector('.btn-loading');
-
-			btnText.classList.add('d-none');
-			btnLoading.classList.remove('d-none');
-			submitBtn.disabled = true;
-		});
-
-		// Listen for form field changes
-		stageSelect.addEventListener('change', validateForm);
-		numberStart.addEventListener('input', validateForm);
-
-		// Initial validation
-		validateForm();
-	});
-</script>

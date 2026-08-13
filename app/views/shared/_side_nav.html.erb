@@ -4,18 +4,11 @@
 	<div class="sidebar-header">
 		<div class="brand-section">
 			<div class="brand-icon">
-				<i class="bx bx-brain fs-2"></i>
+				<i class="bi bi-person-badge-fill fs-3"></i>
 			</div>
 			<div class="brand-text">
-				<h4 class="mb-0 fw-bold">Quiz Admin</h4>
-				<small class="text-muted">Management Panel</small>
-			</div>
-		</div>
-		<div class="mt-3 p-2 rounded bg-white bg-opacity-20 d-flex align-items-center gap-2">
-			<i class="bx bx-wifi fs-5 text-warning"></i>
-			<div>
-				<div class="text-white-50" style="font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Server Address</div>
-				<code class="text-white fw-bold" style="font-size: 0.85rem;"><%= local_network_address %></code>
+				<h5 class="mb-0 fw-bold text-white">Quiz Admin</h5>
+				<small class="text-white-50">Control Panel</small>
 			</div>
 		</div>
 	</div>
@@ -24,14 +17,14 @@
 	<div class="sidebar-content">
 		<div class="nav-section">
 			<h6 class="nav-section-title">
-				<i class="bx bx-cog me-2"></i>
+				<i class="bi bi-gear-fill me-2"></i>
 				Configuration
 			</h6>
 			<ul class="nav-list">
 				<li class="nav-item">
 					<a class="nav-link <%= request.path == settings_settings_path ? 'active' : ''  %>" href="<%= settings_settings_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-home-alt-2'></i>
+							<i class='bi bi-grid-1x2-fill me-2'></i>
 							<span>Settings Overview</span>
 						</div>
 					</a>
@@ -39,7 +32,7 @@
 				<li class="nav-item">
 					<a class="nav-link <%= request.path == settings_stage_path ? 'active' : ''  %>" href="<%= settings_stage_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-layer'></i>
+							<i class='bi bi-layers-fill me-2'></i>
 							<span>Stage Management</span>
 						</div>
 					</a>
@@ -47,7 +40,7 @@
 				<li class="nav-item">
 					<a class="nav-link <%= request.path == settings_upload_path ? 'active' : ''  %>" href="<%= settings_upload_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-cloud-upload'></i>
+							<i class='bi bi-cloud-arrow-up-fill me-2'></i>
 							<span>Upload Questions</span>
 						</div>
 					</a>
@@ -55,7 +48,7 @@
 				<li class="nav-item">
 					<a class="nav-link <%= request.path == settings_timer_path ? 'active' : ''  %>" href="<%= settings_timer_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-timer'></i>
+							<i class='bi bi-stopwatch-fill me-2'></i>
 							<span>Timer Settings</span>
 						</div>
 					</a>
@@ -63,7 +56,7 @@
 				<li class="nav-item">
 					<a class="nav-link <%= request.path == settings_users_path ? 'active' : ''  %>" href="<%= settings_users_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-user-plus'></i>
+							<i class='bi bi-people-fill me-2'></i>
 							<span>User Management</span>
 						</div>
 					</a>
@@ -74,23 +67,23 @@
 		<!-- Data Management Section -->
 		<div class="nav-section">
 			<h6 class="nav-section-title">
-				<i class="bx bx-data me-2"></i>
+				<i class="bi bi-hdd-stack-fill me-2"></i>
 				Data Management
 			</h6>
 			<ul class="nav-list">
 				<li class="nav-item">
 					<a class="nav-link reset-link" id="reset-link" href="<%= reset_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-reset'></i>
-							<span>Reset Data</span>
+							<i class='bi bi-arrow-counterclockwise me-2'></i>
+							<span>Reset Answers</span>
 						</div>
 					</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link delete-link" id="delete-link" href="<%= delete_data_path %>">
 						<div class="nav-link-content">
-							<i class='bx bx-trash'></i>
-							<span>Delete Data</span>
+							<i class='bi bi-trash-fill me-2'></i>
+							<span>Delete All Data</span>
 						</div>
 					</a>
 				</li>
@@ -101,203 +94,13 @@
 	<!-- Sidebar Footer -->
 	<div class="sidebar-footer">
 		<a class="nav-link home-link" href="/">
-			<div class="nav-link-content">
-				<i class='bx bx-home'></i>
+			<div class="nav-link-content justify-content-center">
+				<i class='bi bi-arrow-left me-2 fs-5'></i>
 				<span>Back to Quiz</span>
 			</div>
 		</a>
 	</div>
 </div>
-
-<!-- Enhanced Sidebar Styles -->
-<style>
-	.enhanced-sidebar {
-		width: 280px;
-		height: 100vh;
-		background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-		border-right: 1px solid #e9ecef;
-		box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-		display: flex;
-		flex-direction: column;
-		position: sticky;
-		top: 0;
-	}
-
-	.sidebar-header {
-		padding: 1.5rem;
-		border-bottom: 1px solid #e9ecef;
-		background: linear-gradient(135deg, #6f42c1, #5a32a3);
-		color: white;
-	}
-
-	.brand-section {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	.brand-icon {
-		width: 50px;
-		height: 50px;
-		background: rgba(255, 255, 255, 0.2);
-		border-radius: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: white;
-	}
-
-	.brand-text h4 {
-		color: white;
-		font-size: 1.2rem;
-	}
-
-	.brand-text small {
-		color: rgba(255, 255, 255, 0.8);
-		font-size: 0.85rem;
-	}
-
-	.sidebar-content {
-		flex: 1;
-		padding: 1.5rem 0;
-		overflow-y: auto;
-	}
-
-	.nav-section {
-		margin-bottom: 2rem;
-	}
-
-	.nav-section-title {
-		font-size: 0.85rem;
-		font-weight: 600;
-		color: #6c757d;
-		text-transform: uppercase;
-		letter-spacing: 0.5px;
-		padding: 0 1.5rem;
-		margin-bottom: 1rem;
-		display: flex;
-		align-items: center;
-	}
-
-	.nav-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.nav-item {
-		margin-bottom: 0.25rem;
-	}
-
-	.nav-link {
-		display: block;
-		padding: 0.75rem 1.5rem;
-		color: #495057;
-		text-decoration: none;
-		transition: all 0.3s ease;
-		position: relative;
-		border-radius: 0;
-	}
-
-	.nav-link-content {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.nav-link i {
-		font-size: 1.1rem;
-		width: 20px;
-		text-align: center;
-	}
-
-	.nav-link span {
-		font-weight: 500;
-		font-size: 0.95rem;
-	}
-
-	.nav-link:hover {
-		background: linear-gradient(90deg, rgba(111, 66, 193, 0.1), transparent);
-		color: #6f42c1;
-		border-left: 3px solid #6f42c1;
-		padding-left: calc(1.5rem - 3px);
-	}
-
-	.nav-link.active {
-		background: linear-gradient(90deg, rgba(111, 66, 193, 0.15), transparent);
-		color: #6f42c1;
-		border-left: 3px solid #6f42c1;
-		padding-left: calc(1.5rem - 3px);
-		font-weight: 600;
-	}
-
-	.nav-link.active::before {
-		content: '';
-		position: absolute;
-		right: 1rem;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 6px;
-		height: 6px;
-		background: #6f42c1;
-		border-radius: 50%;
-	}
-
-	.reset-link {
-		color: #17a2b8 !important;
-	}
-
-	.reset-link:hover {
-		background: linear-gradient(90deg, rgba(23, 162, 184, 0.1), transparent) !important;
-		color: #17a2b8 !important;
-		border-left-color: #17a2b8 !important;
-	}
-
-	.delete-link {
-		color: #dc3545 !important;
-	}
-
-	.delete-link:hover {
-		background: linear-gradient(90deg, rgba(220, 53, 69, 0.1), transparent) !important;
-		color: #dc3545 !important;
-		border-left-color: #dc3545 !important;
-	}
-
-	.sidebar-footer {
-		padding: 1.5rem;
-		border-top: 1px solid #e9ecef;
-		background: #f8f9fa;
-	}
-
-	.home-link {
-		background: linear-gradient(135deg, #28a745, #20c997);
-		color: white !important;
-		border-radius: 10px;
-		padding: 0.75rem 1rem !important;
-		transition: all 0.3s ease;
-		box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
-	}
-
-	.home-link:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-		background: linear-gradient(135deg, #20c997, #28a745) !important;
-		border-left: none !important;
-		padding: 0.75rem 1rem !important;
-	}
-
-	@media (max-width: 768px) {
-		.enhanced-sidebar {
-			width: 100%;
-			height: auto;
-			position: relative;
-		}
-		
-		.sidebar-content {
-			max-height: 400px;
-		}
-	}
-</style>
 
 <script>
 	document.addEventListener("turbo:load", function() {
@@ -305,20 +108,17 @@
 	    const resetLink = document.getElementById("reset-link");
 
 	    function handleConfirmation(link, actionWord) {
+	        if (!link) return;
 	        link.addEventListener("click", function(event) {
 	            event.preventDefault();
-
 	            const userInput = prompt(`Type '${actionWord}' to confirm:`);
-
 	            if (userInput === actionWord) {
 	                const confirmed = confirm(`Are you sure you want to ${actionWord} the data? This action cannot be undone.`);
 	                if (confirmed) {
-	                    // Create a form and submit it as a POST request
 	                    const form = document.createElement('form');
 	                    form.method = 'POST';
 	                    form.action = link.href;
 
-	                    // Add CSRF token
 	                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	                    const csrfInput = document.createElement('input');
 	                    csrfInput.type = 'hidden';
@@ -326,7 +126,6 @@
 	                    csrfInput.value = csrfToken;
 	                    form.appendChild(csrfInput);
 
-	                    // Append the form to the body and submit it
 	                    document.body.appendChild(form);
 	                    form.submit();
 	                }
@@ -336,12 +135,7 @@
 	        });
 	    }
 
-	    if (deleteLink) {
-	        handleConfirmation(deleteLink, "delete");
-	    }
-
-	    if (resetLink) {
-	        handleConfirmation(resetLink, "reset");
-	    }
+	    handleConfirmation(deleteLink, "delete");
+	    handleConfirmation(resetLink, "reset");
 	});
 </script>

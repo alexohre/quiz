@@ -1,15 +1,17 @@
-<div class="row">
+<div class="row g-4 align-items-start">
 	<div class="col-lg-3">
 		<%= render 'shared/side_nav' %>
 	</div>
 	<div class="col-lg-9">
-		<!-- Enhanced Stage Management Header -->
+		<!-- Stage Management Header -->
 		<div class="stage-settings-header mb-4">
-			<div class="header-badge">
-				<i class="bx bx-layer fs-2 me-3"></i>
+			<div class="d-flex align-items-center gap-3">
+				<div class="header-icon-box bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+					<i class="bi bi-layers-fill fs-1"></i>
+				</div>
 				<div>
-					<h1 class="mb-0">Stage Management</h1>
-					<p class="mb-0 text-muted">Configure the number of quiz stages for your live event</p>
+					<h2 class="fw-bold mb-1 text-dark">Stage Management</h2>
+					<p class="text-muted mb-0">Configure the number of quiz stages for your competition</p>
 				</div>
 			</div>
 		</div>
@@ -17,272 +19,78 @@
 		<div class="row g-4">
 			<!-- Current Stage Status Card -->
 			<div class="col-md-6">
-				<div class="card border-0 shadow-sm stage-card h-100">
-					<div class="card-header bg-gradient-primary text-white border-0">
+				<div class="card border-0 shadow-sm stage-card h-100 rounded-4 overflow-hidden">
+					<div class="card-header bg-primary text-white border-0 py-3 px-4">
 						<div class="d-flex align-items-center">
-							<i class="bx bx-check-circle me-2 fs-4"></i>
+							<i class="bi bi-check-circle-fill me-2 fs-5"></i>
 							<h5 class="mb-0 fw-semibold">Current Configuration</h5>
 						</div>
 					</div>
-					<div class="card-body p-4 text-center">
-						<div class="stage-display mb-4">
-							<div class="stage-circle mx-auto mb-3 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle" style="width: 120px; height: 120px;">
-								<div class="text-center">
-									<div class="stage-value text-primary fw-bold" style="font-size: 3rem; line-height: 1;">
+					<div class="card-body p-4 text-center d-flex flex-column justify-content-center">
+						<div class="stage-display mb-3">
+							<div class="stage-circle mx-auto d-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle border border-primary border-3 shadow-sm" style="width: 120px; height: 120px;">
+								<div>
+									<div class="stage-value text-primary fw-bold display-4" style="line-height: 1;">
 										<%= @stage || 0 %>
 									</div>
 									<small class="text-muted fw-semibold">stages</small>
 								</div>
 							</div>
 						</div>
-						<div class="stage-info">
-							<h6 class="mb-2 fw-semibold text-dark">Active Stages</h6>
-							<p class="text-muted small mb-0">
-								<% if @stage && @stage > 0 %>
-									Your quiz is configured with <%= @stage %> stage<%= @stage != 1 ? 's' : '' %>
-								<% else %>
-									No stages configured yet
-								<% end %>
-							</p>
-						</div>
+						<h6 class="mb-1 fw-semibold text-dark">Active Stages Count</h6>
+						<p class="text-muted small mb-0">
+							<% if @stage && @stage > 0 %>
+								Your quiz is configured with <strong><%= @stage %> stage<%= @stage != 1 ? 's' : '' %></strong>
+							<% else %>
+								No stages configured yet
+							<% end %>
+						</p>
 					</div>
 				</div>
 			</div>
 
-			<!-- Stage Configuration Card -->
+			<!-- Stage Configuration Form Card -->
 			<div class="col-md-6">
-				<div class="card border-0 shadow-sm stage-card h-100">
-					<div class="card-header bg-gradient-success text-white border-0">
+				<div class="card border-0 shadow-sm stage-card h-100 rounded-4 overflow-hidden">
+					<div class="card-header bg-success text-white border-0 py-3 px-4">
 						<div class="d-flex align-items-center">
-							<i class="bx bx-edit me-2 fs-4"></i>
-							<h5 class="mb-0 fw-semibold">Update Configuration</h5>
+							<i class="bi bi-pencil-square me-2 fs-5"></i>
+							<h5 class="mb-0 fw-semibold">Update Stages</h5>
 						</div>
 					</div>
 					<div class="card-body p-4">
 						<%= form_with url: settings_stage_path, method: :post, html: {class: "stage-form"} do |f| %>
 							<div class="mb-4">
 								<label for="number_of_stages" class="form-label fw-semibold text-dark">
-									<i class="bx bx-hash me-2 text-success"></i>
+									<i class="bi bi-hash me-1 text-success"></i>
 									Number of Stages
 								</label>
-								<div class="input-group">
+								<div class="input-group input-group-lg">
 									<span class="input-group-text bg-light border-end-0">
-										<i class="bx bx-layer text-muted"></i>
+										<i class="bi bi-layers text-muted"></i>
 									</span>
 									<%= f.number_field :number_of_stages, 
-										class: "form-control border-start-0 stage-input", 
+										class: "form-control border-start-0 fs-5", 
 										id: "number_of_stages",
-										placeholder: "Enter number of stages",
+										placeholder: "Enter number...",
 										min: 1,
 										max: 20,
 										value: @stage,
 										required: true %>
 								</div>
-								<div class="form-text text-muted">
-									<i class="bx bx-info-circle me-1"></i>
-									Recommended: 1-10 stages for optimal audience engagement
+								<div class="form-text text-muted mt-2">
+									<i class="bi bi-info-circle me-1"></i>
+									Recommended: 1-10 stages for optimal event flow
 								</div>
 							</div>
 
-							<div class="stage-preview mb-4 p-3 bg-light rounded">
-								<h6 class="mb-3 fw-semibold text-dark">
-									<i class="bx bx-show me-2 text-info"></i>
-									Stage Preview
-								</h6>
-								<div class="stage-preview-container d-flex flex-wrap gap-2" id="stagePreview">
-									<!-- Preview will be populated by JavaScript -->
-								</div>
-								<small class="text-muted">Preview of how stages will appear in your quiz</small>
-							</div>
-
-							<button type="submit" class="btn btn-success btn-lg w-100 stage-submit-btn">
-								<i class="bx bx-check me-2"></i>
-								Update Stages
+							<button type="submit" class="btn btn-success btn-lg w-100 rounded-3 fw-semibold">
+								<i class="bi bi-check-lg me-1"></i> Save Stages
 							</button>
 						<% end %>
-					</div>
-				</div>
-			</div>
-
-			<!-- Stage Information Card -->
-			<div class="col-12">
-				<div class="card border-0 shadow-sm stage-card">
-					<div class="card-header bg-gradient-info text-white border-0">
-						<div class="d-flex align-items-center">
-							<i class="bx bx-info-circle me-2 fs-4"></i>
-							<h5 class="mb-0 fw-semibold">Stage Information</h5>
-						</div>
-					</div>
-					<div class="card-body p-4">
-						<div class="row g-4">
-							<div class="col-md-4">
-								<div class="info-item text-center p-3 bg-light rounded">
-									<i class="bx bx-group fs-2 text-primary mb-2"></i>
-									<h6 class="fw-semibold mb-2">Live Audience</h6>
-									<p class="text-muted small mb-0">Stages help organize questions for better audience participation during live events</p>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="info-item text-center p-3 bg-light rounded">
-									<i class="bx bx-time fs-2 text-success mb-2"></i>
-									<h6 class="fw-semibold mb-2">Progressive Flow</h6>
-									<p class="text-muted small mb-0">Each stage can contain different difficulty levels or topics for structured gameplay</p>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="info-item text-center p-3 bg-light rounded">
-									<i class="bx bx-trophy fs-2 text-warning mb-2"></i>
-									<h6 class="fw-semibold mb-2">Engagement</h6>
-									<p class="text-muted small mb-0">Multiple stages keep the audience engaged with varied content and pacing</p>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
-<!-- Enhanced Stage Page Styles -->
-<style>
-	.stage-settings-header {
-		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-		border-radius: 15px;
-		padding: 2rem;
-		border: 2px solid #dee2e6;
-	}
-
-	.header-badge {
-		display: flex;
-		align-items: center;
-	}
-
-	.header-badge i {
-		color: #6f42c1;
-	}
-
-	.bg-gradient-primary {
-		background: linear-gradient(135deg, #007bff, #0056b3) !important;
-	}
-
-	.bg-gradient-success {
-		background: linear-gradient(135deg, #28a745, #1e7e34) !important;
-	}
-
-	.bg-gradient-info {
-		background: linear-gradient(135deg, #17a2b8, #138496) !important;
-	}
-
-	.stage-card {
-		transition: all 0.3s ease;
-		border-radius: 15px !important;
-		overflow: hidden;
-	}
-
-	.stage-card:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
-	}
-
-	.stage-card .card-header {
-		border-radius: 15px 15px 0 0 !important;
-	}
-
-	.stage-circle {
-		transition: all 0.3s ease;
-		border: 3px solid #007bff;
-	}
-
-	.stage-circle:hover {
-		transform: scale(1.05);
-		box-shadow: 0 5px 20px rgba(0, 123, 255, 0.3);
-	}
-
-	.stage-input {
-		transition: all 0.3s ease;
-		border-radius: 0 10px 10px 0 !important;
-	}
-
-	.stage-input:focus {
-		border-color: #28a745;
-		box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-	}
-
-	.input-group-text {
-		border-radius: 10px 0 0 10px !important;
-	}
-
-	.stage-submit-btn {
-		transition: all 0.3s ease;
-		border-radius: 10px !important;
-		box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-	}
-
-	.stage-submit-btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-	}
-
-	.stage-preview-item {
-		transition: all 0.2s ease;
-		border-radius: 8px !important;
-	}
-
-	.stage-preview-item:hover {
-		transform: scale(1.05);
-	}
-
-	.info-item {
-		transition: all 0.3s ease;
-		border-radius: 10px !important;
-	}
-
-	.info-item:hover {
-		background-color: #e9ecef !important;
-		transform: translateY(-3px);
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-	}
-
-	@media (max-width: 768px) {
-		.stage-card:hover {
-			transform: none;
-		}
-		
-		.info-item:hover {
-			transform: none;
-		}
-	}
-</style>
-
-<script>
-	// Stage preview functionality
-	document.addEventListener('DOMContentLoaded', function() {
-		const stageInput = document.getElementById('number_of_stages');
-		const stagePreview = document.getElementById('stagePreview');
-
-		function updateStagePreview() {
-			const numStages = parseInt(stageInput.value) || 0;
-			stagePreview.innerHTML = '';
-
-			if (numStages > 0 && numStages <= 20) {
-				for (let i = 1; i <= numStages; i++) {
-					const stageItem = document.createElement('div');
-					stageItem.className = 'badge bg-primary stage-preview-item px-3 py-2';
-					stageItem.innerHTML = `<i class="bx bx-layer me-1"></i>Stage ${i}`;
-					stagePreview.appendChild(stageItem);
-				}
-			} else if (numStages > 20) {
-				stagePreview.innerHTML = '<small class="text-warning"><i class="bx bx-warning me-1"></i>Maximum 20 stages allowed</small>';
-			} else {
-				stagePreview.innerHTML = '<small class="text-muted"><i class="bx bx-info-circle me-1"></i>Enter a number to preview stages</small>';
-			}
-		}
-
-		// Update preview on input change
-		stageInput.addEventListener('input', updateStagePreview);
-		
-		// Initial preview update
-		updateStagePreview();
-	});
-</script>
