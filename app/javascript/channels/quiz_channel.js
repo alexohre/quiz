@@ -10,7 +10,7 @@ consumer.subscriptions.create("QuizChannel", {
 	},
 
 	received(data) {
-		// 1. Quiz Question updates
+		// 1. Quiz Question updates on Presenter/Quiz content
 		if (data.html) {
 			const quizElement = document.getElementById("quiz_content");
 			if (quizElement) {
@@ -18,7 +18,27 @@ consumer.subscriptions.create("QuizChannel", {
 			}
 		}
 
-		// 2. Live Score Updates via ActionCable
+		// 2. Question Queued Event (Live Recorder Queue & Activation)
+		if (data.type === "question_queued") {
+			if (window.location.pathname.includes("/recorder")) {
+				const activeQuizInput = document.querySelector("input[name='quiz_id']");
+				const activeQuizId = activeQuizInput ? activeQuizInput.value : null;
+
+				const waitingPlaceholder = document.getElementById("waitingForQuestionPlaceholder");
+				const isWaiting = waitingPlaceholder && !waitingPlaceholder.classList.contains("d-none");
+
+				// If recorder currently has NO active question or is waiting
+				if (!activeQuizId || isWaiting || activeQuizId === "null" || activeQuizId === "") {
+					updateActiveQuestionDOM(data);
+				} else {
+					// Recorder is busy with previous question -> Add to Queue Pill Bar & notify
+					appendQuestionToQueuePillBar(data, false);
+					showQueueNotification(data);
+				}
+			}
+		}
+
+		// 3. Live Score Updates via ActionCable
 		if (data.type === "score_update") {
 			const userRole = document.body.dataset.userRole;
 
@@ -47,6 +67,110 @@ consumer.subscriptions.create("QuizChannel", {
 		}
 	},
 });
+
+function updateActiveQuestionDOM(data) {
+	const badge = document.getElementById("activeQuestionBadge");
+	const stageBadge = document.getElementById("activeQuestionStageBadge");
+	const textEl = document.getElementById("activeQuestionText");
+	const skipWrapper = document.getElementById("skipButtonWrapper");
+	const scoreContainer = document.getElementById("scoreEntryContainer");
+	const waitingPlaceholder = document.getElementById("waitingForQuestionPlaceholder");
+	const banner = document.getElementById("recorderActiveQuestionBanner");
+	const iconBox = document.getElementById("questionIconBox");
+
+	if (badge) {
+		badge.textContent = `Queue Item #${data.question_number} (Active)`;
+		badge.className = "badge bg-warning text-dark fw-bold text-uppercase";
+	}
+	if (stageBadge) stageBadge.textContent = data.stage_name || "Stage";
+	if (textEl) textEl.textContent = data.question_text || "Active Question loaded";
+
+	// Update all hidden quiz_id inputs in score forms
+	document.querySelectorAll("input[name='quiz_id']").forEach(input => {
+		input.value = data.question_id;
+	});
+
+	if (banner) {
+		banner.classList.remove("border-secondary");
+		banner.classList.add("border-warning");
+	}
+	if (iconBox) {
+		iconBox.className = "bg-warning bg-opacity-10 text-warning-emphasis p-3 rounded-circle";
+		iconBox.innerHTML = '<i class="bi bi-question-circle-fill fs-2"></i>';
+	}
+
+	if (skipWrapper) skipWrapper.classList.remove("d-none");
+	if (scoreContainer) scoreContainer.classList.remove("d-none");
+	if (waitingPlaceholder) waitingPlaceholder.classList.add("d-none");
+
+	appendQuestionToQueuePillBar(data, true);
+}
+
+function appendQuestionToQueuePillBar(data, isCurrentActive = false) {
+	const queueContainer = document.getElementById("recorderQueueNavContainer");
+	const queueItemsContainer = document.getElementById("queueItemsPills");
+	const countNum = document.getElementById("queueCountNum");
+
+	if (queueContainer) queueContainer.classList.remove("d-none");
+
+	if (queueItemsContainer) {
+		let existingPill = document.getElementById(`queue_pill_${data.question_id}`);
+		if (!existingPill) {
+			const pill = document.createElement("a");
+			pill.id = `queue_pill_${data.question_id}`;
+			pill.href = `/recorder?stage_id=${data.stage_id}&quiz_id=${data.question_id}`;
+			pill.className = isCurrentActive 
+				? "btn btn-warning text-dark fw-bold shadow rounded-pill px-3 py-1.5 text-nowrap small queue-pill-item"
+				: "btn btn-outline-light text-white opacity-75 rounded-pill px-3 py-1.5 text-nowrap small queue-pill-item";
+			pill.innerHTML = isCurrentActive 
+				? `<i class="bi bi-play-circle-fill me-1"></i>Q#${data.question_number} (${data.stage_name})`
+				: `Q#${data.question_number} (${data.stage_name})`;
+			queueItemsContainer.appendChild(pill);
+		}
+	}
+
+	if (countNum) {
+		const currentCount = document.querySelectorAll(".queue-pill-item").length;
+		countNum.textContent = currentCount;
+	}
+}
+
+function showQueueNotification(data) {
+	let container = document.getElementById("actioncable-toast-container");
+	if (!container) {
+		container = document.createElement("div");
+		container.id = "actioncable-toast-container";
+		container.className = "position-fixed top-0 end-0 p-3";
+		container.style.zIndex = "1095";
+		container.style.marginTop = "75px";
+		container.style.maxWidth = "400px";
+		document.body.appendChild(container);
+	}
+
+	const toastEl = document.createElement("div");
+	toastEl.className = "toast align-items-center text-white bg-warning text-dark border-0 show shadow-lg rounded-4 overflow-hidden mb-2";
+	toastEl.setAttribute("role", "alert");
+	toastEl.innerHTML = `
+		<div class="d-flex p-2 align-items-center">
+			<div class="toast-body d-flex align-items-center gap-3 fs-6 py-1">
+				<i class="bi bi-layers-fill fs-3 text-dark"></i>
+				<div>
+					<strong class="d-block text-dark" style="font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase;">Question Added to Queue</strong>
+					<span style="font-size: 0.9rem; font-weight: 500;">Question #${data.question_number} (${data.stage_name}) was opened and added to your queue.</span>
+				</div>
+			</div>
+			<button type="button" class="btn-close me-2 m-auto" onclick="this.closest('.toast').remove()"></button>
+		</div>
+	`;
+
+	container.appendChild(toastEl);
+
+	setTimeout(() => {
+		if (toastEl && toastEl.parentNode) {
+			toastEl.remove();
+		}
+	}, 4500);
+}
 
 function showScoreNotification(data) {
 	let container = document.getElementById("actioncable-toast-container");
