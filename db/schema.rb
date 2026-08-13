@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_15_000056) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_13_021340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "churches", force: :cascade do |t|
+    t.string "name"
+    t.string "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "quizzes", force: :cascade do |t|
     t.text "question"
@@ -26,6 +33,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_15_000056) do
     t.index ["question"], name: "index_quizzes_on_question"
     t.index ["question_number"], name: "index_quizzes_on_question_number"
     t.index ["stage_id"], name: "index_quizzes_on_stage_id"
+  end
+
+  create_table "representatives", force: :cascade do |t|
+    t.string "name"
+    t.string "role"
+    t.string "phone"
+    t.bigint "church_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["church_id"], name: "index_representatives_on_church_id"
   end
 
   create_table "settings", force: :cascade do |t|
@@ -62,4 +79,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_15_000056) do
   end
 
   add_foreign_key "quizzes", "stages"
+  add_foreign_key "representatives", "churches"
 end

@@ -180,6 +180,37 @@
 						</div>
 					</div>
 				</div>
+			<!-- Congregations & Representatives Card -->
+			<div class="col-md-6">
+				<div class="card border-0 shadow-sm rounded-4 overflow-hidden settings-card h-100">
+					<div class="card-header text-white border-0 py-3 px-4" style="background: linear-gradient(135deg, #4f46e5, #7c3aed);">
+						<div class="d-flex align-items-center">
+							<i class="bi bi-building-fill me-2 fs-5"></i>
+							<h5 class="mb-0 fw-semibold">Congregations & Representatives</h5>
+						</div>
+					</div>
+					<div class="card-body p-4 text-center d-flex flex-column justify-content-center">
+						<div class="row text-center mb-3">
+							<div class="col-6">
+								<div class="p-3 bg-light rounded-3 border">
+									<h3 class="fw-bold mb-0" style="color: #4f46e5;"><%= Church.count %></h3>
+									<small class="text-muted fw-semibold">Congregations</small>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="p-3 bg-light rounded-3 border">
+									<h3 class="fw-bold text-success mb-0"><%= Representative.count %></h3>
+									<small class="text-muted fw-semibold">Reps</small>
+								</div>
+							</div>
+						</div>
+						<h6 class="fw-semibold text-dark mb-1">Participating Congregations & Provinces</h6>
+						<p class="text-muted small mb-3">Manage congregation names, provinces, and official representatives</p>
+						<div>
+							<a href="<%= settings_churches_path %>" class="btn btn-sm btn-outline-primary rounded-pill px-4">Manage Congregations</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

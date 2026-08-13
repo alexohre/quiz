@@ -169,6 +169,62 @@ class SettingsController < ApplicationController
     end
   end
 
+  def churches
+    @churches = Church.includes(:representatives).order(created_at: :desc)
+  end
+
+  def create_church
+    name = params[:name]
+    location = params[:location]
+
+    if name.present?
+      church = Church.create(name: name, location: location)
+      if church.persisted?
+        redirect_to settings_churches_path, notice: "Church/Congregation '#{church.name}' was successfully created."
+      else
+        redirect_to settings_churches_path, alert: "Failed to create church: #{church.errors.full_messages.join(', ')}"
+      end
+    else
+      redirect_to settings_churches_path, alert: "Please provide a valid Church/Congregation name."
+    end
+  end
+
+  def delete_church
+    @church = Church.find_by(id: params[:id])
+    if @church&.destroy
+      redirect_to settings_churches_path, notice: "Church was successfully deleted."
+    else
+      redirect_to settings_churches_path, alert: "Could not delete church."
+    end
+  end
+
+  def create_representative
+    name = params[:name]
+    role = params[:role]
+    phone = params[:phone]
+    church_id = params[:church_id]
+
+    if name.present? && church_id.present?
+      rep = Representative.create(name: name, role: role, phone: phone, church_id: church_id)
+      if rep.persisted?
+        redirect_to settings_churches_path, notice: "Representative '#{rep.name}' added successfully."
+      else
+        redirect_to settings_churches_path, alert: "Failed to add representative: #{rep.errors.full_messages.join(', ')}"
+      end
+    else
+      redirect_to settings_churches_path, alert: "Please provide representative name and target church."
+    end
+  end
+
+  def delete_representative
+    @rep = Representative.find_by(id: params[:id])
+    if @rep&.destroy
+      redirect_to settings_churches_path, notice: "Representative was successfully deleted."
+    else
+      redirect_to settings_churches_path, alert: "Could not delete representative."
+    end
+  end
+
   private
 
   def user_params

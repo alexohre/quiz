@@ -19,6 +19,13 @@ Rails.application.routes.draw do
   delete "delete_user/:id", to: "settings#delete_user", as: :delete_user
   get 'settings/users', to: 'settings#users'
 
+  # Church / Congregation Management Routes
+  get 'settings/churches', to: 'settings#churches', as: :settings_churches
+  post 'create_church', to: 'settings#create_church', as: :create_church
+  delete 'delete_church/:id', to: 'settings#delete_church', as: :delete_church
+  post 'create_representative', to: 'settings#create_representative', as: :create_representative
+  delete 'delete_representative/:id', to: 'settings#delete_representative', as: :delete_representative
+
   # root "home"
   root "pages#home"
   
