@@ -25,15 +25,19 @@ class PagesController < ApplicationController
 
     @current_stage = params[:stage_id].present? ? Stage.find_by(id: params[:stage_id]) : (@active_quiz&.stage || @stages.find_by(active: true) || @stages.first)
 
+    # Filter churches active for current stage
+    @churches = Church.includes(:scores, :representatives, :stage_eliminations).active_in_stage(@current_stage).order(:name)
+
     if params[:round_number].present?
       @current_round = params[:round_number].to_i
     else
-      # Auto land on first incomplete round for current stage
-      churches_count = @churches.count
+      # Auto land on first incomplete round for active congregations in current stage
+      active_church_ids = @churches.map(&:id)
+      churches_count = active_church_ids.size
       active_round = 1
       if churches_count > 0 && @current_stage.present?
         (1..10).each do |r_num|
-          recorded_count = Score.where(stage_id: @current_stage.id, round_number: r_num).count
+          recorded_count = Score.where(stage_id: @current_stage.id, round_number: r_num, church_id: active_church_ids).count
           if recorded_count >= churches_count
             active_round = r_num + 1
           else
@@ -131,9 +135,10 @@ class PagesController < ApplicationController
         remaining_count: Quiz.where(queued_for_recording: true).count
       })
 
-      # Auto advance to next round tab if current round is complete for all congregations
-      churches_count = Church.count
-      recorded_in_round = Score.where(stage_id: stage_id, round_number: round_number).count
+      # Auto advance to next round tab if current round is complete for active congregations in this stage
+      active_churches_in_stage = Church.active_in_stage(stage_id)
+      churches_count = active_churches_in_stage.count
+      recorded_in_round = Score.where(stage_id: stage_id, round_number: round_number, church_id: active_churches_in_stage.select(:id)).count
       round_is_complete = churches_count > 0 && recorded_in_round >= churches_count
       target_round = round_is_complete ? round_number + 1 : round_number
 

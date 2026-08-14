@@ -180,7 +180,7 @@
 			<% @stages.each do |stage| %>
 				<% max_round = [Score.where(stage: stage).maximum(:round_number) || 1, 5].max %>
 				<% round_list = (1..max_round).to_a %>
-				<% stage_churches = @churches.sort_by { |c| -c.score_for_stage(stage) } %>
+				<% stage_churches = @churches.select { |c| c.active_in_stage?(stage) }.sort_by { |c| -c.score_for_stage(stage) } %>
 
 				<div class="col-12 mb-3 stage-table-card" data-stage-id="<%= stage.id %>">
 					<div class="card border-0 shadow-sm rounded-4 overflow-hidden">

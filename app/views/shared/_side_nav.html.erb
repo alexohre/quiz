@@ -70,6 +70,14 @@
 					</a>
 				</li>
 				<li class="nav-item">
+					<a class="nav-link <%= request.path == settings_eliminations_path ? 'active' : ''  %>" href="<%= settings_eliminations_path %>">
+						<div class="nav-link-content">
+							<i class='bi bi-funnel-fill me-2 text-danger'></i>
+							<span>Stage Eliminations</span>
+						</div>
+					</a>
+				</li>
+				<li class="nav-item">
 					<a class="nav-link <%= request.path == settings_analysis_path ? 'active' : ''  %>" href="<%= settings_analysis_path %>">
 						<div class="nav-link-content">
 							<i class='bi bi-bar-chart-line-fill me-2 text-warning'></i>

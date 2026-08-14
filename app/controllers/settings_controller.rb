@@ -479,6 +479,27 @@ class SettingsController < ApplicationController
     send_data pdf.render, filename: filename, type: 'application/pdf', disposition: 'attachment'
   end
 
+  def eliminations
+    @stages = Stage.order(id: :asc)
+    @churches = Church.includes(:stage_eliminations, :representatives, :scores).order(:name)
+  end
+
+  def toggle_elimination
+    church = Church.find(params[:church_id])
+    stage = Stage.find(params[:stage_id])
+
+    elimination = StageElimination.find_by(church: church, stage: stage)
+    if elimination
+      elimination.destroy
+      notice_msg = "Reinstated #{church.name} for #{stage.name}."
+    else
+      StageElimination.create!(church: church, stage: stage)
+      notice_msg = "Eliminated #{church.name} from #{stage.name}."
+    end
+
+    redirect_back fallback_location: settings_eliminations_path, notice: notice_msg
+  end
+
   private
 
   def user_params

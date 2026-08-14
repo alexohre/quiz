@@ -3,6 +3,7 @@ class Stage < ApplicationRecord
 
   has_many :quizzes, dependent: :destroy
   has_many :scores, dependent: :destroy
+  has_many :stage_eliminations, dependent: :destroy
 
   def self.create_stages(number_of_stages)
     transaction do

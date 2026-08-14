@@ -1,0 +1,109 @@
+<div class="row g-4 align-items-start">
+	<div class="col-lg-3">
+		<%= render 'shared/side_nav' %>
+	</div>
+	<div class="col-lg-9">
+		<!-- Header Card -->
+		<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white border-top border-danger border-4">
+			<div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+				<div class="d-flex align-items-center gap-3">
+					<div class="avatar-circle bg-danger bg-opacity-10 text-danger rounded-3 d-flex align-items-center justify-content-center p-3">
+						<i class="bi bi-funnel-fill fs-1"></i>
+					</div>
+					<div>
+						<h2 class="fw-bold mb-1 text-dark">Stage Elimination Management Matrix</h2>
+						<p class="text-muted mb-0">Control which congregations qualify for each stage. Eliminated congregations will not appear on recorder score cards or stage scoreboards.</p>
+					</div>
+				</div>
+				<div class="d-flex align-items-center gap-2">
+					<a href="<%= recorder_path %>" class="btn btn-warning text-dark rounded-pill px-4 fw-bold">
+						<i class="bi bi-pencil-square me-1"></i> Go to Recorder Page
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Elimination Summary Alert -->
+		<div class="alert alert-info bg-info bg-opacity-10 border-info border-opacity-25 text-dark rounded-4 p-3 mb-4 d-flex align-items-center gap-3">
+			<i class="bi bi-info-circle-fill fs-3 text-info"></i>
+			<div class="small">
+				<strong>How Elimination Works:</strong> When a congregation is marked as <span class="badge bg-danger-subtle text-danger border">Eliminated</span> for Stage 2, they are automatically hidden from Stage 2 score cards on the <strong>Recorder screen</strong> and excluded from Stage 2's <strong>Scoreboard table</strong>.
+			</div>
+		</div>
+
+		<!-- Main Matrix Table Card -->
+		<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-5">
+			<div class="card-header bg-dark text-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+				<div class="d-flex align-items-center">
+					<i class="bi bi-grid-3x3-gap-fill me-2 fs-5 text-warning"></i>
+					<h5 class="mb-0 fw-bold">Congregation Stage Qualification Matrix</h5>
+				</div>
+				<span class="badge bg-light text-dark px-3 py-2 rounded-pill fw-bold"><%= @churches.count %> Congregations</span>
+			</div>
+
+			<div class="card-body p-0">
+				<% if @churches.present? && @stages.present? %>
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0 text-center">
+							<thead class="bg-light text-muted small text-uppercase">
+								<tr>
+									<th class="text-start ps-4 py-3" style="min-width: 220px;">Congregation</th>
+									<% @stages.each do |stage| %>
+										<th class="py-3" style="min-width: 150px;"><%= stage.name %> Status</th>
+									<% end %>
+								</tr>
+							</thead>
+							<tbody>
+								<% @churches.each do |church| %>
+									<tr>
+										<!-- Church Info -->
+										<td class="text-start ps-4 py-3">
+											<div class="fw-bold text-dark"><%= church.name %></div>
+											<% if church.location.present? %>
+												<small class="text-muted"><i class="bi bi-geo-alt-fill me-1 text-danger"></i><%= church.location %></small>
+											<% end %>
+										</td>
+
+										<!-- Per Stage Status Toggles -->
+										<% @stages.each do |stage| %>
+											<% is_eliminated = church.eliminated_in_stage?(stage) %>
+											<td class="py-3">
+												<% if is_eliminated %>
+													<div class="d-flex flex-column align-items-center gap-1">
+														<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill fw-bold small">
+															<i class="bi bi-x-circle-fill me-1"></i>Eliminated
+														</span>
+														<%= button_to toggle_elimination_path(church_id: church.id, stage_id: stage.id), method: :post, class: "btn btn-sm btn-success rounded-pill px-3 py-1 fw-bold text-white small mt-1 shadow-sm" do %>
+															<i class="bi bi-arrow-counterclockwise me-1"></i> Reinstate
+														<% end %>
+													</div>
+												<% else %>
+													<div class="d-flex flex-column align-items-center gap-1">
+														<span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold small">
+															<i class="bi bi-check-circle-fill me-1"></i>Active
+														</span>
+														<%= button_to toggle_elimination_path(church_id: church.id, stage_id: stage.id), method: :post, data: { turbo_confirm: "Eliminate #{church.name} from #{stage.name}? They will be hidden from #{stage.name} recorder cards and scoreboard tables." }, class: "btn btn-sm btn-outline-danger rounded-pill px-3 py-1 fw-bold small mt-1" do %>
+															<i class="bi bi-x-lg me-1"></i> Eliminate
+														<% end %>
+													</div>
+												<% end %>
+											</td>
+										<% end %>
+									</tr>
+								<% end %>
+							</tbody>
+						</table>
+					</div>
+				<% else %>
+					<div class="text-center py-5">
+						<div class="empty-state-icon mb-3 text-muted opacity-50">
+							<i class="bi bi-layers" style="font-size: 3.5rem;"></i>
+						</div>
+						<h5 class="fw-bold text-dark mb-1">No Congregations or Stages Configured</h5>
+						<p class="text-muted small mb-0">Add congregations and stages in settings first to manage stage eliminations.</p>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

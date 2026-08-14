@@ -141,7 +141,7 @@
 										</thead>
 										<tbody>
 											<% if @churches.present? %>
-												<% sorted_churches = @churches.sort_by { |c| -c.score_for_stage(stg) } %>
+												<% sorted_churches = @churches.select { |c| c.active_in_stage?(stg) }.sort_by { |c| -c.score_for_stage(stg) } %>
 												<% sorted_churches.each_with_index do |church, idx| %>
 													<% stage_total = church.score_for_stage(stg) %>
 													<tr>

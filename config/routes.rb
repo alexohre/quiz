@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get 'settings/analysis', to: 'settings#analysis', as: :settings_analysis
   get 'settings/analysis/church/:id', to: 'settings#church_analysis', as: :settings_church_analysis
   get 'settings/analysis/church/:id/pdf', to: 'settings#church_analysis_pdf', as: :settings_church_analysis_pdf
+  get 'settings/eliminations', to: 'settings#eliminations', as: :settings_eliminations
+  post 'toggle_elimination', to: 'settings#toggle_elimination', as: :toggle_elimination
 
   # Church / Congregation Management Routes
   get 'settings/churches', to: 'settings#churches', as: :settings_churches
