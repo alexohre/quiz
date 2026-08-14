@@ -49,9 +49,9 @@
 						<span class="display-6 fw-extrabold text-primary mb-0"><%= @grand_total %> <small class="fs-6 text-muted">pts</small></span>
 					</div>
 					<div class="d-print-none ms-2">
-						<button onclick="window.print()" class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm">
-							<i class="bi bi-printer-fill me-1"></i> Print PDF Report
-						</button>
+						<a href="<%= settings_church_analysis_pdf_path(@church) %>" target="_blank" class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm">
+							<i class="bi bi-file-earmark-pdf-fill me-1 text-danger"></i> Generate PDF Report
+						</a>
 					</div>
 				</div>
 			</div>

@@ -322,6 +322,163 @@ class SettingsController < ApplicationController
     end
   end
 
+  def church_analysis_pdf
+    require 'prawn'
+    require 'prawn/table'
+
+    @church = Church.includes(:scores, :representatives).find(params[:id])
+    @stages = Stage.includes(:quizzes).order(id: :asc)
+    @all_churches_sorted = Church.all.sort_by { |c| -c.total_score }
+    @rank = (@all_churches_sorted.index(@church) || 0) + 1
+
+    @scores = @church.scores.includes(:stage).order(stage_id: :asc, round_number: :asc)
+    @total_attempts = @scores.count
+    @passed_scores = @scores.where('points > 0 OR bonus_points > 0')
+    @failed_scores = @scores.where(points: 0, bonus_points: 0)
+
+    @passed_count = @passed_scores.count
+    @failed_count = @failed_scores.count
+    @total_base = @scores.sum(:points)
+    @total_bonus = @scores.sum(:bonus_points)
+    @grand_total = @total_base + @total_bonus
+    @pass_rate = @total_attempts > 0 ? ((@passed_count.to_f / @total_attempts) * 100).round(1) : 0
+
+    logo_path = Rails.root.join('app/assets/images/cbq-logo.png')
+
+    pdf = Prawn::Document.new(page_size: 'A4', margin: [36, 36, 45, 36]) do |doc|
+      # 1. TOP LOGO
+      if File.exist?(logo_path)
+        doc.image logo_path, fit: [140, 50], position: :center
+        doc.move_down 10
+      end
+
+      # 2. REPORT TITLE & HEADER
+      doc.text "CONGREGATION QUIZ PERFORMANCE REPORT", align: :center, size: 15, style: :bold, color: "1E1B4B"
+      doc.text "Official Quiz Performance Analysis & Question Breakdown", align: :center, size: 9, color: "666666"
+      doc.move_down 10
+
+      # Divider
+      doc.stroke_color "E5E7EB"
+      doc.stroke_horizontal_rule
+      doc.move_down 12
+
+      # 3. CONGREGATION SUMMARY HEADER
+      doc.text "#{@church.name}", size: 16, style: :bold, color: "1E1B4B"
+      location_str = @church.location.present? ? "Province: #{@church.location}" : "Registered Congregation"
+      reps_str = @church.representatives.present? ? "Reps: #{@church.representatives.map(&:name).join(', ')}" : "No reps listed"
+      doc.text "#{location_str}  |  #{reps_str}  |  Leaderboard Rank: ##{@rank}", size: 9, color: "4B5563"
+      doc.move_down 10
+
+      # KPI Summary Table
+      kpi_data = [
+        ["Grand Total", "Attempts", "Passed", "Failed (0 pts)", "Success Rate", "Base / Bonus Pts"],
+        ["#{@grand_total} pts", "#{@total_attempts}", "#{@passed_count}", "#{@failed_count}", "#{@pass_rate}%", "#{@total_base} / +#{@total_bonus}"]
+      ]
+      doc.table(kpi_data, width: doc.bounds.width) do |t|
+        t.row(0).font_style = :bold
+        t.row(0).background_color = "F3F4F6"
+        t.row(0).text_color = "374151"
+        t.row(0).size = 8
+        t.row(1).font_style = :bold
+        t.row(1).size = 10
+        t.row(1).text_color = "1E1B4B"
+        t.row(1).column(0).text_color = "2563EB"
+        t.row(1).column(2).text_color = "16A34A"
+        t.row(1).column(3).text_color = "DC2626"
+        t.cells.align = :center
+        t.cells.padding = 5
+        t.cells.border_width = 1
+        t.cells.border_color = "E5E7EB"
+      end
+      doc.move_down 14
+
+      # 4. QUESTION-BY-QUESTION SCORE BREAKDOWN TABLE
+      doc.text "Question-by-Question Score Breakdown", size: 11, style: :bold, color: "1E1B4B"
+      doc.move_down 6
+
+      if @scores.present?
+        table_rows = [["Stage & Round", "Q#", "Question & Details", "Status", "Formula", "Total"]]
+
+        @scores.each do |score|
+          quiz = Quiz.where(stage_id: score.stage_id).order(:question_number).offset(score.round_number - 1).first
+          q_num = quiz ? "Q##{quiz.formatted_question_number}" : "Q##{score.round_number}"
+          q_text = quiz ? quiz.question : "Question ##{score.round_number}"
+          q_ans = quiz && quiz.answer.present? ? "\nAns: #{quiz.answer}" : ""
+          full_q = "#{q_text}#{q_ans}"
+
+          is_passed = score.points > 0 || score.bonus_points > 0
+          status_str = is_passed ? "Passed" : "Failed (0 pts)"
+
+          formula_str = if score.points == 0 && score.bonus_points > 0
+            "0 + #{score.bonus_points}"
+          elsif score.points > 0 && score.bonus_points > 0
+            "#{score.points} + #{score.bonus_points}"
+          else
+            "#{score.total_stage_points}"
+          end
+
+          table_rows << [
+            "#{score.stage.name}\nRound #{score.round_number}",
+            q_num,
+            full_q,
+            status_str,
+            formula_str,
+            "#{score.total_stage_points} pts"
+          ]
+        end
+
+        doc.table(table_rows, column_widths: [75, 40, 235, 70, 55, 48]) do |t|
+          t.row(0).font_style = :bold
+          t.row(0).background_color = "1E1B4B"
+          t.row(0).text_color = "FFFFFF"
+          t.row(0).size = 8
+          t.row(0).align = :center
+
+          t.cells.size = 8
+          t.cells.padding = 5
+          t.cells.border_width = 0.5
+          t.cells.border_color = "D1D5DB"
+
+          (1..t.row_length - 1).each do |r_idx|
+            t.row(r_idx).column(0).align = :center
+            t.row(r_idx).column(1).align = :center
+            t.row(r_idx).column(1).font_style = :bold
+            t.row(r_idx).column(3).align = :center
+            t.row(r_idx).column(4).align = :center
+            t.row(r_idx).column(4).font_style = :bold
+            t.row(r_idx).column(5).align = :right
+            t.row(r_idx).column(5).font_style = :bold
+
+            if table_rows[r_idx][3].to_s.start_with?("Passed")
+              t.row(r_idx).column(3).background_color = "DCFCE7"
+              t.row(r_idx).column(3).text_color = "15803D"
+            else
+              t.row(r_idx).column(3).background_color = "FEE2E2"
+              t.row(r_idx).column(3).text_color = "B91C1C"
+            end
+          end
+        end
+      else
+        doc.text "No question attempts recorded for this congregation yet.", size: 9, color: "666666", align: :center
+      end
+
+      # 5. FOOTER ON ALL PAGES: Powered by SoftalxHQ
+      doc.number_pages "Page <page> of <total>   |   Powered by SoftalxHQ", {
+        at: [doc.bounds.left, -10],
+        width: doc.bounds.width,
+        align: :center,
+        size: 8,
+        color: "666666",
+        style: :bold
+      }
+    end
+
+    church_slug = @church.name.parameterize.underscore
+    datetime_stamp = Time.current.strftime("%Y%m%d_%H%M%S")
+    filename = "#{church_slug}_#{datetime_stamp}.pdf"
+    send_data pdf.render, filename: filename, type: 'application/pdf', disposition: 'attachment'
+  end
+
   private
 
   def user_params

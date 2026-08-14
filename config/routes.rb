@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get 'settings/users', to: 'settings#users'
   get 'settings/analysis', to: 'settings#analysis', as: :settings_analysis
   get 'settings/analysis/church/:id', to: 'settings#church_analysis', as: :settings_church_analysis
+  get 'settings/analysis/church/:id/pdf', to: 'settings#church_analysis_pdf', as: :settings_church_analysis_pdf
 
   # Church / Congregation Management Routes
   get 'settings/churches', to: 'settings#churches', as: :settings_churches

@@ -29,6 +29,10 @@ gem "cssbundling-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# PDF Generation Gems
+gem "prawn", "~> 2.4"
+gem "prawn-table", "~> 0.2.2"
+
 # Use Redis adapter to run Action Cable in production
 gem "redis", ">= 4.0.1"
 
