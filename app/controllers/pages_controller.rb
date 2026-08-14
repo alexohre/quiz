@@ -18,33 +18,64 @@ class PagesController < ApplicationController
     @queued_quizzes = Quiz.where(queued_for_recording: true).order(:id)
     
     if params[:quiz_id].present?
-      @active_quiz = @queued_quizzes.find_by(id: params[:quiz_id]) || @queued_quizzes.first
+      @active_quiz = @queued_quizzes.find_by(id: params[:quiz_id])
     else
       @active_quiz = @queued_quizzes.first
     end
 
     @current_stage = params[:stage_id].present? ? Stage.find_by(id: params[:stage_id]) : (@active_quiz&.stage || @stages.find_by(active: true) || @stages.first)
 
-    @current_round = params[:round_number].present? ? params[:round_number].to_i : 1
+    if params[:round_number].present?
+      @current_round = params[:round_number].to_i
+    else
+      # Auto land on first incomplete round for current stage
+      churches_count = @churches.count
+      active_round = 1
+      if churches_count > 0 && @current_stage.present?
+        (1..10).each do |r_num|
+          recorded_count = Score.where(stage_id: @current_stage.id, round_number: r_num).count
+          if recorded_count >= churches_count
+            active_round = r_num + 1
+          else
+            active_round = r_num
+            break
+          end
+        end
+      end
+      @current_round = active_round
+    end
+
     max_rec_round = Score.where(stage: @current_stage).maximum(:round_number) || 1
     @max_round_count = [max_rec_round, 5, @current_round].max
+
+    # Flag if the active question/round was previously answered or recorded
+    @is_already_recorded = @active_quiz.present? && (@active_quiz.answered? || Score.exists?(stage_id: @current_stage&.id, round_number: @current_round))
   end
 
   def update_score
     church_id = params[:church_id]
     stage_id = params[:stage_id]
     round_number = params[:round_number].present? ? params[:round_number].to_i : 1
-    points = params[:points].to_i
-    bonus_points = params[:bonus_points].to_i
+    points = [params[:points].to_i, 0].max
+    bonus_points = [params[:bonus_points].to_i, 0].max
     quiz_id = params[:quiz_id]
 
     # Check if score already existed before save to detect modifications/rollbacks
     existing_score = Score.find_by(church_id: church_id, stage_id: stage_id, round_number: round_number)
     is_modification = existing_score.present?
 
+    # Prevent double recording identical score values
+    if existing_score && existing_score.points == points && existing_score.bonus_points == bonus_points
+      # Dequeue recorded question if still queued
+      Quiz.find_by(id: quiz_id)&.update(queued_for_recording: false) if quiz_id.present?
+      
+      redirect_to recorder_path(stage_id: stage_id, round_number: round_number), notice: "Score for #{existing_score.church.name} is already recorded (#{existing_score.total_stage_points} pts)."
+      return
+    end
+
     score = Score.find_or_initialize_by(church_id: church_id, stage_id: stage_id, round_number: round_number)
-    score.points = [points, 0].max
-    score.bonus_points = [bonus_points, 0].max
+    score.points = points
+    score.bonus_points = bonus_points
 
     if score.save
       # Dequeue recorded question once score is saved
@@ -100,10 +131,17 @@ class PagesController < ApplicationController
         remaining_count: Quiz.where(queued_for_recording: true).count
       })
 
+      # Auto advance to next round tab if current round is complete for all congregations
+      churches_count = Church.count
+      recorded_in_round = Score.where(stage_id: stage_id, round_number: round_number).count
+      round_is_complete = churches_count > 0 && recorded_in_round >= churches_count
+      target_round = round_is_complete ? round_number + 1 : round_number
+
       if next_queued.present?
-        redirect_to recorder_path(stage_id: next_queued.stage_id, quiz_id: next_queued.id), notice: "Score saved for #{score.church.name}! Advanced to next question in queue."
+        redirect_to recorder_path(stage_id: next_queued.stage_id, quiz_id: next_queued.id, round_number: target_round), notice: "Score saved for #{score.church.name}! Advanced to next question."
       else
-        redirect_to recorder_path(stage_id: stage_id, round_number: round_number), notice: "Score saved for #{score.church.name}! Queue cleared."
+        msg = round_is_complete ? "Round #{round_number} complete! Auto-advanced to Round #{target_round}." : "Score saved for #{score.church.name}!"
+        redirect_to recorder_path(stage_id: stage_id, round_number: target_round), notice: msg
       end
     else
       redirect_to recorder_path(stage_id: stage_id, round_number: round_number, quiz_id: quiz_id), alert: "Could not update score."
@@ -183,7 +221,7 @@ class PagesController < ApplicationController
     end
 
     quiz_obj = quiz_id.present? ? Quiz.find_by(id: quiz_id) : nil
-    q_label = quiz_obj ? "quest ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "quest ##{quiz_id}" : "question")
+    q_label = quiz_obj ? "question ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "question ##{quiz_id}" : "question")
     ticker_msg = "#{q_label} record skipped"
 
     ActionCable.server.broadcast("quiz_channel", {

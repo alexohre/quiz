@@ -43,7 +43,7 @@ export default class extends Controller {
 			this.interval = null;
 		}
 
-		const resetDuration = duration || parseInt(this.timerDuration, 10) || 30;
+		const resetDuration = (duration !== undefined && duration !== null) ? parseInt(duration, 10) : (parseInt(this.timerDuration, 10) || 30);
 		this.timer = resetDuration;
 		this.totalDuration = resetDuration;
 
@@ -57,9 +57,15 @@ export default class extends Controller {
 		}
 
 		if (this.hasStartButtonTarget) {
-			this.startButtonTarget.disabled = false;
-			this.startButtonTarget.classList.remove("btn-secondary");
-			this.startButtonTarget.classList.add("btn-success");
+			if (resetDuration === 0) {
+				this.startButtonTarget.disabled = true;
+				this.startButtonTarget.classList.remove("btn-primary", "btn-success");
+				this.startButtonTarget.classList.add("btn-secondary");
+			} else {
+				this.startButtonTarget.disabled = false;
+				this.startButtonTarget.classList.remove("btn-secondary");
+				this.startButtonTarget.classList.add("btn-success");
+			}
 		}
 	}
 
@@ -91,6 +97,13 @@ export default class extends Controller {
 		
 		if (this.interval) {
 			clearInterval(this.interval);
+			this.interval = null;
+		}
+
+		if (duration === 0) {
+			this.timer = 0;
+			this.countdownTarget.textContent = "0";
+			return;
 		}
 
 		this.timer = duration;

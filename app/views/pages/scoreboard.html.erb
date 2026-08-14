@@ -225,18 +225,20 @@
 												</td>
 
 												<% round_list.each do |r_num| %>
-													<% r_pts = church.score_for_stage_and_round(stage, r_num) %>
-													<% r_bonus = church.bonus_points_for_stage_and_round(stage, r_num) %>
+													<% score_obj = Score.find_by(church_id: church.id, stage_id: stage.id, round_number: r_num) %>
 													<td class="text-center py-3" id="stage_round_score_<%= church.id %>_<%= stage.id %>_<%= r_num %>">
-														<% if r_pts > 0 %>
+														<% if score_obj.present? %>
 															<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 fw-bold fs-6">
-																<%= r_pts %>
-																<% if r_bonus > 0 %>
-																	<small class="text-warning-emphasis ms-1">(+<%= r_bonus %>)</small>
+																<% if score_obj.points == 0 && score_obj.bonus_points > 0 %>
+																	0 + <%= score_obj.bonus_points %>
+																<% elsif score_obj.points > 0 && score_obj.bonus_points > 0 %>
+																	<%= score_obj.points %> + <%= score_obj.bonus_points %>
+																<% else %>
+																	<%= score_obj.total_stage_points %>
 																<% end %>
 															</span>
 														<% else %>
-															<span class="text-muted small">—</span>
+															<span class="text-muted small">&bull;</span>
 														<% end %>
 													</td>
 												<% end %>

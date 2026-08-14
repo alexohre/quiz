@@ -18,8 +18,8 @@ consumer.subscriptions.create("QuizChannel", {
 			}
 		}
 
-		// 2. Question Queued Event (Live Recorder Queue & Activation)
-		if (data.type === "question_queued") {
+		// 2. Question Queued Event (Live Recorder Queue & Activation - ignore already answered questions)
+		if (data.type === "question_queued" && !data.already_answered) {
 			if (window.location.pathname.includes("/recorder")) {
 				const activeQuizInput = document.querySelector("input[name='quiz_id']");
 				const activeQuizId = activeQuizInput ? activeQuizInput.value : null;
@@ -42,11 +42,19 @@ consumer.subscriptions.create("QuizChannel", {
 		if (data.type === "score_update") {
 			const userRole = document.body.dataset.userRole;
 
+			let cellText = "";
+			if (data.points === 0 && data.bonus_points > 0) {
+				cellText = `0 + ${data.bonus_points}`;
+			} else if (data.points > 0 && data.bonus_points > 0) {
+				cellText = `${data.points} + ${data.bonus_points}`;
+			} else {
+				cellText = `${data.round_total}`;
+			}
+
 			// Live update Stage & Round table cells if on scoreboard page
 			const stageRoundCell = document.getElementById(`stage_round_score_${data.church_id}_${data.stage_id}_${data.round_number}`);
 			if (stageRoundCell) {
-				const bonusText = data.bonus_points > 0 ? `<small class="text-warning-emphasis ms-1">(+${data.bonus_points})</small>` : '';
-				stageRoundCell.innerHTML = `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 fw-bold fs-6">${data.round_total} ${bonusText}</span>`;
+				stageRoundCell.innerHTML = `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 fw-bold fs-6">${cellText}</span>`;
 			}
 
 			const grandTotalCell = document.getElementById(`grand_total_${data.church_id}`);
@@ -57,8 +65,7 @@ consumer.subscriptions.create("QuizChannel", {
 			// Live update Modal Table cells if presenter modal is open
 			const modalRoundCell = document.getElementById(`modal_stage_round_score_${data.church_id}_${data.stage_id}_${data.round_number}`);
 			if (modalRoundCell) {
-				const bonusText = data.bonus_points > 0 ? `<small class="text-warning-emphasis ms-1">(+${data.bonus_points})</small>` : '';
-				modalRoundCell.innerHTML = `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-bold">${data.round_total} ${bonusText}</span>`;
+				modalRoundCell.innerHTML = `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-bold">${cellText}</span>`;
 			}
 
 			const modalStageTotalCell = document.getElementById(`modal_stage_total_${data.church_id}_${data.stage_id}`);
@@ -71,8 +78,8 @@ consumer.subscriptions.create("QuizChannel", {
 				modalGrandTotalCell.textContent = `${data.grand_total} pts`;
 			}
 
-			// Notify on screens EXCEPT presenter screen
-			if (userRole !== "presenter") {
+			// Notify on screens EXCEPT presenter and judges screen (judges use live ticker news feed)
+			if (userRole !== "presenter" && userRole !== "judges" && !window.location.pathname.includes("/judges")) {
 				showScoreNotification(data);
 			}
 		}

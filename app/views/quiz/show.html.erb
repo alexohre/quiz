@@ -126,16 +126,17 @@
 														<td class="fw-bold"><%= idx + 1 %></td>
 														<td class="text-start fw-bold text-dark"><%= church.name %></td>
 														<% (1..max_rounds).each do |r_num| %>
-															<% r_base = church.base_points_for_stage_and_round(stg, r_num) %>
-															<% r_bonus = church.bonus_points_for_stage_and_round(stg, r_num) %>
-															<% r_total = r_base + r_bonus %>
+															<% score_obj = Score.find_by(church_id: church.id, stage_id: stg.id, round_number: r_num) %>
 															<td id="modal_stage_round_score_<%= church.id %>_<%= stg.id %>_<%= r_num %>">
-																<% if r_total > 0 %>
+																<% if score_obj.present? %>
 																	<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-bold">
-																		<%= r_total %>
-																		<% if r_bonus > 0 %>
-																			<small class="text-warning-emphasis">(+<%= r_bonus %>)</small>
-																		<% end %>
+																		<% if score_obj.points == 0 && score_obj.bonus_points > 0 %>
+																			0 + <%= score_obj.bonus_points %>
+ 																		<% elsif score_obj.points > 0 && score_obj.bonus_points > 0 %>
+ 																			<%= score_obj.points %> + <%= score_obj.bonus_points %>
+ 																		<% else %>
+ 																			<%= score_obj.total_stage_points %>
+ 																		<% end %>
 																	</span>
 																<% else %>
 																	<span class="text-muted small">&bull;</span>

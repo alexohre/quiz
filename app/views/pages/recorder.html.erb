@@ -53,13 +53,18 @@
 					<i class="bi <%= @active_quiz ? 'bi-question-circle-fill' : 'bi-hourglass-split' %> fs-2"></i>
 				</div>
 				<div>
-					<div class="d-flex align-items-center gap-2">
+					<div class="d-flex align-items-center gap-2 flex-wrap">
 						<span class="badge <%= @active_quiz ? 'bg-warning text-dark' : 'bg-secondary text-white' %> fw-bold text-uppercase" id="activeQuestionBadge">
 							<%= @active_quiz ? "Queue Item ##{@active_quiz.question_number} (#{ @queued_quizzes.index(@active_quiz) ? @queued_quizzes.index(@active_quiz) + 1 : 1 } of #{@queued_quizzes.count})" : "Queue Empty &bull; Waiting for Questions..." %>
 						</span>
 						<span class="badge bg-light text-dark border" id="activeQuestionStageBadge">
 							<%= @current_stage&.name || "Stage 1" %>
 						</span>
+						<% if @is_already_recorded %>
+							<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle fw-bold">
+								<i class="bi bi-info-circle-fill me-1"></i> Previously Answered &bull; Edit Mode
+							</span>
+						<% end %>
 					</div>
 					<div class="fw-bold text-dark mt-1" id="activeQuestionText" style="font-size: 1.1rem;">
 						<%= @active_quiz ? @active_quiz.question : "Waiting for Quiz Master to load new questions..." %>
@@ -129,7 +134,7 @@
 	<% end %>
 
 	<!-- WAITING PLACEHOLDER CARD (Shown when NO question is in queue) -->
-	<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4 <%= 'd-none' if @active_quiz %>" id="waitingForQuestionPlaceholder">
+	<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4 <%= 'd-none' if @active_quiz && @active_quiz.queued_for_recording? %>" id="waitingForQuestionPlaceholder">
 		<div class="spinner-grow text-warning mb-3 mx-auto" style="width: 3.5rem; height: 3.5rem;" role="status">
 			<span class="visually-hidden">Loading...</span>
 		</div>
@@ -141,7 +146,7 @@
 
 	<!-- SCORE ENTRY CARDS GRID (Visible ONLY when Queued Question Active) -->
 	<% if @churches.present? && @current_stage.present? %>
-		<div id="scoreEntryContainer" class="<%= 'd-none' unless @active_quiz %>">
+		<div id="scoreEntryContainer" class="<%= 'd-none' unless @active_quiz && @active_quiz.queued_for_recording? %>">
 			<div class="d-flex align-items-center justify-content-between mb-3 px-1">
 				<h4 class="fw-bold text-dark mb-0">
 					Recording Scores for <span class="text-primary"><%= @current_stage.name %></span> &mdash; <span class="text-warning-emphasis">Round <%= @current_round %></span>
@@ -153,38 +158,41 @@
 				<% @churches.each do |church| %>
 					<% score_record = Score.find_by(church_id: church.id, stage_id: @current_stage.id, round_number: @current_round) %>
 					<% is_recorded = score_record.present? %>
-					<% r_base = score_record ? score_record.points : @points_per_question %>
-					<% r_bonus = score_record ? score_record.bonus_points : 0 %>
-					<% r_total = r_base + r_bonus %>
-					<div class="col-md-6 col-lg-4">
-						<div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white settings-card <%= 'border-success border-2' if is_recorded && r_total > 0 %> <%= 'border-danger border-2' if is_recorded && r_total == 0 %>">
-							<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+					<% r_base_val = is_recorded ? score_record.points : "-" %>
+					<% r_bonus_val = is_recorded ? score_record.bonus_points : 0 %>
+					<% r_total_display = is_recorded ? "#{score_record.points + score_record.bonus_points} pts" : "- pts" %>
+					<div class="col-12 col-md-6 col-lg-4">
+						<div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white settings-card <%= 'border-success border-2' if is_recorded && (score_record.points + score_record.bonus_points) > 0 %> <%= 'border-danger border-2' if is_recorded && (score_record.points + score_record.bonus_points) == 0 %>">
+							<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between" style="min-height: 88px;">
 								<div>
 									<div class="d-flex align-items-center gap-2">
 										<h5 class="mb-0 fw-bold text-dark"><%= church.name %></h5>
 										<% if is_recorded %>
-											<% if r_total > 0 %>
-												<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.75rem;">
-													<i class="bi bi-check-circle-fill me-1"></i>Saved
+											<i class="bi bi-check-circle-fill text-success fs-5 ms-1" title="Round <%= @current_round %> Score Recorded"></i>
+										<% end %>
+									</div>
+									<div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
+										<% (1..[@max_round_count, 5].max).each do |r_n| %>
+											<% round_rec = Score.find_by(church_id: church.id, stage_id: @current_stage.id, round_number: r_n) %>
+											<% if round_rec.present? %>
+												<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.7rem;" title="Round <%= r_n %> Recorded: <%= round_rec.total_stage_points %> pts">
+													<i class="bi bi-check-lg text-success fw-bold"></i> R<%= r_n %>
 												</span>
 											<% else %>
-												<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5" style="font-size: 0.75rem;">
-													<i class="bi bi-x-circle-fill me-1"></i>0 pts (Failed)
+												<span class="badge bg-light text-muted border rounded-pill px-2 py-0.5" style="font-size: 0.7rem;" title="Round <%= r_n %> Pending">
+													R<%= r_n %>
 												</span>
 											<% end %>
 										<% end %>
 									</div>
-									<% if church.location.present? %>
-										<small class="text-muted"><i class="bi bi-geo-alt-fill me-1 text-danger"></i><%= church.location %></small>
-									<% end %>
 								</div>
-								<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold">
+								<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold text-nowrap ms-2">
 									Grand: <%= church.total_score %> pts
 								</span>
 							</div>
 							<div class="card-body p-4 text-center d-flex flex-column justify-content-between">
 								<!-- Representatives Badges -->
-								<div class="mb-3">
+								<div class="mb-3 d-flex align-items-center justify-content-center" style="min-height: 38px;">
 									<% if church.representatives.present? %>
 										<div class="d-flex flex-wrap justify-content-center gap-1">
 											<% church.representatives.each do |rep| %>
@@ -199,7 +207,7 @@
 								</div>
 
 								<!-- Stage & Round Score Entry Form -->
-								<%= form_with url: update_score_path, method: :post, html: { id: "scoreForm_#{church.id}" } do |f| %>
+								<%= form_with url: update_score_path, method: :post, html: { id: "scoreForm_#{church.id}", class: "d-flex flex-column justify-content-between flex-grow-1" } do |f| %>
 									<%= f.hidden_field :church_id, value: church.id %>
 									<%= f.hidden_field :stage_id, value: @current_stage.id %>
 									<%= f.hidden_field :round_number, value: @current_round %>
@@ -210,13 +218,13 @@
 										<div class="col-6">
 											<label class="form-label text-muted small fw-semibold text-uppercase">Base Points</label>
 											<div class="position-relative">
-												<%= f.number_field :points, 
-													value: r_base, 
+												<%= f.text_field :points, 
+													value: r_base_val, 
 													class: "form-control text-center fw-bold text-primary fs-3 rounded-3 border-2 bg-light cursor-not-allowed", 
 													id: "input_points_#{church.id}",
 													readonly: true,
-													tabindex: "-1",
-													min: 0 %>
+													placeholder: "-",
+													tabindex: "-1" %>
 												<span class="position-absolute top-0 end-0 me-2 mt-1 badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;" title="Controlled by quick buttons">
 													Base
 												</span>
@@ -231,9 +239,10 @@
 										<div class="col-6">
 											<label class="form-label text-warning-emphasis small fw-semibold text-uppercase"><i class="bi bi-star-fill text-warning me-1"></i>Judges Bonus</label>
 											<%= f.number_field :bonus_points, 
-												value: r_bonus, 
+												value: r_bonus_val, 
 												class: "form-control text-center fw-bold text-warning-emphasis fs-3 rounded-3 border-2 border-warning", 
 												id: "input_bonus_#{church.id}",
+												oninput: "recalculateTotal(#{church.id})",
 												min: 0 %>
 											<div class="d-flex justify-content-center gap-1 mt-2">
 												<button type="button" class="btn btn-sm btn-outline-warning px-2 fw-bold" onclick="addBonus(<%= church.id %>, 5)">+5</button>
@@ -244,15 +253,21 @@
 
 									<div class="p-2 mb-3 bg-light rounded-3 text-muted small d-flex justify-content-between px-3 border">
 										<span><%= @current_stage.name %> &bull; Round <%= @current_round %>:</span>
-										<strong class="text-dark fs-6"><%= r_total %> pts</strong>
+										<strong class="text-dark fs-6" id="total_display_<%= church.id %>"><%= r_total_display %></strong>
 									</div>
 
 									<div class="d-flex gap-2">
-										<button type="submit" class="btn btn-primary flex-grow-1 rounded-3 fw-semibold">
-											<i class="bi bi-check-lg me-1"></i> Save Score
-										</button>
 										<% if is_recorded %>
-											<%= button_to skip_question_path, method: :post, params: { church_id: church.id, stage_id: @current_stage.id, round_number: @current_round, quiz_id: @active_quiz&.id }, data: { turbo_confirm: "Reset score for #{church.name}?" }, class: "btn btn-outline-secondary rounded-3 px-3", title: "Reset score entry" do %>
+											<button type="submit" id="submit_btn_<%= church.id %>" class="btn btn-warning text-dark flex-grow-1 rounded-3 fw-semibold shadow-sm">
+												<i class="bi bi-pencil-square me-1"></i> Update Score
+											</button>
+										<% else %>
+											<button type="submit" id="submit_btn_<%= church.id %>" disabled class="btn btn-secondary text-white opacity-75 flex-grow-1 rounded-3 fw-semibold shadow-sm">
+												<i class="bi bi-hand-index-thumb me-1"></i> Select Score
+											</button>
+										<% end %>
+										<% if is_recorded %>
+											<%= link_to skip_question_path(church_id: church.id, stage_id: @current_stage.id, round_number: @current_round, quiz_id: @active_quiz&.id), data: { turbo_method: :post, turbo_confirm: "Reset score for #{church.name}?" }, class: "btn btn-outline-secondary rounded-3 px-3", title: "Reset score entry" do %>
 												<i class="bi bi-arrow-counterclockwise"></i>
 											<% end %>
 										<% end %>
@@ -264,19 +279,10 @@
 				<% end %>
 			</div>
 		</div>
-	<% elsif @churches.empty? %>
-		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
-			<div class="empty-state-icon mb-3 text-muted opacity-50">
-				<i class="bi bi-building" style="font-size: 3.5rem;"></i>
-			</div>
-			<h5 class="fw-bold text-dark mb-1">No Congregations Registered</h5>
-			<p class="text-muted small mb-4">Please register congregations in Settings first before recording scores.</p>
-			<div>
-				<a href="<%= settings_churches_path %>" class="btn btn-primary rounded-pill px-4">Go to Congregation Settings</a>
-			</div>
-		</div>
-	<% else %>
-		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+	<% end %>
+
+	<% if @stages.empty? %>
+		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
 			<div class="empty-state-icon mb-3 text-muted opacity-50">
 				<i class="bi bi-layers" style="font-size: 3.5rem;"></i>
 			</div>
@@ -286,6 +292,17 @@
 				<a href="<%= settings_stage_path %>" class="btn btn-primary rounded-pill px-4">Go to Stage Settings</a>
 			</div>
 		</div>
+	<% elsif @churches.empty? %>
+		<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
+			<div class="empty-state-icon mb-3 text-muted opacity-50">
+				<i class="bi bi-building" style="font-size: 3.5rem;"></i>
+			</div>
+			<h5 class="fw-bold text-dark mb-1">No Congregations Registered</h5>
+			<p class="text-muted small mb-4">Please register congregations in Settings first before recording scores.</p>
+			<div>
+				<a href="<%= settings_churches_path %>" class="btn btn-primary rounded-pill px-4">Go to Congregation Settings</a>
+			</div>
+		</div>
 	<% end %>
 </div>
 
@@ -293,6 +310,8 @@
 	function setBasePoints(churchId, pts) {
 		const pointsInput = document.getElementById("input_points_" + churchId);
 		if (pointsInput) pointsInput.value = pts;
+		activateSubmitBtn(churchId);
+		recalculateTotal(churchId);
 	}
 
 	function setZeroPoints(churchId) {
@@ -300,15 +319,8 @@
 		const bonusInput = document.getElementById("input_bonus_" + churchId);
 		if (pointsInput) pointsInput.value = 0;
 		if (bonusInput) bonusInput.value = 0;
-	}
-
-	function addPoints(churchId, delta) {
-		const input = document.getElementById("input_points_" + churchId);
-		if (input) {
-			let val = parseInt(input.value) || 0;
-			val = Math.max(0, val + delta);
-			input.value = val;
-		}
+		activateSubmitBtn(churchId);
+		recalculateTotal(churchId);
 	}
 
 	function addBonus(churchId, delta) {
@@ -318,5 +330,38 @@
 			val = Math.max(0, val + delta);
 			input.value = val;
 		}
+		const pointsInput = document.getElementById("input_points_" + churchId);
+		if (pointsInput && (pointsInput.value === "-" || pointsInput.value === "")) {
+			pointsInput.value = 0;
+		}
+		activateSubmitBtn(churchId);
+		recalculateTotal(churchId);
+	}
+
+	function activateSubmitBtn(churchId) {
+		const submitBtn = document.getElementById("submit_btn_" + churchId);
+		if (submitBtn) {
+			submitBtn.disabled = false;
+			submitBtn.classList.remove("btn-secondary", "disabled", "opacity-75");
+			if (!submitBtn.classList.contains("btn-warning")) {
+				submitBtn.classList.add("btn-primary");
+				submitBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Save Score';
+			}
+		}
+	}
+
+	function recalculateTotal(churchId) {
+		const pointsInput = document.getElementById("input_points_" + churchId);
+		const bonusInput = document.getElementById("input_bonus_" + churchId);
+		const totalDisplay = document.getElementById("total_display_" + churchId);
+
+		if (!pointsInput || pointsInput.value === "-" || pointsInput.value === "") {
+			if (totalDisplay) totalDisplay.textContent = "- pts";
+			return;
+		}
+
+		const pts = parseInt(pointsInput.value, 10) || 0;
+		const bonus = parseInt(bonusInput.value, 10) || 0;
+		if (totalDisplay) totalDisplay.textContent = (pts + bonus) + " pts";
 	}
 </script>
