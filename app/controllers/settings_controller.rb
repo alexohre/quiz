@@ -345,7 +345,7 @@ class SettingsController < ApplicationController
 
     logo_path = Rails.root.join('app/assets/images/cbq-logo.png')
 
-    pdf = Prawn::Document.new(page_size: 'A4', margin: [36, 36, 45, 36]) do |doc|
+    pdf = Prawn::Document.new(page_size: 'A4', margin: [36, 36, 50, 36]) do |doc|
       # 1. TOP LOGO
       if File.exist?(logo_path)
         doc.image logo_path, fit: [140, 50], position: :center
