@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   post 'update_score', to: 'pages#update_score', as: :update_score
   post 'skip_question', to: 'pages#skip_question', as: :skip_question
   post 'finish_question', to: 'pages#finish_question', as: :finish_question
+  post 'rollback_question', to: 'pages#rollback_question', as: :rollback_question
   post 'reset_scores', to: 'pages#reset_scores', as: :reset_scores
   post 'reset', to: 'settings#reset'
   get 'quizmaster', to: 'pages#quizmaster'

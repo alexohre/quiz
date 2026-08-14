@@ -38,6 +38,10 @@ class PagesController < ApplicationController
     bonus_points = params[:bonus_points].to_i
     quiz_id = params[:quiz_id]
 
+    # Check if score already existed before save to detect modifications/rollbacks
+    existing_score = Score.find_by(church_id: church_id, stage_id: stage_id, round_number: round_number)
+    is_modification = existing_score.present?
+
     score = Score.find_or_initialize_by(church_id: church_id, stage_id: stage_id, round_number: round_number)
     score.points = [points, 0].max
     score.bonus_points = [bonus_points, 0].max
@@ -68,16 +72,19 @@ class PagesController < ApplicationController
 
       # Broadcast live ticker news feed
       quiz_obj = quiz_id.present? ? Quiz.find_by(id: quiz_id) : nil
-      q_label = quiz_obj ? "question ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "quest ##{quiz_id}" : "question")
+      q_num = quiz_obj ? quiz_obj.formatted_question_number : (quiz_id.present? ? quiz_id : "1")
+      total_pts = score.points + score.bonus_points
 
-      ticker_msg = if points == 0 && bonus_points == 0
-        "0 pts (failed) recorded for #{score.church.name}, #{q_label}"
+      ticker_msg = if is_modification
+        "record modified to #{total_pts} pts for #{score.church.name}, question ##{q_num}"
+      elsif points == 0 && bonus_points == 0
+        "0 pts (failed) recorded for #{score.church.name}, question ##{q_num}"
       elsif bonus_points > 0 && points == 0
-        "#{bonus_points} pts manually recorded for #{score.church.name}, #{q_label}"
+        "#{bonus_points} pts manually recorded for #{score.church.name}, question ##{q_num}"
       elsif bonus_points > 0 && points > 0
-        "#{points} pts & #{bonus_points} pts manual bonus recorded for #{score.church.name}, #{q_label}"
+        "#{points} pts & #{bonus_points} pts manual bonus recorded for #{score.church.name}, question ##{q_num}"
       else
-        "#{points} pts recorded for #{score.church.name}, #{q_label}"
+        "#{points} pts recorded for #{score.church.name}, question ##{q_num}"
       end
 
       ActionCable.server.broadcast("quiz_channel", {
@@ -100,6 +107,34 @@ class PagesController < ApplicationController
       end
     else
       redirect_to recorder_path(stage_id: stage_id, round_number: round_number, quiz_id: quiz_id), alert: "Could not update score."
+    end
+  end
+
+  def rollback_question
+    last_quiz = Quiz.where(queued_for_recording: true).or(Quiz.where(answered: true)).order(updated_at: :desc).first
+
+    if last_quiz
+      last_quiz.update(queued_for_recording: true)
+      
+      settings = Setting.last || Setting.create!
+      settings.update(active_quiz_id: last_quiz.id)
+
+      ActionCable.server.broadcast("quiz_channel", {
+        type: "queue_updated",
+        question_id: last_quiz.id,
+        question_number: last_quiz.question_number,
+        question_text: last_quiz.question,
+        remaining_count: Quiz.where(queued_for_recording: true).count
+      })
+
+      ActionCable.server.broadcast("quiz_channel", {
+        type: "ticker_feed",
+        message: "rolled back to question ##{last_quiz.formatted_question_number} for score modification"
+      })
+
+      redirect_to recorder_path(stage_id: last_quiz.stage_id, quiz_id: last_quiz.id), notice: "Rolled back to Question ##{last_quiz.formatted_question_number}. You can now modify and re-save scores."
+    else
+      redirect_to recorder_path(stage_id: params[:stage_id], round_number: params[:round_number]), alert: "No previous question found to rollback."
     end
   end
 

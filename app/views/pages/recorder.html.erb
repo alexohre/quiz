@@ -67,19 +67,31 @@
 				</div>
 			</div>
 
-			<!-- ACTION BUTTONS: DONE & NEXT IN QUEUE / SKIP -->
-			<div id="skipButtonWrapper" class="d-flex align-items-center gap-2 <%= 'd-none' unless @active_quiz %>">
-				<%= button_to finish_question_path, method: :post, 
-					params: { quiz_id: @active_quiz&.id, stage_id: @current_stage&.id, round_number: @current_round }, 
-					class: "btn btn-success rounded-pill px-4 fw-bold shadow-sm" do %>
-					<i class="bi bi-check-all me-1"></i> Done & Next in Queue
+			<!-- ACTION BUTTONS: DONE & NEXT IN QUEUE / ROLLBACK / SKIP -->
+			<div id="skipButtonWrapper" class="d-flex align-items-center gap-2 flex-wrap">
+				<% if @active_quiz %>
+					<%= button_to finish_question_path, method: :post, 
+						params: { quiz_id: @active_quiz&.id, stage_id: @current_stage&.id, round_number: @current_round }, 
+						class: "btn btn-success rounded-pill px-4 fw-bold shadow-sm" do %>
+						<i class="bi bi-check-all me-1"></i> Done & Next in Queue
+					<% end %>
 				<% end %>
 
-				<%= button_to skip_question_path, method: :post, 
-					params: { quiz_id: @active_quiz&.id, stage_id: @current_stage&.id, round_number: @current_round }, 
-					data: { turbo_confirm: "Are you sure judges cancelled or disqualified this question?" }, 
-					class: "btn btn-outline-warning text-dark rounded-pill px-3 fw-bold" do %>
-					<i class="bi bi-slash-circle me-1 text-warning"></i> Skip Question
+				<%= button_to rollback_question_path, method: :post, 
+					params: { stage_id: @current_stage&.id, round_number: @current_round }, 
+					data: { turbo_confirm: "Rollback to the last question for score modification?" }, 
+					class: "btn btn-outline-danger rounded-pill px-3 fw-bold shadow-sm",
+					title: "Re-open last question to update score" do %>
+					<i class="bi bi-arrow-counterclockwise me-1"></i> Rollback Last Question
+				<% end %>
+
+				<% if @active_quiz %>
+					<%= button_to skip_question_path, method: :post, 
+						params: { quiz_id: @active_quiz&.id, stage_id: @current_stage&.id, round_number: @current_round }, 
+						data: { turbo_confirm: "Are you sure judges cancelled or disqualified this question?" }, 
+						class: "btn btn-outline-warning text-dark rounded-pill px-3 fw-bold" do %>
+						<i class="bi bi-slash-circle me-1 text-warning"></i> Skip Question
+					<% end %>
 				<% end %>
 			</div>
 		</div>
