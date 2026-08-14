@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   post "update_user_password", to: "settings#update_user_password"
   delete "delete_user/:id", to: "settings#delete_user", as: :delete_user
   get 'settings/users', to: 'settings#users'
+  get 'settings/analysis', to: 'settings#analysis', as: :settings_analysis
+  get 'settings/analysis/church/:id', to: 'settings#church_analysis', as: :settings_church_analysis
 
   # Church / Congregation Management Routes
   get 'settings/churches', to: 'settings#churches', as: :settings_churches

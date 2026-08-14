@@ -1,0 +1,255 @@
+<div class="row g-4 align-items-start">
+	<div class="col-lg-3 d-print-none">
+		<%= render 'shared/side_nav' %>
+	</div>
+	<div class="col-lg-9">
+		<!-- Breadcrumb & Back Link -->
+		<div class="d-flex align-items-center justify-content-between mb-3 d-print-none">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb mb-0">
+					<li class="breadcrumb-item"><a href="<%= settings_settings_path %>" class="text-decoration-none text-muted">Settings</a></li>
+					<li class="breadcrumb-item"><a href="<%= settings_analysis_path %>" class="text-decoration-none text-muted">Quiz Reports</a></li>
+					<li class="breadcrumb-item active fw-bold text-dark" aria-current="page"><%= @church.name %> Report</li>
+				</ol>
+			</nav>
+			<a href="<%= settings_analysis_path %>" class="btn btn-outline-secondary rounded-pill px-3 btn-sm fw-bold">
+				<i class="bi bi-arrow-left me-1"></i> Back to All Reports
+			</a>
+		</div>
+
+		<!-- Hero Header Card -->
+		<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white border-top border-primary border-4">
+			<div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+				<div>
+					<div class="d-flex align-items-center gap-2 mb-1">
+						<span class="badge bg-warning text-dark rounded-pill px-3 py-1.5 fw-bold fs-6">
+							<i class="bi bi-trophy-fill me-1"></i> Rank #<%= @rank %>
+						</span>
+						<h2 class="fw-extrabold mb-0 text-dark"><%= @church.name %></h2>
+						<% if @church.location.present? %>
+							<span class="badge bg-light text-muted border rounded-pill px-3 py-1.5">
+								<i class="bi bi-geo-alt-fill text-danger me-1"></i><%= @church.location %>
+							</span>
+						<% end %>
+					</div>
+					<% if @church.representatives.present? %>
+						<div class="d-flex flex-wrap gap-1 mt-2">
+							<span class="text-muted small me-1">Representatives:</span>
+							<% @church.representatives.each do |rep| %>
+								<span class="badge bg-light text-dark border px-2.5 py-1">
+									<i class="bi bi-person-fill text-secondary me-1"></i><%= rep.name %>
+								</span>
+							<% end %>
+						</div>
+					<% end %>
+				</div>
+				<div class="d-flex align-items-center gap-3">
+					<div class="text-end">
+						<span class="text-muted small d-block text-uppercase fw-bold">Grand Total Score</span>
+						<span class="display-6 fw-extrabold text-primary mb-0"><%= @grand_total %> <small class="fs-6 text-muted">pts</small></span>
+					</div>
+					<div class="d-print-none ms-2">
+						<button onclick="window.print()" class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm">
+							<i class="bi bi-printer-fill me-1"></i> Print PDF Report
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Summary KPI Stat Cards Grid -->
+		<div class="row g-3 mb-4">
+			<div class="col-6 col-sm-4 col-md-2">
+				<div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+					<span class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Questions Handled</span>
+					<h3 class="fw-extrabold text-dark mb-0"><%= @total_attempts %></h3>
+					<small class="text-muted">Total Attempts</small>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-2">
+				<div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100 border-bottom border-success border-3">
+					<span class="text-success small fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Passed Questions</span>
+					<h3 class="fw-extrabold text-success mb-0"><%= @passed_count %></h3>
+					<small class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i>Correct</small>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-2">
+				<div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100 border-bottom border-danger border-3">
+					<span class="text-danger small fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Failed Questions</span>
+					<h3 class="fw-extrabold text-danger mb-0"><%= @failed_count %></h3>
+					<small class="text-danger fw-semibold"><i class="bi bi-x-circle-fill me-1"></i>0 pts</small>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-2">
+				<div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+					<span class="text-primary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Success Rate</span>
+					<h3 class="fw-extrabold text-primary mb-0"><%= @pass_rate %>%</h3>
+					<small class="text-muted">Pass Percentage</small>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-2">
+				<div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100">
+					<span class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Base Points</span>
+					<h3 class="fw-extrabold text-dark mb-0"><%= @total_base %></h3>
+					<small class="text-muted">Base Pts Earned</small>
+				</div>
+			</div>
+			<div class="col-6 col-sm-4 col-md-2">
+				<div class="card border-0 shadow-sm rounded-4 bg-white p-3 text-center h-100 border-bottom border-warning border-3">
+					<span class="text-warning-emphasis small fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Judges Bonus</span>
+					<h3 class="fw-extrabold text-warning-emphasis mb-0">+<%= @total_bonus %></h3>
+					<small class="text-warning-emphasis fw-semibold"><i class="bi bi-star-fill text-warning me-1"></i>Bonus</small>
+				</div>
+			</div>
+		</div>
+
+		<!-- Filter Tabs & Controls -->
+		<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white p-3 d-print-none">
+			<div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+				<div class="nav nav-pills" id="questionFilterTabs" role="tablist">
+					<button class="nav-link active rounded-pill px-3 py-1.5 fw-bold text-capitalize" onclick="filterQuestionRows('all')">
+						All Questions (<%= @total_attempts %>)
+					</button>
+					<button class="nav-link rounded-pill px-3 py-1.5 fw-bold text-success" onclick="filterQuestionRows('passed')">
+						<i class="bi bi-check-circle-fill me-1"></i> Passed (<%= @passed_count %>)
+					</button>
+					<button class="nav-link rounded-pill px-3 py-1.5 fw-bold text-danger" onclick="filterQuestionRows('failed')">
+						<i class="bi bi-x-circle-fill me-1"></i> Failed (<%= @failed_count %>)
+					</button>
+				</div>
+				<div class="text-muted small fw-semibold">
+					Showing question-by-question historical attempt log
+				</div>
+			</div>
+		</div>
+
+		<!-- Detailed Question-by-Question Table Card -->
+		<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+			<div class="card-header bg-dark text-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+				<div class="d-flex align-items-center">
+					<i class="bi bi-list-check me-2 fs-5 text-warning"></i>
+					<h5 class="mb-0 fw-bold">Question-by-Question Score Breakdown</h5>
+				</div>
+				<span class="badge bg-light text-dark px-3 py-2 rounded-pill fw-bold"><%= @question_breakdowns.count %> Recorded Logs</span>
+			</div>
+
+			<div class="card-body p-0">
+				<% if @question_breakdowns.present? %>
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0" id="questionBreakdownTable">
+							<thead class="bg-light text-muted small text-uppercase">
+								<tr>
+									<th class="ps-4 py-3" style="width: 140px;">Stage & Round</th>
+									<th class="py-3" style="width: 110px;">Question #</th>
+									<th class="py-3">Question & Details</th>
+									<th class="text-center py-3" style="width: 140px;">Status</th>
+									<th class="text-center py-3" style="width: 140px;">Score Formula</th>
+									<th class="text-end pe-4 py-3" style="width: 110px;">Total</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% @question_breakdowns.each do |qb| %>
+									<tr class="question-log-row" data-status="<%= qb[:is_passed] ? 'passed' : 'failed' %>">
+										<td class="ps-4 py-3">
+											<span class="badge bg-light text-dark border px-2.5 py-1 fw-bold">
+												<%= qb[:stage_name] %> &bull; R<%= qb[:round_number] %>
+											</span>
+										</td>
+										<td class="py-3">
+											<span class="badge bg-primary text-white px-2.5 py-1 rounded-pill fw-bold">
+												Q#<%= qb[:question_number] %>
+											</span>
+										</td>
+										<td class="py-3">
+											<div class="fw-semibold text-dark mb-1"><%= qb[:question_text] %></div>
+											<% if qb[:question_answer].present? %>
+												<small class="text-success"><i class="bi bi-check-lg me-1"></i><strong>Answer:</strong> <%= qb[:question_answer] %></small>
+											<% end %>
+										</td>
+										<td class="text-center py-3">
+											<% if qb[:is_passed] %>
+												<span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+													<i class="bi bi-check-circle-fill me-1"></i>Passed
+												</span>
+											<% else %>
+												<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill fw-bold">
+													<i class="bi bi-x-circle-fill me-1"></i>Failed (0 pts)
+												</span>
+											<% end %>
+										</td>
+										<td class="text-center py-3">
+											<% if qb[:points] == 0 && qb[:bonus_points] > 0 %>
+												<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1 fw-bold">
+													0 + <%= qb[:bonus_points] %> bonus
+												</span>
+											<% elsif qb[:points] > 0 && qb[:bonus_points] > 0 %>
+												<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 fw-bold">
+													<%= qb[:points] %> + <%= qb[:bonus_points] %> bonus
+												</span>
+											<% elsif qb[:points] > 0 %>
+												<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-1 fw-bold">
+													<%= qb[:points] %> base
+												</span>
+											<% else %>
+												<span class="badge bg-light text-muted border px-3 py-1">0 pts</span>
+											<% end %>
+										</td>
+										<td class="text-end pe-4 py-3">
+											<span class="badge bg-<%= qb[:total_pts] > 0 ? 'success' : 'secondary' %> fs-6 px-3 py-1 rounded-pill fw-bold">
+												<%= qb[:total_pts] %> pts
+											</span>
+										</td>
+									</tr>
+								<% end %>
+							</tbody>
+						</table>
+					</div>
+				<% else %>
+					<div class="text-center py-5">
+						<div class="empty-state-icon mb-3 text-muted opacity-50">
+							<i class="bi bi-inbox" style="font-size: 3.5rem;"></i>
+						</div>
+						<h5 class="fw-bold text-dark mb-1">No Question Attempts Recorded</h5>
+						<p class="text-muted small mb-0">No question scores have been logged for <%= @church.name %> yet.</p>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function filterQuestionRows(type) {
+		const rows = document.querySelectorAll(".question-log-row");
+		const tabs = document.querySelectorAll("#questionFilterTabs .nav-link");
+
+		tabs.forEach(tab => tab.classList.remove("active"));
+		if (event && event.target) {
+			event.target.classList.add("active");
+		}
+
+		rows.forEach(row => {
+			const status = row.dataset.status;
+			if (type === 'all' || status === type) {
+				row.style.display = "";
+			} else {
+				row.style.display = "none";
+			}
+		});
+	}
+</script>
+
+<style>
+	@media print {
+		.d-print-none {
+			display: none !important;
+		}
+		body {
+			background-color: #ffffff !important;
+		}
+		.card {
+			box-shadow: none !important;
+			border: 1px solid #dee2e6 !important;
+		}
+	}
+</style>

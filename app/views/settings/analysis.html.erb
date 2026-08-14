@@ -1,0 +1,310 @@
+<div class="row g-4 align-items-start">
+	<div class="col-lg-3 d-print-none">
+		<%= render 'shared/side_nav' %>
+	</div>
+	<div class="col-lg-9">
+		<!-- Header Card -->
+		<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+			<div class="card-body p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+				<div class="d-flex align-items-center gap-3">
+					<div class="avatar-circle bg-warning bg-opacity-10 text-warning-emphasis rounded-3 d-flex align-items-center justify-content-center p-3">
+						<i class="bi bi-bar-chart-line-fill fs-1"></i>
+					</div>
+					<div>
+						<h2 class="fw-bold mb-1 text-dark">Quiz Reports & Performance Analysis</h2>
+						<p class="text-muted mb-0">Detailed congregation performance breakdown, pass/fail rates, and stage analytics.</p>
+					</div>
+				</div>
+				<div class="d-flex align-items-center gap-2 d-print-none">
+					<button onclick="window.print()" class="btn btn-outline-dark rounded-pill px-3 fw-bold">
+						<i class="bi bi-printer-fill me-1"></i> Print / Export Report
+					</button>
+					<a href="<%= scoreboard_path %>" class="btn btn-primary rounded-pill px-4 fw-bold">
+						<i class="bi bi-trophy-fill me-1"></i> View Scoreboard
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Top Summary KPI Cards (4 Cards) -->
+		<div class="row g-3 mb-4">
+			<!-- KPI 1: Overall Quiz Progress -->
+			<div class="col-md-6 col-xl-3">
+				<div class="card border-0 shadow-sm rounded-4 h-100 bg-white p-3">
+					<div class="d-flex align-items-center justify-content-between mb-2">
+						<span class="text-muted small fw-bold text-uppercase">Quiz Progress</span>
+						<div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+							<i class="bi bi-pie-chart-fill fs-5"></i>
+						</div>
+					</div>
+					<h3 class="fw-extrabold text-dark mb-1"><%= @answered_quizzes_count %> / <%= @total_quizzes_count %></h3>
+					<small class="text-muted d-block mb-2">Questions Completed (<%= @progress_percentage %>%)</small>
+					<div class="progress rounded-pill style-progress" style="height: 8px;">
+						<div class="progress-bar bg-primary" role="progressbar" style="width: <%= @progress_percentage %>%;" aria-valuenow="<%= @progress_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- KPI 2: Overall Pass / Fail Rate -->
+			<div class="col-md-6 col-xl-3">
+				<div class="card border-0 shadow-sm rounded-4 h-100 bg-white p-3">
+					<div class="d-flex align-items-center justify-content-between mb-2">
+						<span class="text-muted small fw-bold text-uppercase">Success Rate</span>
+						<div class="bg-success bg-opacity-10 text-success rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+							<i class="bi bi-check-circle-fill fs-5"></i>
+						</div>
+					</div>
+					<h3 class="fw-extrabold text-dark mb-1"><%= @overall_pass_rate %>%</h3>
+					<small class="text-muted d-block">
+						<span class="text-success fw-bold"><i class="bi bi-check-lg"></i> <%= @passed_records %> Passed</span> &bull; 
+						<span class="text-danger fw-bold"><i class="bi bi-x-lg"></i> <%= @failed_records %> Failed</span>
+					</small>
+				</div>
+			</div>
+
+			<!-- KPI 3: Total Points Awarded -->
+			<div class="col-md-6 col-xl-3">
+				<div class="card border-0 shadow-sm rounded-4 h-100 bg-white p-3">
+					<div class="d-flex align-items-center justify-content-between mb-2">
+						<span class="text-muted small fw-bold text-uppercase">Points Awarded</span>
+						<div class="bg-warning bg-opacity-10 text-warning-emphasis rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+							<i class="bi bi-star-fill fs-5"></i>
+						</div>
+					</div>
+					<h3 class="fw-extrabold text-dark mb-1"><%= @total_points_awarded %> <small class="fs-6 text-muted">pts</small></h3>
+					<small class="text-muted d-block">
+						<span class="text-primary fw-semibold"><%= @total_base_points %> Base</span> + 
+						<span class="text-warning-emphasis fw-semibold"><%= @total_bonus_points %> Bonus</span>
+					</small>
+				</div>
+			</div>
+
+			<!-- KPI 4: Leading Congregation -->
+			<div class="col-md-6 col-xl-3">
+				<div class="card border-0 shadow-sm rounded-4 h-100 bg-white p-3 border-top border-warning border-4">
+					<div class="d-flex align-items-center justify-content-between mb-2">
+						<span class="text-muted small fw-bold text-uppercase">Current Leader</span>
+						<div class="bg-warning text-dark rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+							<i class="bi bi-trophy-fill fs-5"></i>
+						</div>
+					</div>
+					<% if @churches.present? && @churches.first.total_score > 0 %>
+						<h4 class="fw-bold text-dark mb-0 text-truncate" title="<%= @churches.first.name %>"><%= @churches.first.name %></h4>
+						<small class="text-warning-emphasis fw-bold"><%= @churches.first.total_score %> Total Points</small>
+					<% else %>
+						<h4 class="fw-bold text-muted mb-0">No Leader Yet</h4>
+						<small class="text-muted">Awaiting scores</small>
+					<% end %>
+				</div>
+			</div>
+		</div>
+
+		<!-- Congregation Search & Controls -->
+		<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white p-3 d-print-none">
+			<div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+				<div class="input-group search-input-group" style="max-width: 380px;">
+					<span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3">
+						<i class="bi bi-search text-muted"></i>
+					</span>
+					<input type="text" id="congregationSearchInput" class="form-control bg-light border-start-0 rounded-end-pill ps-0" placeholder="Search congregation report..." onkeyup="filterCongregationReports()">
+				</div>
+				<div class="d-flex align-items-center gap-2">
+					<span class="badge bg-secondary text-white px-3 py-2 rounded-pill fw-bold" id="congregationCountBadge">
+						<%= @congregation_reports.count %> Congregations Reporting
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Congregations Detailed Performance Reports Section -->
+		<div class="d-flex align-items-center justify-content-between mb-3 px-1">
+			<h4 class="fw-bold text-dark mb-0"><i class="bi bi-building-check me-2 text-primary"></i>Congregation Performance Reports</h4>
+		</div>
+
+		<% if @congregation_reports.present? %>
+			<div class="row g-4" id="congregationReportsGrid">
+				<% @congregation_reports.each_with_index do |rep, idx| %>
+					<% church = rep[:church] %>
+					<div class="col-12 congregation-report-card" data-church-name="<%= church.name.downcase %>">
+						<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+							<!-- Card Header -->
+							<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-2">
+								<div>
+									<div class="d-flex align-items-center gap-2">
+										<span class="badge bg-dark text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px;">
+											#<%= idx + 1 %>
+										</span>
+										<h4 class="mb-0 fw-bold text-dark"><%= church.name %></h4>
+										<% if church.location.present? %>
+											<span class="badge bg-light text-muted border rounded-pill px-2.5 py-1">
+												<i class="bi bi-geo-alt-fill text-danger me-1"></i><%= church.location %>
+											</span>
+										<% end %>
+									</div>
+									<% if church.representatives.present? %>
+										<div class="d-flex flex-wrap gap-1 mt-1">
+											<% church.representatives.each do |r| %>
+												<span class="badge bg-white text-dark border small py-0.5 px-2">
+													<i class="bi bi-person-fill text-secondary me-1"></i><%= r.name %>
+												</span>
+											<% end %>
+										</div>
+									<% end %>
+								</div>
+								<div class="text-end d-flex align-items-center gap-2">
+									<a href="<%= settings_church_analysis_path(church) %>" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold me-2 d-print-none">
+										<i class="bi bi-file-earmark-text-fill me-1"></i> Question Breakdown
+									</a>
+									<span class="badge bg-primary fs-5 px-3 py-2 rounded-pill shadow-sm">
+										Grand Total: <%= rep[:grand_total] %> pts
+									</span>
+								</div>
+							</div>
+
+							<!-- Card Body -->
+							<div class="card-body p-4">
+								<!-- Pass vs Fail Ratio Bar -->
+								<div class="mb-3">
+									<div class="d-flex justify-content-between align-items-center mb-1 small fw-bold">
+										<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Passed Questions (<%= rep[:passed] %>)</span>
+										<span class="text-dark"><%= rep[:pass_rate] %>% Success Rate</span>
+										<span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>Failed Questions (<%= rep[:failed] %>)</span>
+									</div>
+									<div class="progress rounded-pill overflow-hidden" style="height: 10px;">
+										<% passed_pct = rep[:attempts] > 0 ? ((rep[:passed].to_f / rep[:attempts]) * 100).round(1) : 0 %>
+										<% failed_pct = rep[:attempts] > 0 ? ((rep[:failed].to_f / rep[:attempts]) * 100).round(1) : 0 %>
+										<div class="progress-bar bg-success" role="progressbar" style="width: <%= passed_pct %>%;" title="Passed: <%= rep[:passed] %>"></div>
+										<div class="progress-bar bg-danger" role="progressbar" style="width: <%= failed_pct %>%;" title="Failed: <%= rep[:failed] %>"></div>
+									</div>
+								</div>
+
+								<!-- Key Performance Indicators Pills -->
+								<div class="row g-2 text-center mb-4">
+									<div class="col-6 col-sm-4 col-md-2">
+										<div class="p-2 rounded-3 bg-light border">
+											<small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Questions Attempted</small>
+											<strong class="fs-5 text-dark"><%= rep[:attempts] %></strong>
+										</div>
+									</div>
+									<div class="col-6 col-sm-4 col-md-2">
+										<div class="p-2 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
+											<small class="text-success d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Passed Questions</small>
+											<strong class="fs-5 text-success"><%= rep[:passed] %></strong>
+										</div>
+									</div>
+									<div class="col-6 col-sm-4 col-md-2">
+										<div class="p-2 rounded-3 bg-danger bg-opacity-10 border border-danger border-opacity-25">
+											<small class="text-danger d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Failed (0 pts)</small>
+											<strong class="fs-5 text-danger"><%= rep[:failed] %></strong>
+										</div>
+									</div>
+									<div class="col-6 col-sm-4 col-md-2">
+										<div class="p-2 rounded-3 bg-primary bg-opacity-10 border border-primary border-opacity-25">
+											<small class="text-primary d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Success Rate</small>
+											<strong class="fs-5 text-primary"><%= rep[:pass_rate] %>%</strong>
+										</div>
+									</div>
+									<div class="col-6 col-sm-4 col-md-2">
+										<div class="p-2 rounded-3 bg-light border">
+											<small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Base Points</small>
+											<strong class="fs-5 text-dark"><%= rep[:base_points] %></strong>
+										</div>
+									</div>
+									<div class="col-6 col-sm-4 col-md-2">
+										<div class="p-2 rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-25">
+											<small class="text-warning-emphasis d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Judges Bonus</small>
+											<strong class="fs-5 text-warning-emphasis">+<%= rep[:bonus_points] %></strong>
+										</div>
+									</div>
+								</div>
+
+								<!-- Stage-by-Stage Performance Breakdown Table -->
+								<h6 class="fw-bold text-dark mb-2"><i class="bi bi-layers-fill me-1 text-primary"></i>Stage-by-Stage Breakdown</h6>
+								<div class="table-responsive rounded-3 border">
+									<table class="table table-hover align-middle mb-0 text-center small">
+										<thead class="bg-light text-muted text-uppercase">
+											<tr>
+												<th class="text-start ps-3">Stage</th>
+												<th>Rounds Attempted</th>
+												<th>Base Points</th>
+												<th>Judges Bonus</th>
+												<th class="text-end pe-3">Stage Total</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% rep[:stage_breakdown].each do |sb| %>
+												<tr>
+													<td class="text-start ps-3 fw-bold text-dark"><%= sb[:stage].name %></td>
+													<td>
+														<% if sb[:attempts] > 0 %>
+															<span class="badge bg-light text-dark border px-2 py-1"><%= sb[:attempts] %> Rounds</span>
+														<% else %>
+															<span class="text-muted">—</span>
+														<% end %>
+													</td>
+													<td class="fw-semibold text-primary"><%= sb[:base] %> pts</td>
+													<td class="fw-semibold text-warning-emphasis">+<%= sb[:bonus] %> pts</td>
+													<td class="text-end pe-3 fw-bold text-dark">
+														<span class="badge bg-<%= sb[:total] > 0 ? 'primary' : 'secondary' %> px-2.5 py-1">
+															<%= sb[:total] %> pts
+														</span>
+													</td>
+												</tr>
+											<% end %>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		<% else %>
+			<div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
+				<div class="empty-state-icon mb-3 text-muted opacity-50">
+					<i class="bi bi-bar-chart" style="font-size: 3.5rem;"></i>
+				</div>
+				<h5 class="fw-bold text-dark mb-1">No Quiz Scores Recorded</h5>
+				<p class="text-muted small mb-0">Record congregation scores first to view performance analytics.</p>
+			</div>
+		<% end %>
+	</div>
+</div>
+
+<script>
+	function filterCongregationReports() {
+		const query = document.getElementById("congregationSearchInput").value.trim().toLowerCase();
+		const cards = document.querySelectorAll(".congregation-report-card");
+		let visibleCount = 0;
+
+		cards.forEach(card => {
+			const churchName = card.dataset.churchName || "";
+			if (churchName.includes(query)) {
+				card.style.display = "";
+				visibleCount++;
+			} else {
+				card.style.display = "none";
+			}
+		});
+
+		const countBadge = document.getElementById("congregationCountBadge");
+		if (countBadge) {
+			countBadge.textContent = `${visibleCount} Congregations Reporting`;
+		}
+	}
+</script>
+
+<style>
+	@media print {
+		.d-print-none {
+			display: none !important;
+		}
+		body {
+			background-color: #ffffff !important;
+		}
+		.card {
+			box-shadow: none !important;
+			border: 1px solid #dee2e6 !important;
+		}
+	}
+</style>

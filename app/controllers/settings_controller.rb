@@ -224,6 +224,104 @@ class SettingsController < ApplicationController
     end
   end
 
+  def analysis
+    @stages = Stage.includes(:quizzes).order(id: :asc)
+    @churches = Church.includes(:scores, :representatives).all.sort_by { |c| -c.total_score }
+    @all_quizzes = Quiz.all
+    @total_quizzes_count = @all_quizzes.count
+    @answered_quizzes_count = @all_quizzes.where(answered: true).count
+    @remaining_quizzes_count = @total_quizzes_count - @answered_quizzes_count
+    @progress_percentage = @total_quizzes_count > 0 ? ((@answered_quizzes_count.to_f / @total_quizzes_count) * 100).round(1) : 0
+
+    # Overall points analytics
+    @all_scores = Score.all
+    @total_base_points = @all_scores.sum(:points)
+    @total_bonus_points = @all_scores.sum(:bonus_points)
+    @total_points_awarded = @total_base_points + @total_bonus_points
+
+    # Success / Failure Rate
+    @total_score_records = @all_scores.count
+    @passed_records = @all_scores.where('points > 0 OR bonus_points > 0').count
+    @failed_records = @all_scores.where(points: 0, bonus_points: 0).count
+    @overall_pass_rate = @total_score_records > 0 ? ((@passed_records.to_f / @total_score_records) * 100).round(1) : 0
+
+    # Congregation Reports Breakdown
+    @congregation_reports = @churches.map do |church|
+      c_scores = church.scores
+      attempts = c_scores.count
+      passed = c_scores.where('points > 0 OR bonus_points > 0').count
+      failed = c_scores.where(points: 0, bonus_points: 0).count
+      base_pts = c_scores.sum(:points)
+      bonus_pts = c_scores.sum(:bonus_points)
+      total_pts = base_pts + bonus_pts
+      pass_rate = attempts > 0 ? ((passed.to_f / attempts) * 100).round(1) : 0
+
+      stage_breakdown = @stages.map do |stg|
+        stg_scores = c_scores.where(stage_id: stg.id)
+        stg_attempts = stg_scores.count
+        stg_base = stg_scores.sum(:points)
+        stg_bonus = stg_scores.sum(:bonus_points)
+        stg_total = stg_base + stg_bonus
+        { stage: stg, attempts: stg_attempts, base: stg_base, bonus: stg_bonus, total: stg_total }
+      end
+
+      {
+        church: church,
+        grand_total: total_pts,
+        base_points: base_pts,
+        bonus_points: bonus_pts,
+        attempts: attempts,
+        passed: passed,
+        failed: failed,
+        pass_rate: pass_rate,
+        stage_breakdown: stage_breakdown
+      }
+    end
+  end
+
+  def church_analysis
+    @church = Church.includes(:scores, :representatives).find(params[:id])
+    @stages = Stage.includes(:quizzes).order(id: :asc)
+    @all_churches_sorted = Church.all.sort_by { |c| -c.total_score }
+    @rank = (@all_churches_sorted.index(@church) || 0) + 1
+
+    @scores = @church.scores.includes(:stage).order(stage_id: :asc, round_number: :asc)
+    @total_attempts = @scores.count
+    @passed_scores = @scores.where('points > 0 OR bonus_points > 0')
+    @failed_scores = @scores.where(points: 0, bonus_points: 0)
+
+    @passed_count = @passed_scores.count
+    @failed_count = @failed_scores.count
+    @total_base = @scores.sum(:points)
+    @total_bonus = @scores.sum(:bonus_points)
+    @grand_total = @total_base + @total_bonus
+    @pass_rate = @total_attempts > 0 ? ((@passed_count.to_f / @total_attempts) * 100).round(1) : 0
+
+    # Build question-by-question detailed breakdown list
+    @question_breakdowns = @scores.map do |score|
+      quiz = Quiz.where(stage_id: score.stage_id).order(:question_number).offset(score.round_number - 1).first
+      q_number = quiz ? quiz.formatted_question_number : "#{score.round_number}"
+      q_text = quiz ? quiz.question : "Question ##{score.round_number} for #{score.stage.name}"
+      q_answer = quiz ? quiz.answer : nil
+      is_passed = score.points > 0 || score.bonus_points > 0
+
+      {
+        score: score,
+        quiz: quiz,
+        question_number: q_number,
+        question_text: q_text,
+        question_answer: q_answer,
+        stage_name: score.stage.name,
+        round_number: score.round_number,
+        points: score.points,
+        bonus_points: score.bonus_points,
+        total_pts: score.total_stage_points,
+        is_passed: is_passed,
+        updated_at: score.updated_at
+      }
+    end
+  end
+
   private
 
   def user_params
