@@ -18,10 +18,10 @@
 <% @timer = @timers.present? ? @timers.timer : 0 %>
 <% @auto_start = @timers.present? ? @timers.auto_start : false %>
 
-<div class="timer-starter text-center" data-controller="timer" data-timer-duration="<%= @timer %>">
+<div class="timer-starter text-center mb-4 my-3" data-controller="timer" data-timer-duration="<%= @timer %>">
 	<% if @auto_start %>
 		<!-- Auto-start enabled notification -->
-		<div class="auto-start-notification mb-3">
+		<div class="auto-start-notification mb-4">
 			<div class="auto-start-card">
 				<div class="auto-start-icon">
 					<i class="bx bx-play-circle"></i>
@@ -34,8 +34,8 @@
 		</div>
 	<% else %>
 		<!-- Manual start button -->
-		<button class="btn btn-success px-4 btn-lg" data-timer-target="startButton" data-action="click->timer#startTimer">
-			<i class="bx bx-play me-2"></i>
+		<button class="btn btn-success px-5 py-3 btn-lg my-3 shadow-sm rounded-pill fw-bold" data-timer-target="startButton" data-action="click->timer#startTimer">
+			<i class="bx bx-play me-2 fs-4"></i>
 			Start Timer (<%= @timer %>s)
 		</button>
 	<% end %>
