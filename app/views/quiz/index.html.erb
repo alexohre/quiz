@@ -1,64 +1,78 @@
-<!-- Header Section with Title and Progress -->
-
-<!-- Stage Selection -->
-<div class="card shadow-sm mb-3">
-	<div class="card-header bg-light">
-		<h5 class="card-title mb-0">
-			<i class="bx bx-layer fs-5 me-2"></i>
-			Select Stage
+<!-- Consolidated Stage Selection Card with Questions Stats & Scoreboard Modal Action -->
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+	<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+		<h5 class="card-title mb-0 fw-bold text-dark d-flex align-items-center">
+			<i class="bi bi-layers-fill me-2 text-primary fs-5"></i> Select Stage
 		</h5>
+
+		<!-- Questions Stats Pills & View Stage Scoreboard Action -->
+		<div class="d-flex align-items-center gap-2 flex-wrap">
+			<% if @quizzes.present? && @active_stage.present? %>
+				<% total_q = @quizzes.count %>
+				<% done_q = @quizzes.select(&:answered?).count %>
+				<% left_q = total_q - done_q %>
+				<% progress_pct = total_q > 0 ? ((done_q.to_f / total_q) * 100).round : 0 %>
+
+				<span class="badge bg-secondary-subtle text-secondary border px-3 py-1.5 rounded-pill fw-bold">
+					Total: <%= total_q %>
+				</span>
+				<span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill fw-bold">
+					Done: <%= done_q %>
+				</span>
+				<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1.5 rounded-pill fw-bold">
+					Left: <%= left_q %>
+				</span>
+				<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-3 py-1.5 rounded-pill fw-extrabold">
+					Progress: <%= progress_pct %>%
+				</span>
+			<% end %>
+
+			<button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-3.5 py-1.5 shadow-sm d-flex align-items-center gap-1.5 ms-md-2" data-bs-toggle="modal" data-bs-target="#presenterScoreboardModal">
+				<i class="bi bi-trophy-fill fs-6"></i> View Stage Scoreboard
+			</button>
+		</div>
 	</div>
-	<div class="card-body">
+	<div class="card-body p-4">
 		<% if @stages.present? %>
 			<div class="d-flex flex-wrap gap-2 justify-content-center">
 				<% @stages.each do |stage| %>
-					<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "btn #{ stage.active? ? 'btn-primary' : 'btn-outline-primary' } btn-lg fw-bold px-4 py-2 stage-btn", data: { stage_id: stage.id } %>
+					<%= button_to stage.name, activate_stage_path(stage), method: :patch, class: "btn #{ stage.active? ? 'btn-primary shadow-sm' : 'btn-outline-primary' } btn-lg fw-bold px-4 py-2 stage-btn", data: { stage_id: stage.id } %>
 				<% end %>
 			</div>
 		<% else %>
 			<div class="text-center py-4">
-				<i class="bx bx-error-circle fs-1 text-warning mb-3"></i>
+				<i class="bi bi-exclamation-triangle fs-1 text-warning mb-3"></i>
 				<h4 class="text-muted">No Stages Available</h4>
 				<p class="text-muted">Please contact an administrator to set up quiz stages.</p>
 			</div>
 		<% end %>
 	</div>
 </div>
+
 <!-- Questions Grid -->
-<div class="card shadow-sm">
-	<div class="card-header bg-light">
-		<h5 class="card-title mb-0">
-			<i class="bx bx-question-mark fs-5 me-2"></i>
-			Questions
-			<% if @stages.present? %>
-				<% active_stage = @stages.find(&:active?) %>
-				<% if active_stage %>
-					<span class="badge bg-primary ms-2"><%= active_stage.name %></span>
-				<% end %>
-			<% end %>
-			<% if @quizzes.present? %>
-				<% total_questions = @quizzes.count %>
-				<% answered_questions = @quizzes.select(&:answered?).count %>
-				<% progress_percentage = total_questions > 0 ? (answered_questions.to_f / total_questions * 100).round : 0 %>
-				<span class="badge bg-secondary ms-2">Total: <%= total_questions %></span>
-				<span class="badge bg-success ms-2">Done: <%= answered_questions %></span>
-				<span class="badge bg-warning ms-2">Left: <%= total_questions - answered_questions %></span>
-				<span class="badge bg-info ms-2">Progress: <%= progress_percentage %>%</span>
-			<% end %>
+<div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden mb-4">
+	<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+		<h5 class="card-title mb-0 fw-bold text-dark d-flex align-items-center">
+			<i class="bi bi-grid-3x3-gap-fill me-2 text-primary"></i> Questions Grid
 		</h5>
+		<% if @active_stage.present? %>
+			<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1.5 fw-bold">
+				<%= @active_stage.name %> Active
+			</span>
+		<% end %>
 	</div>
-	<div class="card-body">
+	<div class="card-body p-4">
 		<% if @quizzes.present? %>
 			<div class="row g-2">
 				<% @quizzes.each do |quiz| %>
 					<div class="col-2 col-sm-2 col-md-1 col-lg-1 col-xl-1">
 						<% if quiz.answered? %>
-							<div class="btn btn-outline-success fw-bold w-100 position-relative quiz-btn-completed quiz-btn-compact" style="cursor: not-allowed;">
+							<div class="btn btn-outline-success fw-bold w-100 position-relative quiz-btn-completed quiz-btn-compact" style="cursor: not-allowed;" title="Question <%= quiz.formatted_question_number %> Already Answered">
 								<span class="fs-6"><%= quiz.formatted_question_number %></span>
-								<i class="bx bx-check-circle position-absolute top-0 start-100 translate-middle text-success bg-white rounded-circle" style="font-size: 0.6rem;"></i>
+								<i class="bi bi-check-circle-fill position-absolute top-0 start-100 translate-middle text-success bg-white rounded-circle" style="font-size: 0.65rem;"></i>
 							</div>
 						<% else %>
-							<a href="<%= quiz_path(quiz) %>" class="btn btn-primary fw-bold w-100 quiz-btn-available quiz-btn-compact">
+							<a href="<%= quiz_path(quiz) %>" class="btn btn-primary fw-bold w-100 quiz-btn-available quiz-btn-compact" title="Open Question <%= quiz.formatted_question_number %>">
 								<span class="fs-6"><%= quiz.formatted_question_number %></span>
 							</a>
 						<% end %>
@@ -67,24 +81,149 @@
 			</div>
 		<% else %>
 			<div class="text-center py-5">
-				<i class="bx bx-search fs-1 text-muted mb-3"></i>
+				<i class="bi bi-search fs-1 text-muted mb-3"></i>
 				<h4 class="text-muted">No Questions Available</h4>
 				<p class="text-muted">Please select a stage or contact an administrator to upload questions.</p>
 			</div>
 		<% end %>
 	</div>
 </div>
+
+<!-- Presenter Live Stage Scoreboard Modal -->
+<div class="modal fade" id="presenterScoreboardModal" tabindex="-1" aria-labelledby="presenterScoreboardModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content rounded-4 border-0 shadow-lg">
+			<div class="modal-header bg-warning text-dark border-0 py-3 px-4">
+				<div class="d-flex align-items-center gap-2">
+					<i class="bi bi-trophy-fill fs-4"></i>
+					<h4 class="modal-title fw-bold mb-0" id="presenterScoreboardModalLabel">
+						Stage Scoreboard &mdash; <%= @active_stage&.name || "Live Scores" %>
+					</h4>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-4 bg-light">
+				<!-- Stage Filter Pills Inside Modal -->
+				<% if @stages.present? %>
+					<ul class="nav nav-pills justify-content-center gap-2 mb-4" id="presenterModalStageTabs" role="tablist">
+						<% @stages.each do |stg| %>
+							<li class="nav-item" role="presentation">
+								<button class="nav-link rounded-pill px-4 py-2 fw-bold <%= 'active' if stg == @active_stage %>" id="modal-tab-<%= stg.id %>" data-bs-toggle="tab" data-bs-target="#modal-stage-pane-<%= stg.id %>" type="button" role="tab">
+									<%= stg.name %>
+								</button>
+							</li>
+						<% end %>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link rounded-pill px-4 py-2 fw-bold" id="modal-tab-overall" data-bs-toggle="tab" data-bs-target="#modal-stage-pane-overall" type="button" role="tab">
+								<i class="bi bi-award-fill text-warning me-1"></i> Overall Total
+							</button>
+						</li>
+					</ul>
+				<% end %>
+
+				<!-- Tab Contents -->
+				<div class="tab-content" id="presenterModalStageTabContent">
+					<% if @stages.present? %>
+						<% @stages.each do |stg| %>
+							<% max_rounds = [Score.where(stage_id: stg.id).maximum(:round_number).to_i, 5].max %>
+							<div class="tab-pane fade <%= 'show active' if stg == @active_stage %>" id="modal-stage-pane-<%= stg.id %>" role="tabpanel">
+								<div class="table-responsive rounded-4 shadow-sm bg-white border">
+									<table class="table table-hover align-middle mb-0 text-center">
+										<thead class="table-dark">
+											<tr>
+												<th style="width: 60px;">#</th>
+												<th class="text-start">Congregation</th>
+												<% (1..max_rounds).each do |r_num| %>
+													<th>R<%= r_num %></th>
+												<% end %>
+												<th class="bg-primary text-white">Stage Total</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% if @churches.present? %>
+												<% sorted_churches = @churches.sort_by { |c| -c.score_for_stage(stg) } %>
+												<% sorted_churches.each_with_index do |church, idx| %>
+													<% stage_total = church.score_for_stage(stg) %>
+													<tr>
+														<td class="fw-bold"><%= idx + 1 %></td>
+														<td class="text-start fw-bold text-dark"><%= church.name %></td>
+														<% (1..max_rounds).each do |r_num| %>
+															<% r_base = church.base_points_for_stage_and_round(stg, r_num) %>
+															<% r_bonus = church.bonus_points_for_stage_and_round(stg, r_num) %>
+															<% r_total = r_base + r_bonus %>
+															<td id="modal_stage_round_score_<%= church.id %>_<%= stg.id %>_<%= r_num %>">
+																<% if r_total > 0 %>
+																	<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-bold">
+																		<%= r_total %>
+																		<% if r_bonus > 0 %>
+																			<small class="text-warning-emphasis">(+<%= r_bonus %>)</small>
+																		<% end %>
+																	</span>
+																<% else %>
+																	<span class="text-muted small">&bull;</span>
+																<% end %>
+															</td>
+														<% end %>
+														<td class="fw-extrabold fs-5 text-primary bg-primary bg-opacity-10" id="modal_stage_total_<%= church.id %>_<%= stg.id %>">
+															<%= stage_total %> pts
+														</td>
+													</tr>
+												<% end %>
+											<% end %>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						<% end %>
+
+						<!-- Overall Total Tab -->
+						<div class="tab-pane fade" id="modal-stage-pane-overall" role="tabpanel">
+							<div class="table-responsive rounded-4 shadow-sm bg-white border">
+								<table class="table table-hover align-middle mb-0 text-center">
+									<thead class="table-dark">
+										<tr>
+											<th style="width: 60px;">Rank</th>
+											<th class="text-start">Congregation</th>
+											<% @stages.each do |stg| %>
+												<th><%= stg.name %> Total</th>
+											<% end %>
+											<th class="bg-success text-white">Grand Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% if @churches.present? %>
+											<% @churches.each_with_index do |church, idx| %>
+												<tr>
+													<td class="fw-bold"><%= idx + 1 %></td>
+													<td class="text-start fw-bold text-dark"><%= church.name %></td>
+													<% @stages.each do |stg| %>
+														<td class="fw-semibold"><%= church.score_for_stage(stg) %> pts</td>
+													<% end %>
+													<td class="fw-extrabold fs-4 text-success bg-success bg-opacity-10" id="modal_grand_total_<%= church.id %>">
+														<%= church.total_score %> pts
+													</td>
+												</tr>
+											<% end %>
+										<% end %>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			</div>
+			<div class="modal-footer bg-white border-top">
+				<a href="<%= scoreboard_path %>" class="btn btn-outline-primary rounded-pill px-4 fw-bold" target="_blank">
+					<i class="bi bi-box-arrow-up-right me-1"></i> Open Full Scoreboard Page
+				</a>
+				<button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- Custom Styles -->
 <style>
-	.compact-card {
-		border-radius: 10px;
-		min-height: auto;
-	}
-
-	.fs-7 {
-		font-size: 0.75rem;
-	}
-
 	.stage-btn {
 		transition: all 0.3s ease;
 		border-radius: 25px;
@@ -117,26 +256,22 @@
 		box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
 	}
 
-	.quiz-btn-completed {
-		aspect-ratio: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 6px;
-		opacity: 0.7;
+	#presenterModalStageTabs .nav-link {
+		background-color: #ffffff;
+		color: #212529;
+		border: 1px solid #dee2e6;
+		transition: all 0.2s ease-in-out;
 	}
 
-	.progress-bar {
-		transition: width 0.6s ease;
+	#presenterModalStageTabs .nav-link:hover {
+		background-color: #f8f9fa;
+		border-color: #0d6efd;
 	}
 
-	.card {
-		border: none;
-		border-radius: 15px;
-	}
-
-	.card-header {
-		border-radius: 15px 15px 0 0 !important;
-		border-bottom: 1px solid #dee2e6;
+	#presenterModalStageTabs .nav-link.active {
+		background-color: #0d6efd !important;
+		color: #ffffff !important;
+		border-color: #0d6efd !important;
+		box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3) !important;
 	}
 </style>

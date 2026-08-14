@@ -54,6 +54,23 @@ consumer.subscriptions.create("QuizChannel", {
 				grandTotalCell.textContent = `${data.grand_total} pts`;
 			}
 
+			// Live update Modal Table cells if presenter modal is open
+			const modalRoundCell = document.getElementById(`modal_stage_round_score_${data.church_id}_${data.stage_id}_${data.round_number}`);
+			if (modalRoundCell) {
+				const bonusText = data.bonus_points > 0 ? `<small class="text-warning-emphasis ms-1">(+${data.bonus_points})</small>` : '';
+				modalRoundCell.innerHTML = `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-bold">${data.round_total} ${bonusText}</span>`;
+			}
+
+			const modalStageTotalCell = document.getElementById(`modal_stage_total_${data.church_id}_${data.stage_id}`);
+			if (modalStageTotalCell) {
+				modalStageTotalCell.textContent = `${data.stage_total} pts`;
+			}
+
+			const modalGrandTotalCell = document.getElementById(`modal_grand_total_${data.church_id}`);
+			if (modalGrandTotalCell) {
+				modalGrandTotalCell.textContent = `${data.grand_total} pts`;
+			}
+
 			// Notify on screens EXCEPT presenter screen
 			if (userRole !== "presenter") {
 				showScoreNotification(data);

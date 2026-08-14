@@ -2,8 +2,9 @@ class QuizController < ApplicationController
 
   def index 
     @stages = Stage.all.order(id: :asc)
-    @active_stage = @stages.find_by(active: true)
+    @active_stage = @stages.find_by(active: true) || @stages.first
     @quizzes = @active_stage.present? ? @active_stage.quizzes.order(question_number: :asc) : []
+    @churches = Church.includes(:scores, :representatives).all.sort_by { |c| -c.total_score }
     
     settings = Setting.last
     ActionCable.server.broadcast("timer_channel", { action: "reset_timer", duration: settings&.timer || 30 })
@@ -18,6 +19,9 @@ class QuizController < ApplicationController
   def show
     @quiz = Quiz.find(params[:id])
     @quiz.update(answered: true, queued_for_recording: true)
+    @stages = Stage.all.order(id: :asc)
+    @active_stage = @quiz.stage || @stages.find_by(active: true) || @stages.first
+    @churches = Church.includes(:scores, :representatives).all.sort_by { |c| -c.total_score }
     
     # Store active quiz ID in settings
     settings = Setting.last || Setting.create!

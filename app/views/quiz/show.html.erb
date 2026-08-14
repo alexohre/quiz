@@ -1,23 +1,30 @@
 <!-- Question Section -->
 <div class="question-container mb-4">
-	<div class="question-header text-center mb-3">
+	<div class="question-header text-center mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
 		<div class="question-badge">
-			<i class="bx bx-help-circle fs-1 text-primary me-2"></i>
+			<i class="bi bi-question-circle-fill fs-3 text-white me-2"></i>
 			<span class="question-label">Question</span>
 			<span class="question-number"><%= @quiz.question_number %></span>
 		</div>
+
+		<!-- Action: View Stage Scoreboard for Presenter -->
+		<button type="button" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#presenterScoreboardModal">
+			<i class="bi bi-trophy-fill fs-5"></i> View Stage Scoreboard
+		</button>
 	</div>
+
 	<div class="question-card">
 		<div class="question-text">
 			<%= @quiz.question %>
 		</div>
 	</div>
 </div>
+
 <!-- Answer Section -->
 <div data-controller="show">
-	<div class="text-center mb-4">
+	<div class="text-center mb-4 d-flex justify-content-center gap-3 flex-wrap">
 		<button class="btn btn-warning btn-lg px-5 py-3 show-answer-btn" data-action="click->show#toggleAnswer">
-			<i class="bx bx-show fs-4 me-2"></i>
+			<i class="bi bi-eye-fill fs-4 me-2"></i>
 			<span class="fs-4 fw-bold">Show Answer</span>
 		</button>
 	</div>
@@ -25,7 +32,7 @@
 	<div class="answer-container d-none mb-4" data-show-target="answerSection">
 		<div class="answer-card position-relative">
 			<div class="answer-badge-corner">
-				<i class="bx bx-check-circle me-1"></i>
+				<i class="bi bi-check-circle-fill me-1"></i>
 				<span class="answer-label-small">Answer</span>
 			</div>
 			<div class="answer-text">
@@ -36,11 +43,12 @@
 	
 	<div class="text-center d-none" data-show-target="backButton">
 		<%= link_to quiz_index_path, class: "btn btn-primary btn-lg px-5 py-3 back-btn" do %>
-			<i class="bx bx-arrow-back fs-4 me-2"></i>
+			<i class="bi bi-arrow-left fs-4 me-2"></i>
 			<span class="fs-4 fw-bold">Back to Quiz</span>
 		<% end %>
 	</div>
 </div>
+
 <!-- Timer Section -->
 <% settings = Setting.last %>
 <div class="" data-controller="timer" data-timer-duration="<%= settings&.timer || 60 %>">
@@ -49,12 +57,145 @@
 	</div>
 	<div class="overlay" data-timer-target="overlay">
 		<div class="overlay-content">
-			<i class="bx bx-time fs-1 text-danger mb-3"></i>
+			<i class="bi bi-clock-history fs-1 text-danger mb-3"></i>
 			<h1 class="fw-bold ov-title mb-4">Time Up!</h1>
 			<button class="btn btn-primary btn-lg px-5 py-3" data-action="click->timer#hideOverlay" data-timer-target="overlayButton">
-				<i class="bx bx-check fs-4 me-2"></i>
+				<i class="bi bi-check-lg fs-4 me-2"></i>
 				<span class="fs-4">Continue</span>
 			</button>
+		</div>
+	</div>
+</div>
+
+<!-- Presenter Live Stage Scoreboard Modal -->
+<div class="modal fade" id="presenterScoreboardModal" tabindex="-1" aria-labelledby="presenterScoreboardModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content rounded-4 border-0 shadow-lg">
+			<div class="modal-header bg-warning text-dark border-0 py-3 px-4">
+				<div class="d-flex align-items-center gap-2">
+					<i class="bi bi-trophy-fill fs-4"></i>
+					<h4 class="modal-title fw-bold mb-0" id="presenterScoreboardModalLabel">
+						Stage Scoreboard &mdash; <%= @active_stage&.name || "Live Scores" %>
+					</h4>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body p-4 bg-light">
+				<!-- Stage Filter Pills Inside Modal -->
+				<% if @stages.present? %>
+					<ul class="nav nav-pills justify-content-center gap-2 mb-4" id="presenterModalStageTabs" role="tablist">
+						<% @stages.each do |stg| %>
+							<li class="nav-item" role="presentation">
+								<button class="nav-link rounded-pill px-4 py-2 fw-bold <%= 'active' if stg == @active_stage %>" id="modal-tab-<%= stg.id %>" data-bs-toggle="tab" data-bs-target="#modal-stage-pane-<%= stg.id %>" type="button" role="tab">
+									<%= stg.name %>
+								</button>
+							</li>
+						<% end %>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link rounded-pill px-4 py-2 fw-bold" id="modal-tab-overall" data-bs-toggle="tab" data-bs-target="#modal-stage-pane-overall" type="button" role="tab">
+								<i class="bi bi-award-fill text-warning me-1"></i> Overall Total
+							</button>
+						</li>
+					</ul>
+				<% end %>
+
+				<!-- Tab Contents -->
+				<div class="tab-content" id="presenterModalStageTabContent">
+					<% if @stages.present? %>
+						<% @stages.each do |stg| %>
+							<% max_rounds = [Score.where(stage_id: stg.id).maximum(:round_number).to_i, 5].max %>
+							<div class="tab-pane fade <%= 'show active' if stg == @active_stage %>" id="modal-stage-pane-<%= stg.id %>" role="tabpanel">
+								<div class="table-responsive rounded-4 shadow-sm bg-white border">
+									<table class="table table-hover align-middle mb-0 text-center">
+										<thead class="table-dark">
+											<tr>
+												<th style="width: 60px;">#</th>
+												<th class="text-start">Congregation</th>
+												<% (1..max_rounds).each do |r_num| %>
+													<th>R<%= r_num %></th>
+												<% end %>
+												<th class="bg-primary text-white">Stage Total</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% if @churches.present? %>
+												<% sorted_churches = @churches.sort_by { |c| -c.score_for_stage(stg) } %>
+												<% sorted_churches.each_with_index do |church, idx| %>
+													<% stage_total = church.score_for_stage(stg) %>
+													<tr>
+														<td class="fw-bold"><%= idx + 1 %></td>
+														<td class="text-start fw-bold text-dark"><%= church.name %></td>
+														<% (1..max_rounds).each do |r_num| %>
+															<% r_base = church.base_points_for_stage_and_round(stg, r_num) %>
+															<% r_bonus = church.bonus_points_for_stage_and_round(stg, r_num) %>
+															<% r_total = r_base + r_bonus %>
+															<td id="modal_stage_round_score_<%= church.id %>_<%= stg.id %>_<%= r_num %>">
+																<% if r_total > 0 %>
+																	<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fw-bold">
+																		<%= r_total %>
+																		<% if r_bonus > 0 %>
+																			<small class="text-warning-emphasis">(+<%= r_bonus %>)</small>
+																		<% end %>
+																	</span>
+																<% else %>
+																	<span class="text-muted small">&bull;</span>
+																<% end %>
+															</td>
+														<% end %>
+														<td class="fw-extrabold fs-5 text-primary bg-primary bg-opacity-10" id="modal_stage_total_<%= church.id %>_<%= stg.id %>">
+															<%= stage_total %> pts
+														</td>
+													</tr>
+												<% end %>
+											<% end %>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						<% end %>
+
+						<!-- Overall Total Tab -->
+						<div class="tab-pane fade" id="modal-stage-pane-overall" role="tabpanel">
+							<div class="table-responsive rounded-4 shadow-sm bg-white border">
+								<table class="table table-hover align-middle mb-0 text-center">
+									<thead class="table-dark">
+										<tr>
+											<th style="width: 60px;">Rank</th>
+											<th class="text-start">Congregation</th>
+											<% @stages.each do |stg| %>
+												<th><%= stg.name %> Total</th>
+											<% end %>
+											<th class="bg-success text-white">Grand Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% if @churches.present? %>
+											<% @churches.each_with_index do |church, idx| %>
+												<tr>
+													<td class="fw-bold"><%= idx + 1 %></td>
+													<td class="text-start fw-bold text-dark"><%= church.name %></td>
+													<% @stages.each do |stg| %>
+														<td class="fw-semibold"><%= church.score_for_stage(stg) %> pts</td>
+													<% end %>
+													<td class="fw-extrabold fs-4 text-success bg-success bg-opacity-10" id="modal_grand_total_<%= church.id %>">
+														<%= church.total_score %> pts
+													</td>
+												</tr>
+											<% end %>
+										<% end %>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			</div>
+			<div class="modal-footer bg-white border-top">
+				<a href="<%= scoreboard_path %>" class="btn btn-outline-primary rounded-pill px-4 fw-bold" target="_blank">
+					<i class="bi bi-box-arrow-up-right me-1"></i> Open Full Scoreboard Page
+				</a>
+				<button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -70,24 +211,23 @@
 		align-items: center;
 		background: linear-gradient(135deg, #007bff, #0056b3);
 		color: white;
-		padding: 1rem 2rem;
+		padding: 0.75rem 1.75rem;
 		border-radius: 50px;
 		box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
-		transform: translateY(-5px);
 	}
 	
 	.question-label {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: 600;
-		margin-right: 1rem;
+		margin-right: 0.75rem;
 	}
 	
 	.question-number {
-		font-size: 2rem;
+		font-size: 1.5rem;
 		font-weight: 800;
 		background: rgba(255, 255, 255, 0.2);
-		padding: 0.25rem 0.75rem;
-		border-radius: 15px;
+		padding: 0.2rem 0.6rem;
+		border-radius: 12px;
 	}
 	
 	.question-card {
@@ -194,8 +334,6 @@
 		box-shadow: 0 12px 35px rgba(0, 123, 255, 0.5);
 	}
 	
-
-	
 	@keyframes slideIn {
 		from {
 			opacity: 0;
@@ -250,4 +388,22 @@
 		75% { transform: translateX(2px); }
 	}
 
+	#presenterModalStageTabs .nav-link {
+		background-color: #ffffff;
+		color: #212529;
+		border: 1px solid #dee2e6;
+		transition: all 0.2s ease-in-out;
+	}
+
+	#presenterModalStageTabs .nav-link:hover {
+		background-color: #f8f9fa;
+		border-color: #0d6efd;
+	}
+
+	#presenterModalStageTabs .nav-link.active {
+		background-color: #0d6efd !important;
+		color: #ffffff !important;
+		border-color: #0d6efd !important;
+		box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3) !important;
+	}
 </style>

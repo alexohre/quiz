@@ -68,9 +68,11 @@ class PagesController < ApplicationController
 
       # Broadcast live ticker news feed
       quiz_obj = quiz_id.present? ? Quiz.find_by(id: quiz_id) : nil
-      q_label = quiz_obj ? "quest ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "quest ##{quiz_id}" : "question")
+      q_label = quiz_obj ? "question ##{quiz_obj.formatted_question_number}" : (quiz_id.present? ? "quest ##{quiz_id}" : "question")
 
-      ticker_msg = if bonus_points > 0 && points == 0
+      ticker_msg = if points == 0 && bonus_points == 0
+        "0 pts (failed) recorded for #{score.church.name}, #{q_label}"
+      elsif bonus_points > 0 && points == 0
         "#{bonus_points} pts manually recorded for #{score.church.name}, #{q_label}"
       elsif bonus_points > 0 && points > 0
         "#{points} pts & #{bonus_points} pts manual bonus recorded for #{score.church.name}, #{q_label}"

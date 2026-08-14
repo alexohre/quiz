@@ -139,20 +139,27 @@
 
 			<div class="row g-4">
 				<% @churches.each do |church| %>
-					<% r_base = church.base_points_for_stage_and_round(@current_stage, @current_round) %>
-					<% r_bonus = church.bonus_points_for_stage_and_round(@current_stage, @current_round) %>
+					<% score_record = Score.find_by(church_id: church.id, stage_id: @current_stage.id, round_number: @current_round) %>
+					<% is_recorded = score_record.present? %>
+					<% r_base = score_record ? score_record.points : @points_per_question %>
+					<% r_bonus = score_record ? score_record.bonus_points : 0 %>
 					<% r_total = r_base + r_bonus %>
-					<% is_recorded = r_total > 0 %>
 					<div class="col-md-6 col-lg-4">
-						<div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white settings-card <%= 'border-success border-2' if is_recorded %>">
+						<div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white settings-card <%= 'border-success border-2' if is_recorded && r_total > 0 %> <%= 'border-danger border-2' if is_recorded && r_total == 0 %>">
 							<div class="card-header bg-light border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
 								<div>
 									<div class="d-flex align-items-center gap-2">
 										<h5 class="mb-0 fw-bold text-dark"><%= church.name %></h5>
 										<% if is_recorded %>
-											<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.75rem;">
-												<i class="bi bi-check-circle-fill me-1"></i>Saved
-											</span>
+											<% if r_total > 0 %>
+												<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 0.75rem;">
+													<i class="bi bi-check-circle-fill me-1"></i>Saved
+												</span>
+											<% else %>
+												<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5" style="font-size: 0.75rem;">
+													<i class="bi bi-x-circle-fill me-1"></i>0 pts (Failed)
+												</span>
+											<% end %>
 										<% end %>
 									</div>
 									<% if church.location.present? %>
@@ -198,13 +205,13 @@
 													readonly: true,
 													tabindex: "-1",
 													min: 0 %>
-												<span class="position-absolute top-0 end-0 me-2 mt-1 badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;" title="Fixed from Settings">
-													Fixed
+												<span class="position-absolute top-0 end-0 me-2 mt-1 badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;" title="Controlled by quick buttons">
+													Base
 												</span>
 											</div>
 											<div class="d-flex justify-content-center gap-1 mt-2">
-												<button type="button" class="btn btn-sm btn-outline-secondary px-2" onclick="addPoints(<%= church.id %>, -<%= @points_per_question %>)">-<%= @points_per_question %></button>
-												<button type="button" class="btn btn-sm btn-outline-success px-2 fw-bold" onclick="addPoints(<%= church.id %>, <%= @points_per_question %>)">+<%= @points_per_question %></button>
+												<button type="button" class="btn btn-sm btn-outline-danger px-2 fw-bold" onclick="setZeroPoints(<%= church.id %>)" title="Record 0 points for failed attempt">0 (Failed)</button>
+												<button type="button" class="btn btn-sm btn-outline-success px-2 fw-bold" onclick="setBasePoints(<%= church.id %>, <%= @points_per_question %>)">+<%= @points_per_question %></button>
 											</div>
 										</div>
 
@@ -271,6 +278,18 @@
 </div>
 
 <script>
+	function setBasePoints(churchId, pts) {
+		const pointsInput = document.getElementById("input_points_" + churchId);
+		if (pointsInput) pointsInput.value = pts;
+	}
+
+	function setZeroPoints(churchId) {
+		const pointsInput = document.getElementById("input_points_" + churchId);
+		const bonusInput = document.getElementById("input_bonus_" + churchId);
+		if (pointsInput) pointsInput.value = 0;
+		if (bonusInput) bonusInput.value = 0;
+	}
+
 	function addPoints(churchId, delta) {
 		const input = document.getElementById("input_points_" + churchId);
 		if (input) {
